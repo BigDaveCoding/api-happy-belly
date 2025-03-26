@@ -224,14 +224,24 @@ class RecipeApiControllerTest extends TestCase
     public function test_recipe_api_controller_user_recipes_returns_correct_data(): void
     {
         User::factory()->create(['id' => 2]);
-        Recipe::factory()->count(2)->create(['user_id' => 2]);
+        Recipe::factory()->has(DietaryRestriction::factory())->count(2)->create(['user_id' => 2]);
 
         $response = $this->get('api/recipes/user/2');
         $response->assertStatus(200)
             ->assertJson(function (AssertableJson $response) {
                 $response->hasAll('message', 'data')
                     ->has('data', 2, function (AssertableJson $data) {
-                        $data->hasAll('id', 'name', 'image', 'cooking_time', 'serves', 'cuisine');
+                        $data->hasAll('id', 'name', 'image', 'cooking_time', 'serves', 'cuisine', 'dietary_restrictions')
+                            ->has('dietary_restrictions', function (AssertableJson $dietaryRestrictions) {
+                                $dietaryRestrictions->hasAll([
+                                    'is_vegetarian',
+                                    'is_vegan',
+                                    'is_gluten_free',
+                                    'is_dairy_free',
+                                    'is_low_fodmap',
+                                    'is_ostomy_friendly',
+                                ]);
+                            });;
                     });
             });
     }
