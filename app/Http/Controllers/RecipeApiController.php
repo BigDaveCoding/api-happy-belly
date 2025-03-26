@@ -42,7 +42,7 @@ class RecipeApiController extends Controller
 
     public function admin(): JsonResponse
     {
-        $recipe = Recipe::where(['user_id' => 1])->get()->makeHidden(['description', 'user_id']);
+        $recipe = Recipe::with('dietaryRestrictions')->where(['user_id' => 1])->get()->makeHidden(['description', 'user_id']);
 
         return response()->json([
             'message' => 'Admin recipes found successfully',

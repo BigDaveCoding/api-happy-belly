@@ -198,7 +198,7 @@ class RecipeApiControllerTest extends TestCase
     {
         User::factory()->create(['id' => 1]);
         User::factory()->create(['id' => 2]);
-        Recipe::factory()->count(2)->create(['user_id' => 1]);
+        Recipe::factory()->has(DietaryRestriction::factory())->count(2)->create(['user_id' => 1]);
         Recipe::factory()->count(2)->create(['user_id' => 2]);
 
         $response = $this->get('/api/recipes/admin');
@@ -206,7 +206,17 @@ class RecipeApiControllerTest extends TestCase
             ->assertJson(function (AssertableJson $response) {
                 $response->hasAll('message', 'data')
                     ->has('data', 2, function (AssertableJson $data) {
-                        $data->hasAll('id', 'name', 'image', 'cooking_time', 'serves', 'cuisine');
+                        $data->hasAll('id', 'name', 'image', 'cooking_time', 'serves', 'cuisine', 'dietary_restrictions')
+                            ->has('dietary_restrictions', function (AssertableJson $dietaryRestrictions) {
+                                $dietaryRestrictions->hasAll([
+                                    'is_vegetarian',
+                                    'is_vegan',
+                                    'is_gluten_free',
+                                    'is_dairy_free',
+                                    'is_low_fodmap',
+                                    'is_ostomy_friendly',
+                                ]);
+                            });
                     });
             });
     }
