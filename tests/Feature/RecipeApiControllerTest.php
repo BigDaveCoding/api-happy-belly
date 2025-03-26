@@ -130,4 +130,31 @@ class RecipeApiControllerTest extends TestCase
                     });
             });
     }
+
+    public function test_recipe_api_controller_user_recipes_returns_correct_data(): void
+    {
+        User::factory()->create(['id' => 2]);
+        Recipe::factory()->count(2)->create(['user_id' => 2]);
+
+        $response = $this->get('api/recipes/user/2');
+        $response->assertStatus(200)
+            ->assertJson(function (AssertableJson $response) {
+                $response->hasAll('message', 'data')
+                    ->has('data', 2, function (AssertableJson $data) {
+                        $data->hasAll('id', 'name', 'image', 'cooking_time', 'serves');
+                    });
+            });
+    }
+
+    public function test_recipe_api_controller_user_no_recipes_return_empty_array(): void
+    {
+        User::factory()->create(['id' => 2]);
+
+        $response = $this->get('/api/recipes/user/2');
+        $response->assertStatus(200)
+            ->assertJson(function (AssertableJson $response) {
+                $response->hasAll('message', 'data')
+                    ->where('data', []);
+            });
+    }
 }

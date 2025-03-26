@@ -36,4 +36,14 @@ class RecipeApiController extends Controller
             'data' => $recipe,
         ], 200);
     }
+
+    public function user(int $user_id): JsonResponse
+    {
+        $recipe = Recipe::where(['user_id' => $user_id])->get()->makeHidden(['description', 'user_id']);
+
+        return response()->json([
+            'message' => 'User recipes found successfully',
+            'data' => $recipe,
+        ]);
+    }
 }
