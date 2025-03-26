@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -17,7 +18,12 @@ class RecipeFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'name' => fake()->words(2, true),
+            'description' => fake()->words(20, true),
+            'image' => 'https://placehold.co/600x400',
+            'cooking_time' => fake()->time('i'),
+            'serves' => rand(1, 4),
+            'user_id' => User::factory(),
         ];
     }
 }

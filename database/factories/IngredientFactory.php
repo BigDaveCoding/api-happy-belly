@@ -17,7 +17,9 @@ class IngredientFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'name' => fake()->word(),
+            'food_group' => fake()->word(),
+            'allergen' => fake()->numberBetween(0, 1),
         ];
     }
 }
