@@ -44,13 +44,14 @@ class RecipeApiControllerTest extends TestCase
                                     ]);
                             })
                             ->has('recipes', 5, function (AssertableJson $data) {
-                                $data->hasAll('id', 'name', 'image', 'cooking_time', 'serves')
+                                $data->hasAll('id', 'name', 'image', 'cooking_time', 'serves', 'cuisine')
                                     ->whereAllType([
                                         'id' => 'integer',
                                         'name' => 'string',
                                         'image' => 'string',
                                         'cooking_time' => 'integer',
                                         'serves' => 'integer',
+                                        'cuisine' => 'string',
                                     ]);
                             });
                     });
@@ -110,6 +111,7 @@ class RecipeApiControllerTest extends TestCase
                             'image',
                             'cooking_time',
                             'serves',
+                            'cuisine',
                             'user_id',
                             'ingredients',
                             'cooking_instructions',
@@ -121,6 +123,7 @@ class RecipeApiControllerTest extends TestCase
                                 'image' => 'string',
                                 'cooking_time' => 'integer',
                                 'serves' => 'integer',
+                                'cuisine' => 'string',
                                 'user_id' => 'integer',
                                 'ingredients' => 'array',
                                 'cooking_instructions' => 'array',
@@ -164,7 +167,7 @@ class RecipeApiControllerTest extends TestCase
             ->assertJson(function (AssertableJson $response) {
                 $response->hasAll('message', 'data')
                     ->has('data', 2, function (AssertableJson $data) {
-                        $data->hasAll('id', 'name', 'image', 'cooking_time', 'serves');
+                        $data->hasAll('id', 'name', 'image', 'cooking_time', 'serves', 'cuisine');
                     });
             });
     }
@@ -179,7 +182,7 @@ class RecipeApiControllerTest extends TestCase
             ->assertJson(function (AssertableJson $response) {
                 $response->hasAll('message', 'data')
                     ->has('data', 2, function (AssertableJson $data) {
-                        $data->hasAll('id', 'name', 'image', 'cooking_time', 'serves');
+                        $data->hasAll('id', 'name', 'image', 'cooking_time', 'serves', 'cuisine');
                     });
             });
     }
