@@ -8,7 +8,6 @@ use Illuminate\Http\Request;
 
 class RecipeApiController extends Controller
 {
-
     // TODO: Need validation!
     // TODO: Pagination for admin and user recipes
 
@@ -16,7 +15,7 @@ class RecipeApiController extends Controller
     {
         $recipeData = Recipe::with('dietaryRestrictions')->paginate(5);
         $recipeData->getCollection()->transform(function ($recipe) {
-            return $recipe->setHidden(['description', 'user_id', 'created_at', 'updated_at',]);
+            return $recipe->setHidden(['description', 'user_id', 'created_at', 'updated_at']);
         });
 
         return response()->json([
@@ -28,9 +27,9 @@ class RecipeApiController extends Controller
                     'total_recipes' => $recipeData->total(),
                     'next_page_url' => $recipeData->nextPageUrl(),
                     'previous_page_url' => $recipeData->previousPageUrl(),
-                    'all_page_urls' => $recipeData->getUrlRange(1, $recipeData->lastPage())
-                ]
-            ]
+                    'all_page_urls' => $recipeData->getUrlRange(1, $recipeData->lastPage()),
+                ],
+            ],
         ], 200);
     }
 

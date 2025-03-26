@@ -154,7 +154,7 @@ class RecipeApiControllerTest extends TestCase
                                 $cookingInstructions->hasAll([
                                     'id',
                                     'step',
-                                    'instruction'
+                                    'instruction',
                                 ]);
                             })
                             ->has('dietary_restrictions', function (AssertableJson $dietaryRestrictions) {
@@ -241,7 +241,7 @@ class RecipeApiControllerTest extends TestCase
                                     'is_low_fodmap',
                                     'is_ostomy_friendly',
                                 ]);
-                            });;
+                            });
                     });
             });
     }

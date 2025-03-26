@@ -15,7 +15,7 @@ class DietaryRestriction extends Model
         'created_at',
         'updated_at',
         'recipe_id',
-        'id'
+        'id',
     ];
 
     public function recipe(): BelongsTo
