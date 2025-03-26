@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('name');
             $table->text('description');
             $table->string('image')->nullable();
-            $table->string('cooking_time');
+            $table->integer('cooking_time');
             $table->integer('serves')->nullable();
             $table->foreignId('user_id')->constrained();
             $table->timestamps();
