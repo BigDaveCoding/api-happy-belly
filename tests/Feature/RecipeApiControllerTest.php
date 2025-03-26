@@ -257,4 +257,7 @@ class RecipeApiControllerTest extends TestCase
                     ->where('data', []);
             });
     }
+
+    // TODO: Single recipe find method return 404 if recipe doesnt exist test.
+    // TODO: Test for user recipes if user doesnt exist. Validation in controller should handle this?
 }

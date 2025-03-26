@@ -8,6 +8,9 @@ use Illuminate\Http\Request;
 
 class RecipeApiController extends Controller
 {
+
+    // TODO: Need validation!
+
     public function all(Request $request): JsonResponse
     {
         $recipeData = Recipe::with('dietaryRestrictions')->paginate(5);
