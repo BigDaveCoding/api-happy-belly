@@ -24,6 +24,6 @@ class RecipeApiController extends Controller
         return response()->json([
             'message' => 'Recipe found',
             'data' => $recipe,
-        ]);
+        ], 200);
     }
 }
