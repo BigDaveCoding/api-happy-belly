@@ -9,3 +9,5 @@ Route::get('/user', function (Request $request) {
 })->middleware('auth:sanctum');
 
 Route::get('/recipes', [RecipeApiController::class, 'all']);
+
+Route::get('/recipes/{recipe}', [RecipeApiController::class, 'find']);
