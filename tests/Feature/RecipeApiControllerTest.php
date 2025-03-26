@@ -34,4 +34,18 @@ class RecipeApiControllerTest extends TestCase
                     });
             });
     }
+
+    public function test_recipe_api_controller_all_recipes_empty_response(): void
+    {
+        $response = $this->get('/api/recipes');
+        $response->assertStatus(200)
+            ->assertJson(function (AssertableJson $response) {
+                $response->hasAll('message', 'data')
+                    ->whereAllType([
+                        'message' => 'string',
+                        'data' => 'array',
+                    ])
+                    ->where('data', []);
+            });
+    }
 }
