@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\CookingInstruction;
+use App\Models\DietaryRestriction;
 use App\Models\Ingredient;
 use App\Models\Recipe;
 use App\Models\User;
@@ -16,7 +17,7 @@ class RecipeApiControllerTest extends TestCase
 
     public function test_recipe_api_controller_all_recipes_returned_successfully(): void
     {
-        Recipe::factory()->count(20)->create();
+        Recipe::factory()->has(DietaryRestriction::factory())->count(20)->create();
         $response = $this->get('/api/recipes');
         $response->assertStatus(200)
             ->assertJson(function (AssertableJson $response) {
@@ -44,7 +45,15 @@ class RecipeApiControllerTest extends TestCase
                                     ]);
                             })
                             ->has('recipes', 5, function (AssertableJson $data) {
-                                $data->hasAll('id', 'name', 'image', 'cooking_time', 'serves', 'cuisine')
+                                $data->hasAll(
+                                    'id',
+                                    'name',
+                                    'image',
+                                    'cooking_time',
+                                    'serves',
+                                    'cuisine',
+                                    'dietary_restrictions'
+                                )
                                     ->whereAllType([
                                         'id' => 'integer',
                                         'name' => 'string',
@@ -52,7 +61,18 @@ class RecipeApiControllerTest extends TestCase
                                         'cooking_time' => 'integer',
                                         'serves' => 'integer',
                                         'cuisine' => 'string',
-                                    ]);
+                                        'dietary_restrictions' => 'array',
+                                    ])
+                                    ->has('dietary_restrictions', function (AssertableJson $dietaryRestrictions) {
+                                        $dietaryRestrictions->hasAll([
+                                            'is_vegetarian',
+                                            'is_vegan',
+                                            'is_gluten_free',
+                                            'is_dairy_free',
+                                            'is_low_fodmap',
+                                            'is_ostomy_friendly',
+                                        ]);
+                                    });
                             });
                     });
             });
