@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Recipe;
-use Illuminate\Http\Client\Request;
 use Illuminate\Http\JsonResponse;
 
 class RecipeApiController extends Controller
@@ -21,6 +20,7 @@ class RecipeApiController extends Controller
     public function find(int $recipe): JsonResponse
     {
         $recipe = Recipe::with(['ingredients', 'cookingInstructions'])->findOrFail($recipe);
+
         return response()->json([
             'message' => 'Recipe found',
             'data' => $recipe,

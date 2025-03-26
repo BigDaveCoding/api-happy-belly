@@ -22,9 +22,9 @@ class Ingredient extends Model
         return $this->belongsToMany(Recipe::class)->withPivot('quantity', 'unit');
     }
 
-    public function getPivotDataAttribute(): array|null
+    public function getPivotDataAttribute(): ?array
     {
-        if(!$this->pivot){
+        if (! $this->pivot) {
             return null;
         }
 
