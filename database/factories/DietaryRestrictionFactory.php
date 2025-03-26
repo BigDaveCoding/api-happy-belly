@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Recipe;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -17,7 +18,13 @@ class DietaryRestrictionFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'recipe_id' => Recipe::factory(),
+            'is_vegetarian' => fake()->boolean(50),
+            'is_vegan' => fake()->boolean(50),
+            'is_gluten_free' => fake()->boolean(50),
+            'is_dairy_free' => fake()->boolean(50),
+            'is_low_fodmap' => fake()->boolean(50),
+            'is_ostomy_friendly' => fake()->boolean(50),
         ];
     }
 }
