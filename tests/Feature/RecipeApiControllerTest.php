@@ -113,7 +113,7 @@ class RecipeApiControllerTest extends TestCase
 
     public function test_recipe_api_controller_find_recipe_correct_response_and_datatypes(): void
     {
-        $recipe = Recipe::factory()->create(['id' => 1]);
+        $recipe = Recipe::factory()->has(DietaryRestriction::factory())->create(['id' => 1]);
         $ingredient = Ingredient::factory()->create(['id' => 1]);
         CookingInstruction::factory()->create(['id' => 1, 'recipe_id' => $recipe->id]);
 
@@ -135,6 +135,7 @@ class RecipeApiControllerTest extends TestCase
                             'user_id',
                             'ingredients',
                             'cooking_instructions',
+                            'dietary_restrictions'
                         )
                             ->whereAllType([
                                 'id' => 'integer',
@@ -147,7 +148,25 @@ class RecipeApiControllerTest extends TestCase
                                 'user_id' => 'integer',
                                 'ingredients' => 'array',
                                 'cooking_instructions' => 'array',
+                                'dietary_restrictions' => 'array',
                             ])
+                            ->has('cooking_instructions', 1, function (AssertableJson $cookingInstructions) {
+                                $cookingInstructions->hasAll([
+                                    'id',
+                                    'step',
+                                    'instruction'
+                                ]);
+                            })
+                            ->has('dietary_restrictions', function (AssertableJson $dietaryRestrictions) {
+                                $dietaryRestrictions->hasAll([
+                                    'is_vegetarian',
+                                    'is_vegan',
+                                    'is_gluten_free',
+                                    'is_dairy_free',
+                                    'is_low_fodmap',
+                                    'is_ostomy_friendly',
+                                ]);
+                            })
                             ->has('ingredients', 1, function (AssertableJson $ingredients) {
                                 $ingredients->hasAll(
                                     'id',

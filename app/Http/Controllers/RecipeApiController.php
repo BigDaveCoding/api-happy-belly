@@ -32,7 +32,7 @@ class RecipeApiController extends Controller
 
     public function find(int $recipe): JsonResponse
     {
-        $recipe = Recipe::with(['ingredients', 'cookingInstructions'])->findOrFail($recipe);
+        $recipe = Recipe::with(['ingredients', 'cookingInstructions', 'dietaryRestrictions'])->findOrFail($recipe);
 
         return response()->json([
             'message' => 'Recipe found',
