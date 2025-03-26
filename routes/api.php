@@ -10,4 +10,6 @@ Route::get('/user', function (Request $request) {
 
 Route::get('/recipes', [RecipeApiController::class, 'all']);
 
+Route::get('/recipes/admin', [RecipeApiController::class, 'admin']);
+
 Route::get('/recipes/{recipe}', [RecipeApiController::class, 'find']);

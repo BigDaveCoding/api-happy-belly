@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Models\CookingInstruction;
 use App\Models\Ingredient;
 use App\Models\Recipe;
+use App\Models\User;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Testing\Fluent\AssertableJson;
 use Tests\TestCase;
@@ -109,6 +110,23 @@ class RecipeApiControllerTest extends TestCase
                                             ]);
                                     });
                             });
+                    });
+            });
+    }
+
+    public function test_recipe_api_controller_admin_recipes_returns_correct_data(): void
+    {
+        User::factory()->create(['id' => 1]);
+        User::factory()->create(['id' => 2]);
+        Recipe::factory()->count(2)->create(['user_id' => 1]);
+        Recipe::factory()->count(2)->create(['user_id' => 2]);
+
+        $response = $this->get('/api/recipes/admin');
+        $response->assertStatus(200)
+            ->assertJson(function (AssertableJson $response) {
+                $response->hasAll('message', 'data')
+                    ->has('data', 2, function (AssertableJson $data) {
+                        $data->hasAll('id', 'name', 'image', 'cooking_time', 'serves');
                     });
             });
     }
