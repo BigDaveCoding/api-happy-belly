@@ -10,9 +10,9 @@ class RecipeApiController extends Controller
 {
     public function all(Request $request): JsonResponse
     {
-        $recipeData = Recipe::paginate(5);
+        $recipeData = Recipe::with('dietaryRestrictions')->paginate(5);
         $recipeData->getCollection()->transform(function ($recipe) {
-            return $recipe->setHidden(['description', 'user_id', 'created_at', 'updated_at']);
+            return $recipe->setHidden(['description', 'user_id', 'created_at', 'updated_at',]);
         });
 
         return response()->json([
