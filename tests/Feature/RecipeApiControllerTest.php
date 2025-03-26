@@ -16,7 +16,7 @@ class RecipeApiControllerTest extends TestCase
 
     public function test_recipe_api_controller_all_recipes_returned_successfully(): void
     {
-        Recipe::factory()->count(5)->create();
+        Recipe::factory()->count(20)->create();
         $response = $this->get('/api/recipes');
         $response->assertStatus(200)
             ->assertJson(function (AssertableJson $response) {
@@ -25,15 +25,34 @@ class RecipeApiControllerTest extends TestCase
                         'message' => 'string',
                         'data' => 'array',
                     ])
-                    ->has('data', 5, function (AssertableJson $data) {
-                        $data->hasAll('id', 'name', 'image', 'cooking_time', 'serves')
-                            ->whereAllType([
-                                'id' => 'integer',
-                                'name' => 'string',
-                                'image' => 'string',
-                                'cooking_time' => 'integer',
-                                'serves' => 'integer',
-                            ]);
+                    ->has('data', function (AssertableJson $data) {
+                        $data->hasAll('recipes', 'pagination')
+                            ->has('pagination', function (AssertableJson $pagination) {
+                                $pagination->hasAll(
+                                    'current_page',
+                                    'total_recipes',
+                                    'next_page_url',
+                                    'previous_page_url',
+                                    'all_page_urls'
+                                )
+                                    ->whereAllType([
+                                        'current_page' => 'integer',
+                                        'total_recipes' => 'integer',
+                                        'next_page_url' => 'string',
+                                        'previous_page_url' => 'null',
+                                        'all_page_urls' => 'array',
+                                    ]);
+                            })
+                            ->has('recipes', 5, function (AssertableJson $data) {
+                                $data->hasAll('id', 'name', 'image', 'cooking_time', 'serves')
+                                    ->whereAllType([
+                                        'id' => 'integer',
+                                        'name' => 'string',
+                                        'image' => 'string',
+                                        'cooking_time' => 'integer',
+                                        'serves' => 'integer',
+                                    ]);
+                            });
                     });
             });
     }
@@ -48,7 +67,26 @@ class RecipeApiControllerTest extends TestCase
                         'message' => 'string',
                         'data' => 'array',
                     ])
-                    ->where('data', []);
+                    ->has('data', function (AssertableJson $data) {
+                        $data->hasAll('recipes', 'pagination')
+                            ->where('recipes', [])
+                            ->has('pagination', function (AssertableJson $pagination) {
+                                $pagination->hasAll(
+                                    'current_page',
+                                    'total_recipes',
+                                    'next_page_url',
+                                    'previous_page_url',
+                                    'all_page_urls'
+                                )
+                                    ->whereAllType([
+                                        'current_page' => 'integer',
+                                        'total_recipes' => 'integer',
+                                        'next_page_url' => 'null',
+                                        'previous_page_url' => 'null',
+                                        'all_page_urls' => 'array',
+                                    ]);
+                            });
+                    });
             });
     }
 

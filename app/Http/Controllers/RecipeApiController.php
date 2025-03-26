@@ -4,16 +4,29 @@ namespace App\Http\Controllers;
 
 use App\Models\Recipe;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 class RecipeApiController extends Controller
 {
-    public function all(): JsonResponse
+    public function all(Request $request): JsonResponse
     {
-        $recipeData = Recipe::all()->makeHidden(['description', 'user_id']);
+        $recipeData = Recipe::paginate(5);
+        $recipeData->getCollection()->transform(function ($recipe) {
+            return $recipe->setHidden(['description', 'user_id', 'created_at', 'updated_at']);
+        });
 
         return response()->json([
             'message' => 'Recipes found successfully',
-            'data' => $recipeData,
+            'data' => [
+                'recipes' => $recipeData->items(),
+                'pagination' => [
+                    'current_page' => $recipeData->currentPage(),
+                    'total_recipes' => $recipeData->total(),
+                    'next_page_url' => $recipeData->nextPageUrl(),
+                    'previous_page_url' => $recipeData->previousPageUrl(),
+                    'all_page_urls' => $recipeData->getUrlRange(1, $recipeData->lastPage())
+                ]
+            ]
         ], 200);
     }
 
