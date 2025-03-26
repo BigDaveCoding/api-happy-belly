@@ -96,12 +96,12 @@ class RecipeApiControllerTest extends TestCase
                                     'pivot_data'
                                 )
                                     ->whereAllType([
-                                    'id' => 'integer',
-                                    'name' => 'string',
-                                    'food_group' => 'string',
-                                    'allergen' => 'integer',
-                                    'pivot_data' => 'array',
-                                ])
+                                        'id' => 'integer',
+                                        'name' => 'string',
+                                        'food_group' => 'string',
+                                        'allergen' => 'integer',
+                                        'pivot_data' => 'array',
+                                    ])
                                     ->has('pivot_data', function (AssertableJson $pivotData) {
                                         $pivotData->hasAll('quantity', 'unit')
                                             ->whereAllType([
