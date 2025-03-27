@@ -113,4 +113,16 @@ class RecipeApiController extends Controller
             'message' => 'Recipe edited successfully',
         ], 200);
     }
+
+    public function delete(Recipe $recipe): JsonResponse
+    {
+        if ($recipe->delete()){
+            return response()->json([
+                'message' => 'Recipe deleted successfully',
+            ], 200);
+        }
+        return response()->json([
+            'message' => 'Internal Server Error',
+        ], 500);
+    }
 }
