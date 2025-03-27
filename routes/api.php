@@ -19,3 +19,5 @@ Route::get('/recipes/{recipe}', [RecipeApiController::class, 'find']);
 Route::post('/recipes/create', [RecipeApiController::class, 'create']);
 
 Route::put('/recipes/edit/{recipe}', [RecipeApiController::class, 'edit']);
+
+Route::delete('/recipes/delete/{recipe}', [RecipeApiController::class, 'delete']);
