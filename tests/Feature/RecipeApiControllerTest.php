@@ -570,4 +570,82 @@ class RecipeApiControllerTest extends TestCase
         $response = $this->putJson('/api/recipes/edit/1', []);
         $response->assertStatus(404);
     }
+
+    public function test_recipe_api_controller_delete_recipe_successful(): void
+    {
+        //create recipe
+        $recipe = Recipe::factory()->create(['id' => 1]);
+        // create ingredient
+        $ingredient = Ingredient::factory()->create(['name' => 'ingredient']);
+        // input data into pivot table
+        $recipe->ingredients()->attach($ingredient, [
+            'quantity' => 1,
+            'unit' => 'g'
+        ]);
+        // create data for dietary restriction table
+        DietaryRestriction::factory()->create(['recipe_id' => $recipe->id]);
+        CookingInstruction::factory()->create(['recipe_id' => $recipe->id]);
+
+        // check database has recipe before delete
+        $this->assertDatabaseHas('recipes', [
+            'id' => 1,
+        ]);
+        // check database has ingredient data
+        $this->assertDatabaseHas('ingredients', [
+            'id' => 1,
+            'name' => 'ingredient',
+        ]);
+        // check database has pivot table data
+        $this->assertDatabaseHas('ingredient_recipe', [
+            'recipe_id' => 1,
+            'ingredient_id' => $ingredient->id,
+            'quantity' => 1,
+            'unit' => 'g'
+        ]);
+        // check database has dietary restriction data
+        $this->assertDatabaseHas('dietary_restrictions', [
+            'recipe_id' => 1,
+        ]);
+        // check database has cooking instruction data
+        $this->assertDatabaseHas('cooking_instructions', [
+            'recipe_id' => 1,
+        ]);
+
+        $response = $this->deleteJson('/api/recipes/delete/1');
+        $response->assertStatus(200)
+            ->assertJson(function (AssertableJson $response) {
+                $response->has('message');
+            });
+
+        // check database recipe deleted
+        $this->assertDatabaseMissing('recipes', [
+            'id' => 1,
+        ]);
+        // ingredient shouldn't be deleted
+        $this->assertDatabaseHas('ingredients', [
+            'id' => 1,
+            'name' => 'ingredient',
+        ]);
+        // pivot table data should be deleted
+        $this->assertDatabaseMissing('ingredient_recipe', [
+            'recipe_id' => 1,
+            'ingredient_id' => $ingredient->id,
+            'quantity' => 1,
+            'unit' => 'g'
+        ]);
+        // dietary restrictions should be deleted
+        $this->assertDatabaseMissing('dietary_restrictions', [
+            'recipe_id' => 1,
+        ]);
+        // cooking instructions should be deleted
+        $this->assertDatabaseMissing('cooking_instructions', [
+            'recipe_id' => 1,
+        ]);
+    }
+
+    public function test_recipe_api_controller_delete_recipe_doesnt_exists(): void
+    {
+        $response = $this->deleteJson('/api/recipes/delete/1');
+        $response->assertStatus(404);
+    }
 }
