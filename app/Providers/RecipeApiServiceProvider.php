@@ -75,4 +75,16 @@ class RecipeApiServiceProvider
 
         return $recipe;
     }
+
+    public static function addDietaryRestrictions(array $dietaryRestrictionData, Recipe $recipe): void
+    {
+        $recipe->dietaryRestrictions()->create([
+            'is_vegan' => $dietaryRestrictionData['is_vegan'],
+            'is_vegetarian' => $dietaryRestrictionData['is_vegetarian'],
+            'is_gluten_free' => $dietaryRestrictionData['is_gluten_free'],
+            'is_dairy_free' => $dietaryRestrictionData['is_dairy_free'],
+            'is_low_fodmap' => $dietaryRestrictionData['is_low_fodmap'],
+            'is_ostomy_friendly' => $dietaryRestrictionData['is_ostomy_friendly'],
+        ]);
+    }
 }
