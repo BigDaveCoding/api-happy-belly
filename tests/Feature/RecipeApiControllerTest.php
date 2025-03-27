@@ -264,6 +264,17 @@ class RecipeApiControllerTest extends TestCase
             });
     }
 
-    // TODO: Single recipe find method return 404 if recipe doesnt exist test.
+    public function test_recipe_api_controller_user_recipes_user_doesnt_exist(): void
+    {
+        $response = $this->get('/api/recipes/9999');
+        $response->assertStatus(404);
+    }
+
+    public function test_recipe_api_controller_user_recipes_invalid_id_url(): void
+    {
+        $response = $this->get('/api/recipes/user/invalid');
+        $response->assertStatus(404);
+    }
+
     // TODO: Test for user recipes if user doesnt exist. Validation in controller should handle this?
 }
