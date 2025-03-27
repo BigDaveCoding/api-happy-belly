@@ -8,7 +8,6 @@ use App\Models\User;
 use App\Providers\RecipeApiServiceProvider;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 
 class RecipeApiController extends Controller
 {
@@ -97,7 +96,7 @@ class RecipeApiController extends Controller
         $recipeToEdit->cuisine = $validatedData['recipe_cuisine'];
         $recipeToEdit->save();
 
-        //remove old ingredients
+        // remove old ingredients
         $recipeToEdit->ingredients()->detach();
         RecipeApiServiceProvider::addIngredients($validatedData, $recipeToEdit);
         // remove old instructions
@@ -116,11 +115,12 @@ class RecipeApiController extends Controller
 
     public function delete(Recipe $recipe): JsonResponse
     {
-        if ($recipe->delete()){
+        if ($recipe->delete()) {
             return response()->json([
                 'message' => 'Recipe deleted successfully',
             ], 200);
         }
+
         return response()->json([
             'message' => 'Internal Server Error',
         ], 500);

@@ -436,32 +436,32 @@ class RecipeApiControllerTest extends TestCase
         User::factory()->create(['id' => 1]);
         Recipe::factory()->create(['id' => 1, 'user_id' => 1]);
         $data = [
-            "user_id" => 1,
-            "recipe_name" => "new recipe edit name",
-            "recipe_description" => "A classic Italian pasta dish made with a rich and savory meat sauce.",
-            "recipe_cooking_time" => 45,
-            "recipe_serves" => 4,
-            "recipe_cuisine" => "Italian",
-            "ingredient_name" => [
-                "beef wellington balls",
-                "ham sandwich"
+            'user_id' => 1,
+            'recipe_name' => 'new recipe edit name',
+            'recipe_description' => 'A classic Italian pasta dish made with a rich and savory meat sauce.',
+            'recipe_cooking_time' => 45,
+            'recipe_serves' => 4,
+            'recipe_cuisine' => 'Italian',
+            'ingredient_name' => [
+                'beef wellington balls',
+                'ham sandwich',
             ],
-            "ingredient_quantity" => [200, 300],
-            "ingredient_unit" => [
-                "g",
-                "g"
+            'ingredient_quantity' => [200, 300],
+            'ingredient_unit' => [
+                'g',
+                'g',
             ],
-            "ingredient_allergen" => [false, false],
-            "cooking_instruction" => [
-                "Boil the spaghetti according to package instructions.",
-                "Heat olive oil in a pan over medium heat."
+            'ingredient_allergen' => [false, false],
+            'cooking_instruction' => [
+                'Boil the spaghetti according to package instructions.',
+                'Heat olive oil in a pan over medium heat.',
             ],
-            "is_vegetarian" => true,
-            "is_vegan" => true,
-            "is_gluten_free" => true,
-            "is_dairy_free" => true,
-            "is_low_fodmap" => false,
-            "is_ostomy_friendly" => true
+            'is_vegetarian' => true,
+            'is_vegan' => true,
+            'is_gluten_free' => true,
+            'is_dairy_free' => true,
+            'is_low_fodmap' => false,
+            'is_ostomy_friendly' => true,
         ];
         $response = $this->putJson('/api/recipes/edit/1', $data);
         $response->assertStatus(200)
@@ -475,25 +475,25 @@ class RecipeApiControllerTest extends TestCase
             'description' => 'A classic Italian pasta dish made with a rich and savory meat sauce.',
             'cooking_time' => 45,
             'serves' => 4,
-            'cuisine' => "Italian",
+            'cuisine' => 'Italian',
         ]);
         $this->assertDatabaseHas('ingredients', [
             'id' => 1,
             'name' => 'beef wellington balls',
             'food_group' => 'food_group',
-            'allergen' => 0
+            'allergen' => 0,
         ]);
         $this->assertDatabaseHas('cooking_instructions', [
             'id' => 1,
             'step' => 1,
-            'instruction' => 'Boil the spaghetti according to package instructions.'
+            'instruction' => 'Boil the spaghetti according to package instructions.',
         ]);
         $this->assertDatabaseHas('ingredient_recipe', [
-           'id' => 1,
-           'recipe_id' => 1,
-           'ingredient_id' => 1,
-           'quantity' => 200,
-           'unit' => 'g'
+            'id' => 1,
+            'recipe_id' => 1,
+            'ingredient_id' => 1,
+            'quantity' => 200,
+            'unit' => 'g',
         ]);
         $this->assertDatabaseHas('dietary_restrictions', [
             'id' => 1,
@@ -511,32 +511,32 @@ class RecipeApiControllerTest extends TestCase
     {
         Recipe::factory()->create(['id' => 1]);
         $data = [
-            "user_id" => "one", // Should be an integer
-            "recipe_name" => 12345, // Should be a string
-            "recipe_description" => false, // Should be a string
-            "recipe_cooking_time" => "forty-five", // Should be an integer
-            "recipe_serves" => null, // Should be an integer
-            "recipe_cuisine" => ["Italian"], // Should be a string
-            "ingredient_name" => [
+            'user_id' => 'one', // Should be an integer
+            'recipe_name' => 12345, // Should be a string
+            'recipe_description' => false, // Should be a string
+            'recipe_cooking_time' => 'forty-five', // Should be an integer
+            'recipe_serves' => null, // Should be an integer
+            'recipe_cuisine' => ['Italian'], // Should be a string
+            'ingredient_name' => [
                 123, // Should be a string
-                false // Should be a string
+                false, // Should be a string
             ],
-            "ingredient_quantity" => ["two hundred", "three hundred"], // Should be integers
-            "ingredient_unit" => [
+            'ingredient_quantity' => ['two hundred', 'three hundred'], // Should be integers
+            'ingredient_unit' => [
                 500, // Should be a string
-                true // Should be a string
+                true, // Should be a string
             ],
-            "ingredient_allergen" => ["no", "yes"], // Should be boolean
-            "cooking_instruction" => [
+            'ingredient_allergen' => ['no', 'yes'], // Should be boolean
+            'cooking_instruction' => [
                 999, // Should be a string
-                null // Should be a string
+                null, // Should be a string
             ],
-            "is_vegetarian" => "yes", // Should be a boolean
-            "is_vegan" => "fff", // Should be a boolean
-            "is_gluten_free" => "true", // Should be a boolean
-            "is_dairy_free" => [], // Should be a boolean
-            "is_low_fodmap" => "low", // Should be a boolean
-            "is_ostomy_friendly" => null // Should be a boolean
+            'is_vegetarian' => 'yes', // Should be a boolean
+            'is_vegan' => 'fff', // Should be a boolean
+            'is_gluten_free' => 'true', // Should be a boolean
+            'is_dairy_free' => [], // Should be a boolean
+            'is_low_fodmap' => 'low', // Should be a boolean
+            'is_ostomy_friendly' => null, // Should be a boolean
         ];
         $response = $this->putJson('/api/recipes/edit/1', $data);
         $response->assertStatus(422)
@@ -573,14 +573,14 @@ class RecipeApiControllerTest extends TestCase
 
     public function test_recipe_api_controller_delete_recipe_successful(): void
     {
-        //create recipe
+        // create recipe
         $recipe = Recipe::factory()->create(['id' => 1]);
         // create ingredient
         $ingredient = Ingredient::factory()->create(['name' => 'ingredient']);
         // input data into pivot table
         $recipe->ingredients()->attach($ingredient, [
             'quantity' => 1,
-            'unit' => 'g'
+            'unit' => 'g',
         ]);
         // create data for dietary restriction table
         DietaryRestriction::factory()->create(['recipe_id' => $recipe->id]);
@@ -600,7 +600,7 @@ class RecipeApiControllerTest extends TestCase
             'recipe_id' => 1,
             'ingredient_id' => $ingredient->id,
             'quantity' => 1,
-            'unit' => 'g'
+            'unit' => 'g',
         ]);
         // check database has dietary restriction data
         $this->assertDatabaseHas('dietary_restrictions', [
@@ -631,7 +631,7 @@ class RecipeApiControllerTest extends TestCase
             'recipe_id' => 1,
             'ingredient_id' => $ingredient->id,
             'quantity' => 1,
-            'unit' => 'g'
+            'unit' => 'g',
         ]);
         // dietary restrictions should be deleted
         $this->assertDatabaseMissing('dietary_restrictions', [
