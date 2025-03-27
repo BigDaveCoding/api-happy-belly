@@ -75,6 +75,8 @@ class RecipeApiController extends Controller
 
         RecipeApiServiceProvider::addCookingInstructions($validatedData, $recipe);
 
+        RecipeApiServiceProvider::addDietaryRestrictions($validatedData, $recipe);
+
         return response()->json([
             'message' => 'Recipe created successfully',
         ]);
