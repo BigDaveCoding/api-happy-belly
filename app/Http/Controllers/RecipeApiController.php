@@ -41,11 +41,15 @@ class RecipeApiController extends Controller
 
     public function admin(): JsonResponse
     {
-        $recipe = Recipe::with('dietaryRestrictions')->where(['user_id' => 1])->get()->makeHidden(['description', 'user_id']);
-
+        $recipeData = Recipe::with('dietaryRestrictions')->where(['user_id' => 1])->paginate(5);
+        $recipeData->getCollection()->transform(function ($recipe) {
+            return $recipe->setHidden(['description', 'user_id', 'created_at', 'updated_at']);
+        });
         return response()->json([
             'message' => 'Admin recipes found successfully',
-            'data' => $recipe,
+            'data' => [
+                'admin_recipes' =>$recipeData->items(),
+                'pagination' => RecipeApiServiceProvider::pagination($recipeData)]
         ], 200);
     }
 
