@@ -276,5 +276,4 @@ class RecipeApiControllerTest extends TestCase
         $response->assertStatus(404);
     }
 
-    // TODO: Test for user recipes if user doesnt exist. Validation in controller should handle this?
 }
