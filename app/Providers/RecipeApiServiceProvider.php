@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 class RecipeApiServiceProvider
@@ -15,5 +16,12 @@ class RecipeApiServiceProvider
             'previous_page_url' => $data->previousPageUrl(),
             'all_page_urls' => $data->getUrlRange(1, $data->lastPage()),
         ];
+    }
+
+    static public function paginationCollection(LengthAwarePaginator $data): Collection
+    {
+        return $data->getCollection()->transform(function ($recipe) {
+            return $recipe->setHidden(['description', 'user_id', 'created_at', 'updated_at']);
+        });
     }
 }
