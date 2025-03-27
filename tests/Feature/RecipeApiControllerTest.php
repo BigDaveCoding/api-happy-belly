@@ -506,4 +506,62 @@ class RecipeApiControllerTest extends TestCase
             'is_ostomy_friendly' => true,
         ]);
     }
+
+    public function test_recipe_api_controller_edit_recipe_invalid_data(): void
+    {
+        Recipe::factory()->create(['id' => 1]);
+        $data = [
+            "user_id" => "one", // Should be an integer
+            "recipe_name" => 12345, // Should be a string
+            "recipe_description" => false, // Should be a string
+            "recipe_cooking_time" => "forty-five", // Should be an integer
+            "recipe_serves" => null, // Should be an integer
+            "recipe_cuisine" => ["Italian"], // Should be a string
+            "ingredient_name" => [
+                123, // Should be a string
+                false // Should be a string
+            ],
+            "ingredient_quantity" => ["two hundred", "three hundred"], // Should be integers
+            "ingredient_unit" => [
+                500, // Should be a string
+                true // Should be a string
+            ],
+            "ingredient_allergen" => ["no", "yes"], // Should be boolean
+            "cooking_instruction" => [
+                999, // Should be a string
+                null // Should be a string
+            ],
+            "is_vegetarian" => "yes", // Should be a boolean
+            "is_vegan" => "fff", // Should be a boolean
+            "is_gluten_free" => "true", // Should be a boolean
+            "is_dairy_free" => [], // Should be a boolean
+            "is_low_fodmap" => "low", // Should be a boolean
+            "is_ostomy_friendly" => null // Should be a boolean
+        ];
+        $response = $this->putJson('/api/recipes/edit/1', $data);
+        $response->assertStatus(422)
+            ->assertJson(function (AssertableJson $response) {
+                $response->hasAll('message', 'errors')
+                    ->has('errors', function (AssertableJson $errors) {
+                        $errors->hasAll(
+                            'user_id',
+                            'recipe_name',
+                            'recipe_description',
+                            'recipe_cooking_time',
+                            'recipe_serves',
+                            'recipe_cuisine',
+                            'ingredient_name.0',
+                            'ingredient_quantity.0',
+                            'ingredient_allergen.0',
+                            'cooking_instruction.0',
+                            'is_vegetarian',
+                            'is_vegan',
+                            'is_gluten_free',
+                            'is_dairy_free',
+                            'is_low_fodmap',
+                            'is_ostomy_friendly',
+                        )->etc();
+                    });
+            });
+    }
 }
