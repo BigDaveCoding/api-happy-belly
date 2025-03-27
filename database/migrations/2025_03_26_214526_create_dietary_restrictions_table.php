@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('dietary_restrictions', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('recipe_id');
+            $table->foreignId('recipe_id')->constrained()->onDelete('cascade');
             $table->boolean('is_vegetarian');
             $table->boolean('is_vegan');
             $table->boolean('is_gluten_free');
