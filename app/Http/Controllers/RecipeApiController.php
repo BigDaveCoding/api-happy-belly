@@ -79,6 +79,6 @@ class RecipeApiController extends Controller
 
         return response()->json([
             'message' => 'Recipe created successfully',
-        ]);
+        ], 201);
     }
 }
