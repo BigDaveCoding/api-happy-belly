@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Recipe;
+use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -53,9 +54,9 @@ class RecipeApiController extends Controller
         ], 200);
     }
 
-    public function user(int $user_id): JsonResponse
+    public function user(User $user): JsonResponse
     {
-        $recipe = Recipe::with('dietaryRestrictions')->where(['user_id' => $user_id])->get()->makeHidden(['description', 'user_id']);
+        $recipe = Recipe::with('dietaryRestrictions')->where(['user_id' => $user->id])->get()->makeHidden(['description', 'user_id']);
 
         return response()->json([
             'message' => 'User recipes found successfully',
