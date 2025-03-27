@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Providers\RecipeApiServiceProvider;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class RecipeApiController extends Controller
 {
@@ -110,6 +111,6 @@ class RecipeApiController extends Controller
 
         return response()->json([
             'message' => 'Recipe edited successfully',
-        ]);
+        ], 200);
     }
 }
