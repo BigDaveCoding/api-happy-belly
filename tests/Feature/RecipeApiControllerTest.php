@@ -309,33 +309,33 @@ class RecipeApiControllerTest extends TestCase
     {
         User::factory()->create(['id' => 1]);
         $data = [
-            "user_id" => 1,
-            "recipe_name" => "postman recipe",
-            "recipe_description" => "A classic Italian pasta dish made with a rich and savory meat sauce.",
-            "recipe_cooking_time" => 45,
-            "recipe_serves" => 4,
-            "recipe_cuisine" => "Italian",
-            "ingredient_name" => [
-                "Spaghetti",
+            'user_id' => 1,
+            'recipe_name' => 'postman recipe',
+            'recipe_description' => 'A classic Italian pasta dish made with a rich and savory meat sauce.',
+            'recipe_cooking_time' => 45,
+            'recipe_serves' => 4,
+            'recipe_cuisine' => 'Italian',
+            'ingredient_name' => [
+                'Spaghetti',
             ],
-            "ingredient_quantity" => [
+            'ingredient_quantity' => [
                 200,
             ],
-            "ingredient_unit" => [
-                "g",
+            'ingredient_unit' => [
+                'g',
             ],
-            "ingredient_allergen" => [
-                false
+            'ingredient_allergen' => [
+                false,
             ],
-            "cooking_instruction" => [
-                "Boil the spaghetti according to package instructions.",
+            'cooking_instruction' => [
+                'Boil the spaghetti according to package instructions.',
             ],
-            "is_vegetarian" => true,
-            "is_vegan" => false,
-            "is_gluten_free" => false,
-            "is_dairy_free" => true,
-            "is_low_fodmap" => false,
-            "is_ostomy_friendly" => true
+            'is_vegetarian' => true,
+            'is_vegan' => false,
+            'is_gluten_free' => false,
+            'is_dairy_free' => true,
+            'is_low_fodmap' => false,
+            'is_ostomy_friendly' => true,
         ];
 
         $response = $this->postJson('/api/recipes/create', $data);
@@ -349,26 +349,26 @@ class RecipeApiControllerTest extends TestCase
             'description' => 'A classic Italian pasta dish made with a rich and savory meat sauce.',
             'cooking_time' => 45,
             'serves' => 4,
-            'cuisine' => "Italian",
+            'cuisine' => 'Italian',
         ]);
         $this->assertDatabaseHas('ingredients', [
             'id' => 1,
             'name' => 'Spaghetti',
             'food_group' => 'food_group',
-            'allergen' => 0
+            'allergen' => 0,
         ]);
         $this->assertDatabaseHas('cooking_instructions', [
             'id' => 1,
             'recipe_id' => 1,
             'step' => 1,
-            'instruction' => "Boil the spaghetti according to package instructions.",
+            'instruction' => 'Boil the spaghetti according to package instructions.',
         ]);
         $this->assertDatabaseHas('ingredient_recipe', [
             'id' => 1,
             'recipe_id' => 1,
             'ingredient_id' => 1,
             'quantity' => 200,
-            'unit' => "g",
+            'unit' => 'g',
         ]);
         $this->assertDatabaseHas('dietary_restrictions', [
             'id' => 1,
@@ -385,23 +385,23 @@ class RecipeApiControllerTest extends TestCase
     public function test_recipe_api_controller_create_recipe_invalid_data(): void
     {
         $data = [
-            "user_id" => "one", // Should be an integer
-            "recipe_name" => 12345, // Should be a string
-            "recipe_description" => false, // Should be a string
-            "recipe_cooking_time" => "forty-five", // Should be an integer
-            "recipe_serves" => null, // Should be an integer
-            "recipe_cuisine" => ["Italian"], // Should be a string
-            "ingredient_name" => 100, // Should be an array of strings
-            "ingredient_quantity" => "two hundred", // Should be an array of integers
-            "ingredient_unit" => false, // Should be an array of strings
-            "ingredient_allergen" => "no", // Should be an array of booleans
-            "cooking_instruction" => true, // Should be an array of strings
-            "is_vegetarian" => "yes", // Should be a boolean
-            "is_vegan" => "string", // Should be a boolean
-            "is_gluten_free" => "false", // Should be a boolean
-            "is_dairy_free" => "sfks", // Should be a boolean
-            "is_low_fodmap" => "low", // Should be a boolean
-            "is_ostomy_friendly" => [], // Should be a boolean
+            'user_id' => 'one', // Should be an integer
+            'recipe_name' => 12345, // Should be a string
+            'recipe_description' => false, // Should be a string
+            'recipe_cooking_time' => 'forty-five', // Should be an integer
+            'recipe_serves' => null, // Should be an integer
+            'recipe_cuisine' => ['Italian'], // Should be a string
+            'ingredient_name' => 100, // Should be an array of strings
+            'ingredient_quantity' => 'two hundred', // Should be an array of integers
+            'ingredient_unit' => false, // Should be an array of strings
+            'ingredient_allergen' => 'no', // Should be an array of booleans
+            'cooking_instruction' => true, // Should be an array of strings
+            'is_vegetarian' => 'yes', // Should be a boolean
+            'is_vegan' => 'string', // Should be a boolean
+            'is_gluten_free' => 'false', // Should be a boolean
+            'is_dairy_free' => 'sfks', // Should be a boolean
+            'is_low_fodmap' => 'low', // Should be a boolean
+            'is_ostomy_friendly' => [], // Should be a boolean
         ];
         $response = $this->postJson('/api/recipes/create', $data);
         $response->assertStatus(422)

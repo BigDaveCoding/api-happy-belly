@@ -24,7 +24,7 @@ class DietaryRestriction extends Model
         'is_gluten_free',
         'is_dairy_free',
         'is_low_fodmap',
-        'is_ostomy_friendly'
+        'is_ostomy_friendly',
     ];
 
     public function recipe(): BelongsTo

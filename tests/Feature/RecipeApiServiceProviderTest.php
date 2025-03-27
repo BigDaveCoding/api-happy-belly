@@ -7,8 +7,6 @@ use App\Models\User;
 use App\Providers\RecipeApiServiceProvider;
 use Illuminate\Database\QueryException;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
 class RecipeApiServiceProviderTest extends TestCase
@@ -24,7 +22,7 @@ class RecipeApiServiceProviderTest extends TestCase
             'recipe_description' => 'Description',
             'recipe_cooking_time' => 30,
             'recipe_serves' => 2,
-            'recipe_cuisine' => 'french'
+            'recipe_cuisine' => 'french',
         ];
 
         $response = RecipeApiServiceProvider::createRecipe($recipeData, $user->id);
@@ -47,7 +45,7 @@ class RecipeApiServiceProviderTest extends TestCase
             'recipe_description' => 'Description',
             'recipe_cooking_time' => 30,
             'recipe_serves' => 2,
-            'recipe_cuisine' => 'french'
+            'recipe_cuisine' => 'french',
         ];
         $this->expectException(QueryException::class);
         $response = RecipeApiServiceProvider::createRecipe($recipeData, 1);
@@ -107,7 +105,7 @@ class RecipeApiServiceProviderTest extends TestCase
                 'instruction 1',
                 'instruction 2',
                 'instruction 3',
-            ]
+            ],
         ];
         RecipeApiServiceProvider::addCookingInstructions($data, $recipe);
         $this->assertDatabaseHas('cooking_instructions', ['id' => 1, 'recipe_id' => 1, 'step' => 1, 'instruction' => 'instruction 1']);
