@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Recipe;
 use App\Models\User;
+use App\Providers\RecipeApiServiceProvider;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -23,13 +24,7 @@ class RecipeApiController extends Controller
             'message' => 'Recipes found successfully',
             'data' => [
                 'recipes' => $recipeData->items(),
-                'pagination' => [
-                    'current_page' => $recipeData->currentPage(),
-                    'total_recipes' => $recipeData->total(),
-                    'next_page_url' => $recipeData->nextPageUrl(),
-                    'previous_page_url' => $recipeData->previousPageUrl(),
-                    'all_page_urls' => $recipeData->getUrlRange(1, $recipeData->lastPage()),
-                ],
+                'pagination' => RecipeApiServiceProvider::pagination($recipeData),
             ],
         ], 200);
     }
