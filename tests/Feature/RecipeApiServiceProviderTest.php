@@ -53,7 +53,7 @@ class RecipeApiServiceProviderTest extends TestCase
         $response = RecipeApiServiceProvider::createRecipe($recipeData, 1);
     }
 
-    public function test_add_ingredients_adds_ingredients_to_database(): void
+    public function test_add_ingredients_successful(): void
     {
         $user = User::factory()->create(['id' => 1]);
 
@@ -84,7 +84,7 @@ class RecipeApiServiceProviderTest extends TestCase
         $this->assertDatabaseHas('ingredient_recipe', ['recipe_id' => 1, 'ingredient_id' => 3, 'quantity' => 2, 'unit' => null]);
     }
 
-    public function test_add_dietary_restrictions_adds_successfully_to_database(): void
+    public function test_add_dietary_restrictions_successful(): void
     {
         $recipe = Recipe::factory()->create(['id' => 1]);
         $data = [
@@ -97,5 +97,21 @@ class RecipeApiServiceProviderTest extends TestCase
         ];
         RecipeApiServiceProvider::addDietaryRestrictions($data, $recipe);
         $this->assertDatabaseHas('dietary_restrictions', $data);
+    }
+
+    public function test_add_cooking_instructions_successful(): void
+    {
+        $recipe = Recipe::factory()->create(['id' => 1]);
+        $data = [
+            'cooking_instruction' => [
+                'instruction 1',
+                'instruction 2',
+                'instruction 3',
+            ]
+        ];
+        RecipeApiServiceProvider::addCookingInstructions($data, $recipe);
+        $this->assertDatabaseHas('cooking_instructions', ['id' => 1, 'recipe_id' => 1, 'step' => 1, 'instruction' => 'instruction 1']);
+        $this->assertDatabaseHas('cooking_instructions', ['id' => 2, 'recipe_id' => 1, 'step' => 2, 'instruction' => 'instruction 2']);
+        $this->assertDatabaseHas('cooking_instructions', ['id' => 3, 'recipe_id' => 1, 'step' => 3, 'instruction' => 'instruction 3']);
     }
 }
