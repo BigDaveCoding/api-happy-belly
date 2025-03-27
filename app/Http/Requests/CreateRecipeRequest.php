@@ -12,7 +12,7 @@ class CreateRecipeRequest extends FormRequest
             'user_id' => 'required|integer|exists:users,id',
             'recipe_name' => 'required|string|max:255|min:4',
             'recipe_description' => 'required|string|min:10',
-            'recipe_cooking_time' => 'required|integer|numeric|min:1|max:999',
+            'recipe_cooking_time' => 'required|integer|min:1|max:999',
             'recipe_serves' => 'required|integer|numeric|min:1',
             'recipe_cuisine' => 'required|string',
             'ingredient_name' => 'required|array',
