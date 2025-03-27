@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\CreateRecipeRequest;
+use App\Http\Requests\RecipeRequest;
 use App\Models\Recipe;
 use App\Models\User;
 use App\Providers\RecipeApiServiceProvider;
@@ -63,7 +63,7 @@ class RecipeApiController extends Controller
         ]);
     }
 
-    public function create(CreateRecipeRequest $request): JsonResponse
+    public function create(RecipeRequest $request): JsonResponse
     {
         $validatedData = $request->validated();
 
@@ -80,5 +80,36 @@ class RecipeApiController extends Controller
         return response()->json([
             'message' => 'Recipe created successfully',
         ], 201);
+    }
+
+    public function edit(RecipeRequest $request, Recipe $recipe): JsonResponse
+    {
+        $recipeToEdit = Recipe::findOrFail($recipe->id);
+
+        $validatedData = $request->validated();
+
+        // Update recipe details
+        $recipeToEdit->name = $validatedData['recipe_name'];
+        $recipeToEdit->description = $validatedData['recipe_description'];
+        $recipeToEdit->cooking_time = $validatedData['recipe_cooking_time'];
+        $recipeToEdit->serves = $validatedData['recipe_serves'];
+        $recipeToEdit->cuisine = $validatedData['recipe_cuisine'];
+        $recipeToEdit->save();
+
+        //remove old ingredients
+        $recipeToEdit->ingredients()->detach();
+        RecipeApiServiceProvider::addIngredients($validatedData, $recipeToEdit);
+        // remove old instructions
+        $recipeToEdit->cookingInstructions()->delete();
+        RecipeApiServiceProvider::addCookingInstructions($validatedData, $recipeToEdit);
+        // remove dietary instructions
+        $recipeToEdit->dietaryRestrictions()->delete();
+        RecipeApiServiceProvider::addDietaryRestrictions($validatedData, $recipeToEdit);
+
+        $recipeToEdit->save();
+
+        return response()->json([
+            'message' => 'Recipe edited successfully',
+        ]);
     }
 }
