@@ -304,4 +304,81 @@ class RecipeApiControllerTest extends TestCase
         $response = $this->get('/api/recipes/user/invalid');
         $response->assertStatus(404);
     }
+
+    public function test_recipe_api_controller_create_recipe_successful_all_data_in_databases_checked(): void
+    {
+        User::factory()->create(['id' => 1]);
+        $data = [
+            "user_id" => 1,
+            "recipe_name" => "postman recipe",
+            "recipe_description" => "A classic Italian pasta dish made with a rich and savory meat sauce.",
+            "recipe_cooking_time" => 45,
+            "recipe_serves" => 4,
+            "recipe_cuisine" => "Italian",
+            "ingredient_name" => [
+                "Spaghetti",
+            ],
+            "ingredient_quantity" => [
+                200,
+            ],
+            "ingredient_unit" => [
+                "g",
+            ],
+            "ingredient_allergen" => [
+                false
+            ],
+            "cooking_instruction" => [
+                "Boil the spaghetti according to package instructions.",
+            ],
+            "is_vegetarian" => true,
+            "is_vegan" => false,
+            "is_gluten_free" => false,
+            "is_dairy_free" => true,
+            "is_low_fodmap" => false,
+            "is_ostomy_friendly" => true
+        ];
+
+        $response = $this->postJson('/api/recipes/create', $data);
+        $response->assertStatus(201)
+            ->assertJson(function (AssertableJson $response) {
+                $response->has('message');
+            });
+        $this->assertDatabaseHas('recipes', [
+            'id' => 1,
+            'name' => 'postman recipe',
+            'description' => 'A classic Italian pasta dish made with a rich and savory meat sauce.',
+            'cooking_time' => 45,
+            'serves' => 4,
+            'cuisine' => "Italian",
+        ]);
+        $this->assertDatabaseHas('ingredients', [
+            'id' => 1,
+            'name' => 'Spaghetti',
+            'food_group' => 'food_group',
+            'allergen' => 0
+        ]);
+        $this->assertDatabaseHas('cooking_instructions', [
+            'id' => 1,
+            'recipe_id' => 1,
+            'step' => 1,
+            'instruction' => "Boil the spaghetti according to package instructions.",
+        ]);
+        $this->assertDatabaseHas('ingredient_recipe', [
+            'id' => 1,
+            'recipe_id' => 1,
+            'ingredient_id' => 1,
+            'quantity' => 200,
+            'unit' => "g",
+        ]);
+        $this->assertDatabaseHas('dietary_restrictions', [
+            'id' => 1,
+            'recipe_id' => 1,
+            'is_vegetarian' => true,
+            'is_vegan' => false,
+            'is_gluten_free' => false,
+            'is_dairy_free' => true,
+            'is_low_fodmap' => false,
+            'is_ostomy_friendly' => true,
+        ]);
+    }
 }
