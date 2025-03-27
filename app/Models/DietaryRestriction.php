@@ -18,6 +18,15 @@ class DietaryRestriction extends Model
         'id',
     ];
 
+    protected $fillable = [
+        'is_vegan',
+        'is_vegetarian',
+        'is_gluten_free',
+        'is_dairy_free',
+        'is_low_fodmap',
+        'is_ostomy_friendly'
+    ];
+
     public function recipe(): BelongsTo
     {
         return $this->belongsTo(Recipe::class);
