@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\CreateRecipeRequest;
 use App\Models\Recipe;
 use App\Models\User;
 use App\Providers\RecipeApiServiceProvider;
@@ -59,6 +60,23 @@ class RecipeApiController extends Controller
                 'user_recipes' => $recipeData->items(),
                 'pagination' => RecipeApiServiceProvider::pagination($recipeData),
             ],
+        ]);
+    }
+
+    public function create(CreateRecipeRequest $request): JsonResponse
+    {
+        $validatedData = $request->validated();
+
+        $user_id = $validatedData['user_id'];
+
+        $recipe = RecipeApiServiceProvider::createRecipe($validatedData, $user_id);
+
+        RecipeApiServiceProvider::addIngredients($validatedData, $recipe);
+
+        RecipeApiServiceProvider::addCookingInstructions($validatedData, $recipe);
+
+        return response()->json([
+            'message' => 'Recipe created successfully',
         ]);
     }
 }

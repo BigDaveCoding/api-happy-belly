@@ -15,3 +15,5 @@ Route::get('/recipes/admin', [RecipeApiController::class, 'admin']);
 Route::get('/recipes/user/{user}', [RecipeApiController::class, 'user']);
 
 Route::get('/recipes/{recipe}', [RecipeApiController::class, 'find']);
+
+route::post('/recipes/create', [RecipeApiController::class, 'create']);
