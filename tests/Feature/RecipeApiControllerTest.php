@@ -194,6 +194,12 @@ class RecipeApiControllerTest extends TestCase
             });
     }
 
+    public function test_recipe_api_controller_find_recipe_doesnt_exist(): void
+    {
+        $response = $this->get('/api/recipes/9999');
+        $response->assertStatus(404);
+    }
+
     public function test_recipe_api_controller_admin_recipes_returns_correct_data(): void
     {
         User::factory()->create(['id' => 1]);
