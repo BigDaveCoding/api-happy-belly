@@ -10,15 +10,12 @@ use Illuminate\Http\Request;
 
 class RecipeApiController extends Controller
 {
-    // TODO: Need validation!
     // TODO: Pagination for admin and user recipes
 
     public function all(Request $request): JsonResponse
     {
         $recipeData = Recipe::with('dietaryRestrictions')->paginate(5);
-        $recipeData->getCollection()->transform(function ($recipe) {
-            return $recipe->setHidden(['description', 'user_id', 'created_at', 'updated_at']);
-        });
+        RecipeApiServiceProvider::paginationCollection($recipeData);
 
         return response()->json([
             'message' => 'Recipes found successfully',
@@ -42,24 +39,28 @@ class RecipeApiController extends Controller
     public function admin(): JsonResponse
     {
         $recipeData = Recipe::with('dietaryRestrictions')->where(['user_id' => 1])->paginate(5);
-        $recipeData->getCollection()->transform(function ($recipe) {
-            return $recipe->setHidden(['description', 'user_id', 'created_at', 'updated_at']);
-        });
+        RecipeApiServiceProvider::paginationCollection($recipeData);
+
         return response()->json([
             'message' => 'Admin recipes found successfully',
             'data' => [
                 'admin_recipes' =>$recipeData->items(),
-                'pagination' => RecipeApiServiceProvider::pagination($recipeData)]
+                'pagination' => RecipeApiServiceProvider::pagination($recipeData)
+            ]
         ], 200);
     }
 
     public function user(User $user): JsonResponse
     {
-        $recipe = Recipe::with('dietaryRestrictions')->where(['user_id' => $user->id])->get()->makeHidden(['description', 'user_id']);
+        $recipeData = Recipe::with('dietaryRestrictions')->where(['user_id' => $user->id])->paginate(5);
+        RecipeApiServiceProvider::paginationCollection($recipeData);
 
         return response()->json([
             'message' => 'User recipes found successfully',
-            'data' => $recipe,
+            'data' => [
+                'user_recipes' => $recipeData->items(),
+                'pagination' => RecipeApiServiceProvider::pagination($recipeData)
+            ]
         ]);
     }
 }
