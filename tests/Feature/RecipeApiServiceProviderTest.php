@@ -83,4 +83,19 @@ class RecipeApiServiceProviderTest extends TestCase
         $this->assertDatabaseHas('ingredient_recipe', ['recipe_id' => 1, 'ingredient_id' => 2, 'quantity' => 2, 'unit' => 'cups']);
         $this->assertDatabaseHas('ingredient_recipe', ['recipe_id' => 1, 'ingredient_id' => 3, 'quantity' => 2, 'unit' => null]);
     }
+
+    public function test_add_dietary_restrictions_adds_successfully_to_database(): void
+    {
+        $recipe = Recipe::factory()->create(['id' => 1]);
+        $data = [
+            'is_vegan' => true,
+            'is_vegetarian' => true,
+            'is_gluten_free' => true,
+            'is_dairy_free' => true,
+            'is_low_fodmap' => true,
+            'is_ostomy_friendly' => true,
+        ];
+        RecipeApiServiceProvider::addDietaryRestrictions($data, $recipe);
+        $this->assertDatabaseHas('dietary_restrictions', $data);
+    }
 }
