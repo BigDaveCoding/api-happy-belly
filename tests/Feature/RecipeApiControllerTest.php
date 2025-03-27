@@ -305,7 +305,7 @@ class RecipeApiControllerTest extends TestCase
         $response->assertStatus(404);
     }
 
-    public function test_recipe_api_controller_create_recipe_successful_all_data_in_databases_checked(): void
+    public function test_recipe_api_controller_create_recipe_successful_and_all_data_in_tables_checked(): void
     {
         User::factory()->create(['id' => 1]);
         $data = [
