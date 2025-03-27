@@ -7,7 +7,7 @@ use Illuminate\Pagination\LengthAwarePaginator;
 
 class RecipeApiServiceProvider
 {
-    static public function pagination(LengthAwarePaginator $data): array
+    public static function pagination(LengthAwarePaginator $data): array
     {
         return [
             'current_page' => $data->currentPage(),
@@ -18,7 +18,7 @@ class RecipeApiServiceProvider
         ];
     }
 
-    static public function paginationCollection(LengthAwarePaginator $data): Collection
+    public static function paginationCollection(LengthAwarePaginator $data): Collection
     {
         return $data->getCollection()->transform(function ($recipe) {
             return $recipe->setHidden(['description', 'user_id', 'created_at', 'updated_at']);

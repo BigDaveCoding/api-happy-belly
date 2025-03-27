@@ -10,8 +10,6 @@ use Illuminate\Http\Request;
 
 class RecipeApiController extends Controller
 {
-    // TODO: Pagination for admin and user recipes
-
     public function all(Request $request): JsonResponse
     {
         $recipeData = Recipe::with('dietaryRestrictions')->paginate(5);
@@ -44,9 +42,9 @@ class RecipeApiController extends Controller
         return response()->json([
             'message' => 'Admin recipes found successfully',
             'data' => [
-                'admin_recipes' =>$recipeData->items(),
-                'pagination' => RecipeApiServiceProvider::pagination($recipeData)
-            ]
+                'admin_recipes' => $recipeData->items(),
+                'pagination' => RecipeApiServiceProvider::pagination($recipeData),
+            ],
         ], 200);
     }
 
@@ -59,8 +57,8 @@ class RecipeApiController extends Controller
             'message' => 'User recipes found successfully',
             'data' => [
                 'user_recipes' => $recipeData->items(),
-                'pagination' => RecipeApiServiceProvider::pagination($recipeData)
-            ]
+                'pagination' => RecipeApiServiceProvider::pagination($recipeData),
+            ],
         ]);
     }
 }

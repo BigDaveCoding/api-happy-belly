@@ -304,5 +304,4 @@ class RecipeApiControllerTest extends TestCase
         $response = $this->get('/api/recipes/user/invalid');
         $response->assertStatus(404);
     }
-
 }
