@@ -430,4 +430,80 @@ class RecipeApiControllerTest extends TestCase
                     });
             });
     }
+
+    public function test_recipe_api_controller_edit_recipe_successful_edit_tables_updated(): void
+    {
+        User::factory()->create(['id' => 1]);
+        Recipe::factory()->create(['id' => 1, 'user_id' => 1]);
+        $data = [
+            "user_id" => 1,
+            "recipe_name" => "new recipe edit name",
+            "recipe_description" => "A classic Italian pasta dish made with a rich and savory meat sauce.",
+            "recipe_cooking_time" => 45,
+            "recipe_serves" => 4,
+            "recipe_cuisine" => "Italian",
+            "ingredient_name" => [
+                "beef wellington balls",
+                "ham sandwich"
+            ],
+            "ingredient_quantity" => [200, 300],
+            "ingredient_unit" => [
+                "g",
+                "g"
+            ],
+            "ingredient_allergen" => [false, false],
+            "cooking_instruction" => [
+                "Boil the spaghetti according to package instructions.",
+                "Heat olive oil in a pan over medium heat."
+            ],
+            "is_vegetarian" => true,
+            "is_vegan" => true,
+            "is_gluten_free" => true,
+            "is_dairy_free" => true,
+            "is_low_fodmap" => false,
+            "is_ostomy_friendly" => true
+        ];
+        $response = $this->putJson('/api/recipes/edit/1', $data);
+        $response->assertStatus(200)
+            ->assertJson(function (AssertableJson $response) {
+                $response->has('message');
+            });
+        $this->assertDatabaseHas('recipes', [
+            'id' => 1,
+            'user_id' => 1,
+            'name' => 'new recipe edit name',
+            'description' => 'A classic Italian pasta dish made with a rich and savory meat sauce.',
+            'cooking_time' => 45,
+            'serves' => 4,
+            'cuisine' => "Italian",
+        ]);
+        $this->assertDatabaseHas('ingredients', [
+            'id' => 1,
+            'name' => 'beef wellington balls',
+            'food_group' => 'food_group',
+            'allergen' => 0
+        ]);
+        $this->assertDatabaseHas('cooking_instructions', [
+            'id' => 1,
+            'step' => 1,
+            'instruction' => 'Boil the spaghetti according to package instructions.'
+        ]);
+        $this->assertDatabaseHas('ingredient_recipe', [
+           'id' => 1,
+           'recipe_id' => 1,
+           'ingredient_id' => 1,
+           'quantity' => 200,
+           'unit' => 'g'
+        ]);
+        $this->assertDatabaseHas('dietary_restrictions', [
+            'id' => 1,
+            'recipe_id' => 1,
+            'is_vegetarian' => true,
+            'is_vegan' => true,
+            'is_gluten_free' => true,
+            'is_dairy_free' => true,
+            'is_low_fodmap' => false,
+            'is_ostomy_friendly' => true,
+        ]);
+    }
 }
