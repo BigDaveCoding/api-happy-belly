@@ -564,4 +564,10 @@ class RecipeApiControllerTest extends TestCase
                     });
             });
     }
+
+    public function test_recipe_api_controller_edit_recipe_recipe_doesnt_exist(): void
+    {
+        $response = $this->putJson('/api/recipes/edit/1', []);
+        $response->assertStatus(404);
+    }
 }
