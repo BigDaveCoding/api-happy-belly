@@ -8,7 +8,6 @@ use Illuminate\Validation\ValidationException;
 
 class LoginRequest extends FormRequest
 {
-
     public function rules(): array
     {
         return [
@@ -21,7 +20,7 @@ class LoginRequest extends FormRequest
     protected function failedValidation(Validator $validator)
     {
         throw new ValidationException($validator, response()->json([
-            'message' => 'login details incorrect',
+            'message' => 'login credentials incorrect',
         ], 422));  // Custom error message and 422 status
     }
 }

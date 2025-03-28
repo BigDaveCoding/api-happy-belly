@@ -7,8 +7,6 @@ use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
 {
@@ -22,7 +20,7 @@ class AuthController extends Controller
 
         // check password in request matches users password
         // if not a match then returns login failed
-        if (!Hash::check($validatedLogin['password'], $user->password)) {
+        if (! Hash::check($validatedLogin['password'], $user->password)) {
             return response()->json([
                 'message' => 'login failed',
             ], 401);
