@@ -106,4 +106,80 @@ class AuthControllerTest extends TestCase
 
         $response->assertInvalid('register_password', 'register_password_confirmation');
     }
+
+    public function test_auth_controller_register_fails_with_invalid_email(): void
+    {
+        $data = [
+            'register_name' => 'John Doe',
+            'register_email' => 'invalid-email',
+            'register_password' => 'Password1!',
+            'register_password_confirmation' => 'Password1!',
+        ];
+
+        $response = $this->postJson('/api/register', $data);
+
+        $response->assertInvalid('register_email');
+    }
+
+    public function test_auth_controller_register_fails_with_weak_password(): void
+    {
+        $data = [
+            'register_name' => 'John Doe',
+            'register_email' => 'johndoe@gmail.com',
+            'register_password' => 'password',
+            'register_password_confirmation' => 'password',
+        ];
+
+        $response = $this->postJson('/api/register', $data);
+
+        $response->assertInvalid('register_password');
+    }
+
+    public function test_auth_controller_register_fails_with_duplicate_email(): void
+    {
+        User::factory()->create([
+            'name' => 'Existing User',
+            'email' => 'johndoe@gmail.com',
+            'password' => Hash::make('Password1!'),
+        ]);
+
+        $data = [
+            'register_name' => 'John Doe',
+            'register_email' => 'johndoe@gmail.com',
+            'register_password' => 'Password1!',
+            'register_password_confirmation' => 'Password1!',
+        ];
+
+        $response = $this->postJson('/api/register', $data);
+
+        $response->assertInvalid('register_email');
+    }
+
+    public function test_auth_controller_register_fails_with_password_mismatch(): void
+    {
+        $data = [
+            'register_name' => 'John Doe',
+            'register_email' => 'johndoe@gmail.com',
+            'register_password' => 'Password1!',
+            'register_password_confirmation' => 'DifferentPassword!',
+        ];
+
+        $response = $this->postJson('/api/register', $data);
+
+        $response->assertInvalid('register_password');
+    }
+
+    public function test_auth_controller_register_fails_with_short_name(): void
+    {
+        $data = [
+            'register_name' => 'J', // Too short
+            'register_email' => 'johndoe@gmail.com',
+            'register_password' => 'Password1!',
+            'register_password_confirmation' => 'Password1!',
+        ];
+
+        $response = $this->postJson('/api/register', $data);
+
+        $response->assertInvalid('register_name');
+    }
 }
