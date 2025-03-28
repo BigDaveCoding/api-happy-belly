@@ -182,4 +182,25 @@ class AuthControllerTest extends TestCase
 
         $response->assertInvalid('register_name');
     }
+
+    public function test_auth_controller_logout_success(): void
+    {
+        $user = User::factory()->create([
+            'email' => 'email@gmail.com',
+            'password' => Hash::make('password'),
+        ]);
+
+        $token = $user->createToken('API Token')->plainTextToken;
+
+        $response = $this->withHeaders([
+            'Authorization' => "Bearer $token",
+        ])->postJson('/api/logout');
+
+        $response->assertStatus(200)
+            ->assertJson(function (AssertableJson $response) {
+                $response->where('message', 'Logout successful');
+            });
+
+        $this->assertCount(0, $user->tokens);
+    }
 }
