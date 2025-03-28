@@ -82,6 +82,7 @@ class AuthControllerTest extends TestCase
             'register_name' => 'John Doe',
             'register_email' => 'johndoe@gmail.com',
             'register_password' => 'password',
+            'register_confirm_password' => 'password',
         ];
         $response = $this->postJson('/api/register', $data);
         $response->assertStatus(200)
