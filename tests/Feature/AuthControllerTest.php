@@ -81,7 +81,7 @@ class AuthControllerTest extends TestCase
         $data = [
             'register_name' => 'John Doe',
             'register_email' => 'johndoe@gmail.com',
-            'register_password' => Hash::make('password'),
+            'register_password' => 'password',
         ];
         $response = $this->postJson('/api/register', $data);
         $response->assertStatus(200)
