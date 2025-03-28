@@ -94,4 +94,16 @@ class AuthControllerTest extends TestCase
             'email' => 'johndoe@gmail.com',
         ]);
     }
+
+    public function test_auth_controller_register_fails_with_missing_fields(): void
+    {
+        $data = [
+            'register_name' => 'John Doe',
+            'register_email' => 'johndoe@gmail.com',
+        ];
+
+        $response = $this->postJson('/api/register', $data);
+
+        $response->assertInvalid('register_password', 'register_password_confirmation');
+    }
 }
