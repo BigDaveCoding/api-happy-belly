@@ -203,4 +203,15 @@ class AuthControllerTest extends TestCase
 
         $this->assertCount(0, $user->tokens);
     }
+
+    public function test_auth_controller_logout_without_token(): void
+    {
+        $response = $this->postJson('/api/logout');
+
+        $response->assertStatus(401)
+            ->assertJson(function (AssertableJson $json) {
+                $json->where('message', 'Unauthenticated.');
+            });
+    }
+
 }
