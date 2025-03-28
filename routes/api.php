@@ -8,16 +8,18 @@ Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
-Route::get('/recipes', [RecipeApiController::class, 'all']);
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/recipes', [RecipeApiController::class, 'all']);
 
-Route::get('/recipes/admin', [RecipeApiController::class, 'admin']);
+    Route::get('/recipes/admin', [RecipeApiController::class, 'admin']);
 
-Route::get('/recipes/user/{user}', [RecipeApiController::class, 'user']);
+    Route::get('/recipes/user/{user}', [RecipeApiController::class, 'user']);
 
-Route::get('/recipes/{recipe}', [RecipeApiController::class, 'find']);
+    Route::get('/recipes/{recipe}', [RecipeApiController::class, 'find']);
 
-Route::post('/recipes/create', [RecipeApiController::class, 'create']);
+    Route::post('/recipes/create', [RecipeApiController::class, 'create']);
 
-Route::put('/recipes/edit/{recipe}', [RecipeApiController::class, 'edit']);
+    Route::put('/recipes/edit/{recipe}', [RecipeApiController::class, 'edit']);
 
-Route::delete('/recipes/delete/{recipe}', [RecipeApiController::class, 'delete']);
+    Route::delete('/recipes/delete/{recipe}', [RecipeApiController::class, 'delete']);
+});
