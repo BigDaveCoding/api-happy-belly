@@ -17,6 +17,9 @@ class RecipeApiControllerTest extends TestCase
 
     public function test_recipe_api_controller_all_recipes_returned_successfully(): void
     {
+        $user = User::factory()->create();
+        $this->actingAs($user, 'sanctum');
+
         Recipe::factory()->has(DietaryRestriction::factory())->count(20)->create();
         $response = $this->get('/api/recipes');
         $response->assertStatus(200)
@@ -80,6 +83,9 @@ class RecipeApiControllerTest extends TestCase
 
     public function test_recipe_api_controller_all_recipes_empty_response(): void
     {
+        $user = User::factory()->create();
+        $this->actingAs($user, 'sanctum');
+
         $response = $this->get('/api/recipes');
         $response->assertStatus(200)
             ->assertJson(function (AssertableJson $response) {
@@ -113,6 +119,9 @@ class RecipeApiControllerTest extends TestCase
 
     public function test_recipe_api_controller_find_recipe_correct_response_and_datatypes(): void
     {
+        $user = User::factory()->create();
+        $this->actingAs($user, 'sanctum');
+
         $recipe = Recipe::factory()->has(DietaryRestriction::factory())->create(['id' => 1]);
         $ingredient = Ingredient::factory()->create(['id' => 1]);
         CookingInstruction::factory()->create(['id' => 1, 'recipe_id' => $recipe->id]);
@@ -196,16 +205,20 @@ class RecipeApiControllerTest extends TestCase
 
     public function test_recipe_api_controller_find_recipe_doesnt_exist(): void
     {
+        $user = User::factory()->create();
+        $this->actingAs($user, 'sanctum');
         $response = $this->get('/api/recipes/9999');
         $response->assertStatus(404);
     }
 
     public function test_recipe_api_controller_admin_recipes_returns_correct_data(): void
     {
-        User::factory()->create(['id' => 1]);
+        $user = User::factory()->create(['id' => 1]);
         User::factory()->create(['id' => 2]);
         Recipe::factory()->has(DietaryRestriction::factory())->count(2)->create(['user_id' => 1]);
         Recipe::factory()->count(2)->create(['user_id' => 2]);
+
+        $this->actingAs($user, 'sanctum');
 
         $response = $this->get('/api/recipes/admin');
         $response->assertStatus(200)
@@ -242,7 +255,8 @@ class RecipeApiControllerTest extends TestCase
 
     public function test_recipe_api_controller_user_recipes_returns_correct_data(): void
     {
-        User::factory()->create(['id' => 2]);
+        $user = User::factory()->create(['id' => 2]);
+        $this->actingAs($user, 'sanctum');
         Recipe::factory()->has(DietaryRestriction::factory())->count(2)->create(['user_id' => 2]);
 
         $response = $this->get('api/recipes/user/2');
@@ -280,8 +294,8 @@ class RecipeApiControllerTest extends TestCase
 
     public function test_recipe_api_controller_user_no_recipes_return_empty_array(): void
     {
-        User::factory()->create(['id' => 2]);
-
+        $user = User::factory()->create(['id' => 2]);
+        $this->actingAs($user, 'sanctum');
         $response = $this->get('/api/recipes/user/2');
         $response->assertStatus(200)
             ->assertJson(function (AssertableJson $response) {
@@ -295,19 +309,24 @@ class RecipeApiControllerTest extends TestCase
 
     public function test_recipe_api_controller_user_recipes_user_doesnt_exist(): void
     {
+        $user = User::factory()->create();
+        $this->actingAs($user, 'sanctum');
         $response = $this->get('/api/recipes/9999');
         $response->assertStatus(404);
     }
 
     public function test_recipe_api_controller_user_recipes_invalid_id_url(): void
     {
+        $user = User::factory()->create();
+        $this->actingAs($user, 'sanctum');
         $response = $this->get('/api/recipes/user/invalid');
         $response->assertStatus(404);
     }
 
     public function test_recipe_api_controller_create_recipe_successful_and_all_data_in_tables_checked(): void
     {
-        User::factory()->create(['id' => 1]);
+        $user = User::factory()->create(['id' => 1]);
+        $this->actingAs($user, 'sanctum');
         $data = [
             'user_id' => 1,
             'recipe_name' => 'postman recipe',
@@ -384,6 +403,8 @@ class RecipeApiControllerTest extends TestCase
 
     public function test_recipe_api_controller_create_recipe_invalid_data(): void
     {
+        $user = User::factory()->create();
+        $this->actingAs($user, 'sanctum');
         $data = [
             'user_id' => 'one', // Should be an integer
             'recipe_name' => 12345, // Should be a string
@@ -433,7 +454,8 @@ class RecipeApiControllerTest extends TestCase
 
     public function test_recipe_api_controller_edit_recipe_successful_edit_tables_updated(): void
     {
-        User::factory()->create(['id' => 1]);
+        $user = User::factory()->create(['id' => 1]);
+        $this->actingAs($user, 'sanctum');
         Recipe::factory()->create(['id' => 1, 'user_id' => 1]);
         $data = [
             'user_id' => 1,
@@ -509,6 +531,8 @@ class RecipeApiControllerTest extends TestCase
 
     public function test_recipe_api_controller_edit_recipe_invalid_data(): void
     {
+        $user = User::factory()->create();
+        $this->actingAs($user, 'sanctum');
         Recipe::factory()->create(['id' => 1]);
         $data = [
             'user_id' => 'one', // Should be an integer
@@ -567,12 +591,16 @@ class RecipeApiControllerTest extends TestCase
 
     public function test_recipe_api_controller_edit_recipe_recipe_doesnt_exist(): void
     {
+        $user = User::factory()->create();
+        $this->actingAs($user, 'sanctum');
         $response = $this->putJson('/api/recipes/edit/1', []);
         $response->assertStatus(404);
     }
 
     public function test_recipe_api_controller_delete_recipe_successful(): void
     {
+        $user = User::factory()->create();
+        $this->actingAs($user, 'sanctum');
         // create recipe
         $recipe = Recipe::factory()->create(['id' => 1]);
         // create ingredient
@@ -645,6 +673,8 @@ class RecipeApiControllerTest extends TestCase
 
     public function test_recipe_api_controller_delete_recipe_doesnt_exists(): void
     {
+        $user = User::factory()->create();
+        $this->actingAs($user, 'sanctum');
         $response = $this->deleteJson('/api/recipes/delete/1');
         $response->assertStatus(404);
     }
