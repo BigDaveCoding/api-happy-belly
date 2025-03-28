@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rules\Password;
 
 class AuthController extends Controller
 {
@@ -40,9 +41,15 @@ class AuthController extends Controller
     {
         $request->validate([
             'register_name' => 'required|string|min:2|max:255',
-            'register_email' => 'required|string|email|max:255|unique:users',
-            'register_password' => 'required|string|min:6|confirmed:register_confirm_password',
-            'register_confirm_password' => 'required|string|min:6',
+            'register_email' => 'required|string|email|max:255|unique:users,email',
+            'register_password' => [
+                'required',
+                'string',
+                'min:8',
+                'confirmed',
+                Password::min(8)->mixedCase()->numbers()->symbols()
+            ],
+            'register_password_confirmation' => 'required|string|min:8',
         ]);
 
         $user = new User();
