@@ -75,4 +75,22 @@ class AuthControllerTest extends TestCase
                     ->where('message', 'login credentials incorrect');
             });
     }
+
+    public function test_auth_controller_register_success(): void
+    {
+        $data = [
+            'register_name' => 'John Doe',
+            'register_email' => 'johndoe@gmail.com',
+            'register_password' => Hash::make('password'),
+        ];
+        $response = $this->postJson('/api/register', $data);
+        $response->assertStatus(200)
+            ->assertJson(function (AssertableJson $response) {
+                $response->hasAll('message');
+            });
+        $this->assertDatabaseHas('users', [
+            'name' => 'John Doe',
+            'email' => 'johndoe@gmail.com',
+        ]);
+    }
 }

@@ -35,4 +35,23 @@ class AuthController extends Controller
             'token' => $token,
         ]);
     }
+
+    public function register(Request $request): JsonResponse
+    {
+        $request->validate([
+            'register_name' => 'required|string|min:2|max:255',
+            'register_email' => 'required|string|email|max:255|unique:users',
+            'register_password' => 'required|string|min:6|confirmed',
+        ]);
+
+        $user = new User();
+        $user->name = $request['register_name'];
+        $user->email = $request['register_email'];
+        $user->password = Hash::make($request['register_password']);
+        $user->save();
+
+        return response()->json([
+            'message' => 'Register successful',
+        ]);
+    }
 }
