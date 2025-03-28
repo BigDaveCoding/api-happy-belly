@@ -60,7 +60,7 @@ class AuthController extends Controller
 
         return response()->json([
             'message' => 'Register successful',
-        ]);
+        ], 201);
     }
 
     public function logout(Request $request): JsonResponse
@@ -68,6 +68,6 @@ class AuthController extends Controller
         $request->user()->tokens()->delete();
         return response()->json([
             'message' => 'Logout successful',
-        ]);
+        ], 200);
     }
 }

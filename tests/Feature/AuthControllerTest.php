@@ -85,7 +85,7 @@ class AuthControllerTest extends TestCase
             'register_password_confirmation' => 'Password1!',
         ];
         $response = $this->postJson('/api/register', $data);
-        $response->assertStatus(200)
+        $response->assertStatus(201)
             ->assertJson(function (AssertableJson $response) {
                 $response->hasAll('message');
             });
