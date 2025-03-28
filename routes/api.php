@@ -9,17 +9,14 @@ Route::get('/user', function (Request $request) {
 })->middleware('auth:sanctum');
 
 Route::middleware('auth:sanctum')->group(function () {
-    Route::get('/recipes', [RecipeApiController::class, 'all']);
 
-    Route::get('/recipes/admin', [RecipeApiController::class, 'admin']);
-
-    Route::get('/recipes/user/{user}', [RecipeApiController::class, 'user']);
-
-    Route::get('/recipes/{recipe}', [RecipeApiController::class, 'find']);
-
-    Route::post('/recipes/create', [RecipeApiController::class, 'create']);
-
-    Route::put('/recipes/edit/{recipe}', [RecipeApiController::class, 'edit']);
-
-    Route::delete('/recipes/delete/{recipe}', [RecipeApiController::class, 'delete']);
+});
+Route::controller(RecipeApiController::class)->group(function () {
+    Route::get('/recipes', 'all');
+    Route::get('/recipes/admin', 'admin');
+    Route::get('/recipes/user/{user}', 'user');
+    Route::get('/recipes/{recipe}', 'find');
+    Route::post('/recipes/create', 'create');
+    Route::put('/recipes/edit/{recipe}', 'edit');
+    Route::delete('/recipes/delete/{recipe}', 'delete');
 });
