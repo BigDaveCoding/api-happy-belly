@@ -213,5 +213,4 @@ class AuthControllerTest extends TestCase
                 $json->where('message', 'Unauthenticated.');
             });
     }
-
 }

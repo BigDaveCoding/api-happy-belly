@@ -47,12 +47,12 @@ class AuthController extends Controller
                 'string',
                 'min:8',
                 'confirmed',
-                Password::min(8)->mixedCase()->numbers()->symbols()
+                Password::min(8)->mixedCase()->numbers()->symbols(),
             ],
             'register_password_confirmation' => 'required|string|min:8',
         ]);
 
-        $user = new User();
+        $user = new User;
         $user->name = $request['register_name'];
         $user->email = $request['register_email'];
         $user->password = Hash::make($request['register_password']);
@@ -66,6 +66,7 @@ class AuthController extends Controller
     public function logout(Request $request): JsonResponse
     {
         $request->user()->tokens()->delete();
+
         return response()->json([
             'message' => 'Logout successful',
         ], 200);
