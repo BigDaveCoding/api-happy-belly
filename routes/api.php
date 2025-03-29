@@ -28,7 +28,11 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::post('/register', [AuthController::class, 'register']);
 
 
-
+Route::get('/email/verify', function () {
+    return response()->json([
+        'message' => 'verification link has been sent to your email address.',
+    ]);
+})->name('verification.notice');
 
 Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
     if ($request->user()->hasVerifiedEmail()) {
@@ -38,4 +42,4 @@ Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $requ
     $request->fulfill(); // Marks email as verified
 
     return response()->json(['message' => 'Email verified successfully']);
-})->middleware('signed')->name('verification.verify');
+})->middleware( 'signed')->name('verification.verify');
