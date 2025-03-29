@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\RecipeApiController;
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -25,3 +26,16 @@ Route::middleware('auth:sanctum')->group(function () {
 
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/register', [AuthController::class, 'register']);
+
+
+
+
+Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
+    if ($request->user()->hasVerifiedEmail()) {
+        return response()->json(['message' => 'Email already verified'], 200);
+    }
+
+    $request->fulfill(); // Marks email as verified
+
+    return response()->json(['message' => 'Email verified successfully']);
+})->middleware('signed')->name('verification.verify');
