@@ -16,11 +16,20 @@ class LogApiRequests
      */
     public function handle(Request $request, Closure $next): Response
     {
+        $response = $next($request);
+
+        if ($response->getStatusCode() == 404){
+            Log::channel('api_404_response')->notice('API Request Not Found - 404 Status', [
+                'method' => $request->method(),
+                'url' => $request->fullUrl(),
+            ]);
+        }
+
         Log::channel('api_requests')->info('Api Request', [
             'method' => $request->method(),
             'url' => $request->fullUrl(),
         ]);
 
-        return $next($request);
+        return $response;
     }
 }

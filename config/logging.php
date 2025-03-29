@@ -133,6 +133,12 @@ return [
             'level' => 'info',
         ],
 
+        'api_404_response' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/api_404_responses.log'),
+            'level' => 'notice',
+        ]
+
     ],
 
 ];
