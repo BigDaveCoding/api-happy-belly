@@ -35,11 +35,7 @@ Route::get('/email/verify', function () {
 })->name('verification.notice');
 
 Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
-    if ($request->user()->hasVerifiedEmail()) {
-        return response()->json(['message' => 'Email already verified'], 200);
-    }
 
     $request->fulfill(); // Marks email as verified
-
     return response()->json(['message' => 'Email verified successfully']);
-})->middleware( 'signed')->name('verification.verify');
+})->middleware([ 'signed'])->name('verification.verify');
