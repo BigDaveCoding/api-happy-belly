@@ -28,6 +28,8 @@ class LogApiRequests
         Log::channel('api_requests')->info('Api Request', [
             'method' => $request->method(),
             'url' => $request->fullUrl(),
+            'status_code' => $response->getStatusCode(),
+            'headers' => $request->headers->all(),
         ]);
 
         return $response;
