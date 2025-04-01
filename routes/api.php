@@ -27,7 +27,6 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/register', [AuthController::class, 'register']);
 
-
 // this route is for using the verified middleware.
 // if the user has not verified their email address
 // they will be directed to or sent this response

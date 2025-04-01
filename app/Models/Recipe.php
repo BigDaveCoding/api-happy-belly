@@ -29,9 +29,4 @@ class Recipe extends Model
     {
         return $this->hasOne(DietaryRestriction::class);
     }
-
-    public function users(): BelongsToMany
-    {
-        return $this->belongsToMany(User::class);
-    }
 }
