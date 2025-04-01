@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Providers\RecipeApiServiceProvider;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class RecipeApiController extends Controller
 {
@@ -115,14 +116,20 @@ class RecipeApiController extends Controller
 
     public function delete(Recipe $recipe): JsonResponse
     {
-        if ($recipe->delete()) {
+        if ($recipe->user_id == Auth::id()) {
+            if ($recipe->delete()) {
+                return response()->json([
+                    'message' => 'Recipe deleted successfully',
+                ], 200);
+            } else {
+                return response()->json([
+                    'message' => 'Internal Server Error',
+                ], 500);
+            }
+        } else {
             return response()->json([
-                'message' => 'Recipe deleted successfully',
-            ], 200);
+                'message' => 'You do not have permission to delete this recipe',
+            ]);
         }
-
-        return response()->json([
-            'message' => 'Internal Server Error',
-        ], 500);
     }
 }
