@@ -19,7 +19,6 @@ class DatabaseSeeder extends Seeder
             CookingInstructionSeeder::class,
             IngredientRecipeSeeder::class,
             DietaryRestrictionSeeder::class,
-            FavouriteSeeder::class,
         ]);
     }
 }
