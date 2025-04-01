@@ -599,10 +599,10 @@ class RecipeApiControllerTest extends TestCase
 
     public function test_recipe_api_controller_delete_recipe_successful(): void
     {
-        $user = User::factory()->create();
+        $user = User::factory()->create(['id' => 1]);
         $this->actingAs($user, 'sanctum');
         // create recipe
-        $recipe = Recipe::factory()->create(['id' => 1]);
+        $recipe = Recipe::factory()->create(['id' => 1, 'user_id' => 1]);
         // create ingredient
         $ingredient = Ingredient::factory()->create(['name' => 'ingredient']);
         // input data into pivot table
