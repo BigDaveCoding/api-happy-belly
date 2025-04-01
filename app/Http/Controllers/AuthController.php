@@ -49,6 +49,11 @@ class AuthController extends Controller
 
         event(new Registered($user));
 
+        // TODO: need a way of sending this token to the verification email
+        // as the email verification requires auth:sanctum
+        // which requires an api token to be used
+        $temporaryToken = $user->createToken('API Token')->plainTextToken;
+
         return response()->json([
             'message' => 'Register successful - email verification sent',
         ], 201);
