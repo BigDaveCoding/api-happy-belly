@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\LoginRequest;
+use App\Http\Requests\RegisterRequest;
 use App\Models\User;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\JsonResponse;
@@ -38,21 +39,8 @@ class AuthController extends Controller
         ]);
     }
 
-    public function register(Request $request): JsonResponse
+    public function register(RegisterRequest $request): JsonResponse
     {
-        $request->validate([
-            'register_name' => 'required|string|min:2|max:255',
-            'register_email' => 'required|string|email|max:255|unique:users,email',
-            'register_password' => [
-                'required',
-                'string',
-                'min:8',
-                'confirmed',
-                Password::min(8)->mixedCase()->numbers()->symbols(),
-            ],
-            'register_password_confirmation' => 'required|string|min:8',
-        ]);
-
         $user = new User;
         $user->name = $request['register_name'];
         $user->email = $request['register_email'];
