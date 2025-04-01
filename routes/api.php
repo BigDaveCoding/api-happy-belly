@@ -47,6 +47,11 @@ Route::get('/email/verify', function () {
 // I could set up a blade template
 
 Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
+
+    // this could return a view
+    // view could include temporary token
+    // button to verify email
+
     $request->fulfill(); // Marks email as verified
     return response()->json(['message' => 'Email verified successfully']);
 })->middleware(['auth:sanctum', 'signed', 'throttle:6, 1'])->name('verification.verify');
