@@ -132,4 +132,16 @@ class RecipeApiController extends Controller
             ]);
         }
     }
+
+    public function favouriteRecipes(User $user): JsonResponse
+    {
+        $favouriteRecipes = $user->favouriteRecipes()->paginate(5);
+        return response()->json([
+            'message' => 'Favourite recipes found successfully',
+            'data' => [
+                'favourite_recipes' => $favouriteRecipes->items(),
+                'pagination' => RecipeApiServiceProvider::pagination($favouriteRecipes),
+            ]
+        ]);
+    }
 }
