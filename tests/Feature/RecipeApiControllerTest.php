@@ -678,4 +678,63 @@ class RecipeApiControllerTest extends TestCase
         $response = $this->deleteJson('/api/recipes/delete/1');
         $response->assertStatus(404);
     }
+
+    public function test_recipe_api_controller_favourite_recipes_correct_data_returned_and_database_contains_data(): void
+    {
+        $user = User::factory()->create(['id' => 1]);
+        $this->actingAs($user, 'sanctum');
+        $recipe = Recipe::factory()->create(['id' => 1]);
+        $user->favouriteRecipes()->attach($recipe);
+
+        $response = $this->getJson('api/recipes/favourite/1');
+        $response->assertStatus(200)
+            ->assertJson(function (AssertableJson $response) {
+                $response->hasAll('message', 'data')
+                    ->has('data', function (AssertableJson $data) {
+                        $data->hasAll('favourite_recipes', 'pagination')
+                            ->has('favourite_recipes', 1, function (AssertableJson $favouriteRecipes) {
+                                $favouriteRecipes->hasAll(
+                                    'id',
+                                    'name',
+                                    'image',
+                                    'cooking_time',
+                                    'serves',
+                                    'cuisine',
+                                    'pivot',
+                                );
+                            });
+                    });
+            });
+
+        $this->assertDatabaseHas('favourite_recipes', [
+            'id' => 1,
+            'recipe_id' => $recipe->id,
+            'user_id' => $user->id,
+        ]);
+    }
+
+    public function test_recipe_api_controller_favourite_recipes_user_has_no_favourites(): void
+    {
+        $user = User::factory()->create();
+        $this->actingAs($user, 'sanctum');
+
+        $response = $this->get('/api/recipes/favourite/1');
+        $response->assertStatus(200)
+            ->assertJson(function (AssertableJson $response) {
+                $response->hasAll('message', 'data')
+                    ->has('data', function (AssertableJson $data) {
+                        $data->hasAll('favourite_recipes', 'pagination')
+                            ->where('favourite_recipes', []);
+                    });
+            });
+    }
+
+    public function test_recipe_api_controller_favourite_recipes_fails_user_doesnt_exist(): void
+    {
+        $user = User::factory()->create();
+        $this->actingAs($user, 'sanctum');
+
+        $response = $this->get('/api/recipes/favourite/1000');
+        $response->assertStatus(404);
+    }
 }
