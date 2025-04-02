@@ -133,6 +133,7 @@ class RecipeApiController extends Controller
         }
     }
 
+    // TODO: Needs tests
     public function favouriteRecipes(User $user): JsonResponse
     {
         $favouriteRecipes = $user->favouriteRecipes()->paginate(5);
@@ -142,6 +143,15 @@ class RecipeApiController extends Controller
                 'favourite_recipes' => $favouriteRecipes->items(),
                 'pagination' => RecipeApiServiceProvider::pagination($favouriteRecipes),
             ]
+        ]);
+    }
+
+    // TODO: Needs tests
+    public function favourite(User $user, Recipe $recipe): JsonResponse
+    {
+        $user->favouriteRecipes()->syncWithoutDetaching($recipe);
+        return response()->json([
+            'message' => 'Recipe favourite success'
         ]);
     }
 }
