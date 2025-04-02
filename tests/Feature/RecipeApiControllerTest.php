@@ -8,6 +8,7 @@ use App\Models\Ingredient;
 use App\Models\Recipe;
 use App\Models\User;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Testing\Fluent\AssertableJson;
 use Tests\TestCase;
 
@@ -780,5 +781,45 @@ class RecipeApiControllerTest extends TestCase
 
         $response = $this->getJson('/api/recipes/favourite/2');
         $response->assertStatus(403);
+    }
+
+    public function test_recipe_api_controller_user_can_favourite_a_recipe(): void
+    {
+        $user = User::factory()->create();
+        $this->actingAs($user, 'sanctum');
+
+        $recipe = Recipe::factory()->create();
+
+        $response = $this->postJson("/api/recipes/favourite/{$user->id}/{$recipe->id}");
+
+        $response->assertStatus(200)
+            ->assertJson([
+                'message' => 'Recipe favourite success',
+            ]);
+
+        $this->assertDatabaseHas('favourite_recipes', [
+            'user_id' => $user->id,
+            'recipe_id' => $recipe->id,
+        ]);
+    }
+
+    public function test_recipe_api_controller_favouriting_same_recipe_does_not_duplicate_entry(): void
+    {
+        $user = User::factory()->create();
+        $this->actingAs($user, 'sanctum');
+
+        $recipe = Recipe::factory()->create();
+
+        // Favourite once
+        $user->favouriteRecipes()->attach($recipe);
+
+        // Favourite again
+        $this->postJson("/api/recipes/favourite/{$user->id}/{$recipe->id}");
+
+        // Ensure only one record exists
+        $this->assertEquals(1, DB::table('favourite_recipes')
+            ->where('user_id', $user->id)
+            ->where('recipe_id', $recipe->id)
+            ->count());
     }
 }
