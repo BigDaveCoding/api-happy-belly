@@ -39,7 +39,9 @@ Route::get('/email/verify', function () {
     ]);
 })->name('verification.notice');
 
-
+// TODO: Move routes into a controller
+// TODO: Email verification routes need testing
+// TODO: Need to look at sending token with email verification as it requires you to be signed in to verify email.
 
 // this route handles the verification
 // when the user clicks the verification link they will be sent the response
@@ -59,3 +61,4 @@ Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $requ
 
 
 Route::get('/recipes/favourite/{user}', [RecipeApiController::class, 'favouriteRecipes']);
+Route::post('/recipes/favourite/{user}/{recipe}', [RecipeApiController::class, 'favourite']);
