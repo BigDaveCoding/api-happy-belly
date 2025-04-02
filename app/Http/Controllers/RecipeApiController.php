@@ -152,7 +152,6 @@ class RecipeApiController extends Controller
         ]);
     }
 
-    // TODO: Needs tests
     public function favourite(User $user, Recipe $recipe): JsonResponse
     {
         $user->favouriteRecipes()->syncWithoutDetaching($recipe);
