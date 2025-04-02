@@ -55,3 +55,7 @@ Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $requ
     $request->fulfill(); // Marks email as verified
     return response()->json(['message' => 'Email verified successfully']);
 })->middleware(['auth:sanctum', 'signed', 'throttle:6, 1'])->name('verification.verify');
+
+
+
+Route::get('/recipes/favourite/{user}', [RecipeApiController::class, 'favouriteRecipes']);
