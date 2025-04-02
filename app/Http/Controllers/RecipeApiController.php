@@ -133,9 +133,13 @@ class RecipeApiController extends Controller
         }
     }
 
-    // TODO: Needs tests
     public function favouriteRecipes(User $user): JsonResponse
     {
+        if($user->id != Auth::id()){
+            return response()->json([
+                'message' => 'You do not have permission',
+            ], 403);
+        }
         $favouriteRecipes = $user->favouriteRecipes()->paginate(5);
         RecipeApiServiceProvider::paginationCollection($favouriteRecipes);
 
