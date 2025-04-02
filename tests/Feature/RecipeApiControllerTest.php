@@ -737,4 +737,37 @@ class RecipeApiControllerTest extends TestCase
         $response = $this->get('/api/recipes/favourite/1000');
         $response->assertStatus(404);
     }
+
+    public function test_recipe_api_controller_favourite_recipes_pagination_works_correctly(): void
+    {
+        $user = User::factory()->create(['id' => 1]);
+        $this->actingAs($user, 'sanctum');
+
+        $recipes = Recipe::factory()->count(7)->create();
+
+        foreach ($recipes as $recipe) {
+            $user->favouriteRecipes()->attach($recipe);
+        }
+
+        $response = $this->getJson('api/recipes/favourite/1?page=1');
+        $response->assertStatus(200)
+            ->assertJson(function (AssertableJson $response) {
+                $response->hasAll('message', 'data')
+                    ->has('data', function (AssertableJson $data) {
+                        $data->hasAll('favourite_recipes', 'pagination')
+                            ->has('favourite_recipes', 5)
+                            ->has('pagination', function (AssertableJson $pagination) {
+                                $pagination->hasAll(
+                                    'current_page',
+                                    'total_recipes',
+                                    'next_page_url',
+                                    'previous_page_url',
+                                    'all_page_urls'
+                                )
+                                    ->where('current_page', 1)
+                                    ->where('total_recipes', 7);
+                            });
+                    });
+            });
+    }
 }
