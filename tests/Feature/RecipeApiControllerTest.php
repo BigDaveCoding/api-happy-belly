@@ -770,4 +770,15 @@ class RecipeApiControllerTest extends TestCase
                     });
             });
     }
+
+    public function test_recipe_api_controller_favourite_recipes_user_cannot_access_other_users_favourites(): void
+    {
+        $userOne = User::factory()->create(['id' => 1]);
+        $this->actingAs($userOne, 'sanctum');
+
+        User::factory()->create(['id' => 2]);
+
+        $response = $this->getJson('/api/recipes/favourite/2');
+        $response->assertStatus(403);
+    }
 }
