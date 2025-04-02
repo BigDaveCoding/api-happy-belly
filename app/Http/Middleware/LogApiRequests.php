@@ -18,7 +18,7 @@ class LogApiRequests
     {
         $response = $next($request);
 
-        if ($response->getStatusCode() == 404){
+        if ($response->getStatusCode() == 404) {
             Log::channel('api_404_response')->notice('API Request Not Found - 404 Status', [
                 'method' => $request->method(),
                 'url' => $request->fullUrl(),

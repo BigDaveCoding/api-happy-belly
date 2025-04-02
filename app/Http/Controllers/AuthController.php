@@ -13,7 +13,6 @@ use Illuminate\Validation\Rules\Password;
 
 class AuthController extends Controller
 {
-
     // TODO: Needs tests
 
     public function login(LoginRequest $request): JsonResponse

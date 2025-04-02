@@ -138,12 +138,13 @@ class RecipeApiController extends Controller
     {
         $favouriteRecipes = $user->favouriteRecipes()->paginate(5);
         RecipeApiServiceProvider::paginationCollection($favouriteRecipes);
+
         return response()->json([
             'message' => 'Favourite recipes found successfully',
             'data' => [
                 'favourite_recipes' => $favouriteRecipes->items(),
                 'pagination' => RecipeApiServiceProvider::pagination($favouriteRecipes),
-            ]
+            ],
         ]);
     }
 
@@ -151,8 +152,9 @@ class RecipeApiController extends Controller
     public function favourite(User $user, Recipe $recipe): JsonResponse
     {
         $user->favouriteRecipes()->syncWithoutDetaching($recipe);
+
         return response()->json([
-            'message' => 'Recipe favourite success'
+            'message' => 'Recipe favourite success',
         ], 200);
     }
 
@@ -163,8 +165,9 @@ class RecipeApiController extends Controller
 
         if ($exists) {
             $user->favouriteRecipes()->detach($recipe);
+
             return response()->json([
-                'message' => 'Recipe unfavourite success'
+                'message' => 'Recipe unfavourite success',
             ], 200);
         }
 
