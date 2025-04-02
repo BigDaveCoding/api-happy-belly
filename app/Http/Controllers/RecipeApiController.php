@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Providers\RecipeApiServiceProvider;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class RecipeApiController extends Controller
 {
@@ -115,14 +116,35 @@ class RecipeApiController extends Controller
 
     public function delete(Recipe $recipe): JsonResponse
     {
-        if ($recipe->delete()) {
+        if ($recipe->user_id == Auth::id()) {
+            if ($recipe->delete()) {
+                return response()->json([
+                    'message' => 'Recipe deleted successfully',
+                ], 200);
+            } else {
+                return response()->json([
+                    'message' => 'Internal Server Error',
+                ], 500);
+            }
+        } else {
             return response()->json([
-                'message' => 'Recipe deleted successfully',
-            ], 200);
+                'message' => 'You do not have permission to delete this recipe',
+            ]);
         }
+    }
 
+    public function favouriteRecipes(User $user): JsonResponse
+    {
+        $favouriteRecipes = $user->favouriteRecipes()->paginate(5);
         return response()->json([
-            'message' => 'Internal Server Error',
-        ], 500);
+            'message' => 'Favourite recipes found successfully',
+            'data' => [
+                'favourite_recipes' => $favouriteRecipes->items(),
+                'pagination' => RecipeApiServiceProvider::pagination($favouriteRecipes),
+            ]
+        ]);
     }
 }
+
+// TODO: Setup policy to protect certain methods like edit or delete etc.
+// TODO: Setup post methods to update which recipes the user favourites etc.

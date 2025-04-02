@@ -29,4 +29,9 @@ class Recipe extends Model
     {
         return $this->hasOne(DietaryRestriction::class);
     }
+
+    public function favouritedByUsers(): BelongsToMany
+    {
+        return $this->BelongsToMany(User::class, 'favourite_recipes', 'recipe_id', 'user_id');
+    }
 }
