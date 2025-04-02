@@ -137,6 +137,7 @@ class RecipeApiController extends Controller
     public function favouriteRecipes(User $user): JsonResponse
     {
         $favouriteRecipes = $user->favouriteRecipes()->paginate(5);
+        RecipeApiServiceProvider::paginationCollection($favouriteRecipes);
         return response()->json([
             'message' => 'Favourite recipes found successfully',
             'data' => [
