@@ -822,4 +822,22 @@ class RecipeApiControllerTest extends TestCase
             ->where('recipe_id', $recipe->id)
             ->count());
     }
+
+    public function test_recipe_api_controller_favourite_recipes_fails_recipe_doesnt_exist(): void
+    {
+        $user = User::factory()->create(['id' => 1]);
+        $this->actingAs($user, 'sanctum');
+
+        $response = $this->postJson('/api/recipes/favourite/1/1');
+        $response->assertStatus(404);
+    }
+
+    public function test_recipe_api_controller_unauthorised_user_cannot_favourite(): void
+    {
+        User::factory()->create(['id' => 1]);
+        Recipe::factory()->create(['id' => 1]);
+
+        $response = $this->postJson('/api/recipes/favourite/1/1');
+        $response->assertStatus(401);
+    }
 }
