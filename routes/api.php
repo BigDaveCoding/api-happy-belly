@@ -62,3 +62,4 @@ Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $requ
 
 Route::get('/recipes/favourite/{user}', [RecipeApiController::class, 'favouriteRecipes']);
 Route::post('/recipes/favourite/{user}/{recipe}', [RecipeApiController::class, 'favourite']);
+Route::post('/recipes/unfavourite/{user}/{recipe}', [RecipeApiController::class, 'unfavourite']);

@@ -152,7 +152,24 @@ class RecipeApiController extends Controller
         $user->favouriteRecipes()->syncWithoutDetaching($recipe);
         return response()->json([
             'message' => 'Recipe favourite success'
-        ]);
+        ], 200);
+    }
+
+    // TODO: needs tests.
+    public function unfavourite(User $user, Recipe $recipe): JsonResponse
+    {
+        $exists = $user->favouriteRecipes()->where('recipe_id', $recipe->id)->exists();
+
+        if ($exists) {
+            $user->favouriteRecipes()->detach($recipe);
+            return response()->json([
+                'message' => 'Recipe unfavourite success'
+            ], 200);
+        }
+
+        return response()->json([
+            'message' => 'Recipe was not a favourite',
+        ], 200);
     }
 }
 
