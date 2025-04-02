@@ -48,4 +48,9 @@ class User extends Authenticatable implements MustVerifyEmail
             'password' => 'hashed',
         ];
     }
+
+    public function favouriteRecipes(): BelongsToMany
+    {
+        return $this->belongsToMany(Recipe::class, 'favourite_recipes', 'user_id', 'recipe_id');
+    }
 }
