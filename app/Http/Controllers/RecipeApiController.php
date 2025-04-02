@@ -145,3 +145,6 @@ class RecipeApiController extends Controller
         ]);
     }
 }
+
+// TODO: Setup policy to protect certain methods like edit or delete etc.
+// TODO: Setup post methods to update which recipes the user favourites etc.
