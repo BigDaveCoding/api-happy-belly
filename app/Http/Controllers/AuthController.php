@@ -63,7 +63,6 @@ class AuthController extends Controller
         ], 200);
     }
 
-    // TODO: Needs tests
     public function verifyEmail(int $id, string $hash): JsonResponse
     {
         $user = User::findOrFail($id);

@@ -248,7 +248,7 @@ class AuthControllerTest extends TestCase
         ]);
     }
 
-    public function test_auth_api_controller_verify_email_fails_invalid_link(): void
+    public function test_auth_controller_verify_email_fails_invalid_link(): void
     {
         $this->withoutMiddleware();
 
