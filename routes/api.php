@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\RecipeApiController;
 use App\Models\User;
+use Illuminate\Auth\Events\Verified;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -44,21 +45,7 @@ Route::get('/email/verify', function () {
 
 // TODO: Move routes into a controller
 // TODO: Email verification routes need testing
-// TODO: Need to look at sending token with email verification as it requires you to be signed in to verify email.
 
-// this route handles the verification
-// when the user clicks the verification link they will be sent the response
-// at the moment it's a json response
-// I could set up a blade template
-
-Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
-
-    // this could return a view
-    // view could include temporary token
-    // button to verify email
-
-    $request->fulfill(); // Marks email as verified
-
-    return response()->json(['message' => 'Email verified successfully']);
-})->middleware(['auth:sanctum', 'signed', 'throttle:6, 1'])->name('verification.verify');
+Route::get('/email/verify/{id}/{hash}', [AuthController::class, 'verifyEmail'])
+    ->middleware(['signed', 'throttle:6,1'])->name('verification.verify');
 

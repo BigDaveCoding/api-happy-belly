@@ -69,4 +69,21 @@ class AuthController extends Controller
             'message' => 'Logout successful',
         ], 200);
     }
+
+    public function verifyEmail(int $id, string $hash): JsonResponse
+    {
+        $user = User::findOrFail($id);
+
+        // Check if the hash matches the user's email
+        if (!hash_equals(sha1($user->email), $hash)) {
+            return response()->json(['message' => 'Invalid verification link'], 400);
+        }
+
+        // If the email is not verified, mark it as verified
+        if (!$user->hasVerifiedEmail()) {
+            $user->markEmailAsVerified();
+        }
+
+        return response()->json(['message' => 'Email verified successfully'], 200);
+    }
 }
