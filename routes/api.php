@@ -22,6 +22,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         Route::post('/recipes/favourite/{user}/{recipe}', 'favourite');
         Route::put('/recipes/edit/{recipe}', 'edit');
         Route::delete('/recipes/delete/{recipe}', 'delete');
+        Route::delete('/recipes/unfavourite/{user}/{recipe}', 'unfavourite');
     });
 
     Route::post('/logout', [AuthController::class, 'logout']);
@@ -61,4 +62,3 @@ Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $requ
     return response()->json(['message' => 'Email verified successfully']);
 })->middleware(['auth:sanctum', 'signed', 'throttle:6, 1'])->name('verification.verify');
 
-Route::post('/recipes/unfavourite/{user}/{recipe}', [RecipeApiController::class, 'unfavourite']);
