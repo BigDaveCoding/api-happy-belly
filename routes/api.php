@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\RecipeApiController;
+use App\Http\Middleware\VerifyEmailApi;
 use App\Models\User;
 use Illuminate\Auth\Events\Verified;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
@@ -12,7 +13,7 @@ Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
-Route::middleware(['auth:sanctum', 'verified'])->group(function () {
+Route::middleware(['auth:sanctum', VerifyEmailApi::class])->group(function () {
     Route::controller(RecipeApiController::class)->group(function () {
         Route::get('/recipes', 'all');
         Route::get('/recipes/admin', 'admin');
