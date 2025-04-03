@@ -13,8 +13,6 @@ use Illuminate\Validation\Rules\Password;
 
 class AuthController extends Controller
 {
-    // TODO: Needs tests
-
     public function login(LoginRequest $request): JsonResponse
     {
         // validate login details
@@ -65,6 +63,7 @@ class AuthController extends Controller
         ], 200);
     }
 
+    // TODO: Needs tests
     public function verifyEmail(int $id, string $hash): JsonResponse
     {
         $user = User::findOrFail($id);
@@ -80,5 +79,13 @@ class AuthController extends Controller
         }
 
         return response()->json(['message' => 'Email verified successfully'], 200);
+    }
+
+    public function resendVerificationEmail(Request $request): JsonResponse
+    {
+        $request->user()->sendEmailVerificationNotification();
+        return response()->json([
+            'message' => 'Verification link sent! Please check your inbox.',
+        ]);
     }
 }
