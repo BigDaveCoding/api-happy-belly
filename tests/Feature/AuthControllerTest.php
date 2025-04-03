@@ -213,4 +213,54 @@ class AuthControllerTest extends TestCase
                 $json->where('message', 'Unauthenticated.');
             });
     }
+
+    public function test_auth_controller_verify_email_success(): void
+    {
+        $this->withoutMiddleware();
+        $userData =[
+            'register_name' => 'John Doe',
+            'register_email' => 'johndoe@gmail.com',
+            'register_password' => 'Password1!',
+            'register_password_confirmation' => 'Password1!',
+        ];
+        $this->postJson('/api/register', $userData);
+        $this->assertDatabaseHas('users', [
+            'id' => 1,
+            'name' => 'John Doe',
+            'email' => 'johndoe@gmail.com',
+            'email_verified_at' => null,
+        ]);
+
+        $user = User::findOrFail(1);
+        $hash = sha1($user->email);
+
+        $response = $this->getJson("/api/email/verify/{$user->id}/{$hash}");
+        $response->assertStatus(200)
+            ->assertJson(function (AssertableJson $response) {
+                $response->where('message', 'Email verified successfully');
+            });
+
+        $this->assertDatabaseHas('users', [
+            'id' => 1,
+            'name' => 'John Doe',
+            'email' => 'johndoe@gmail.com',
+            'email_verified_at' => now(),
+        ]);
+    }
+
+    public function test_auth_api_controller_verify_email_fails_invalid_link(): void
+    {
+        $this->withoutMiddleware();
+
+        $userOne = User::factory()->create();
+        $userTwo = User::factory()->create();
+
+        $hash = sha1($userTwo->email);
+
+        $response = $this->getJson("/api/email/verify/{$userOne->id}/{$hash}");
+        $response->assertStatus(400)
+            ->assertJson(function (AssertableJson $response) {
+                $response->where('message', 'Invalid verification link');
+            });
+    }
 }
