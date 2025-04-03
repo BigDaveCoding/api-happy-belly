@@ -840,4 +840,68 @@ class RecipeApiControllerTest extends TestCase
         $response = $this->postJson('/api/recipes/favourite/1/1');
         $response->assertStatus(401);
     }
+
+    public function test_recipe_api_controller_user_can_unfavourite_a_recipe(): void
+    {
+        $user = User::factory()->create(['id' => 1]);
+        $this->actingAs($user, 'sanctum');
+
+        $recipe = Recipe::factory()->create(['id' => 1]);
+
+        // Favourite the recipe first
+        $user->favouriteRecipes()->attach($recipe);
+
+        $this->assertDatabaseHas('favourite_recipes', [
+            'user_id' => $user->id,
+            'recipe_id' => $recipe->id,
+        ]);
+
+        // Unfavourite it
+        $response = $this->deleteJson("/api/recipes/unfavourite/1/1");
+
+        $response->assertStatus(200);
+
+        // Ensure it no longer exists in the pivot table
+        $this->assertDatabaseMissing('favourite_recipes', [
+            'user_id' => $user->id,
+            'recipe_id' => $recipe->id,
+        ]);
+    }
+
+    public function test_unfavouriting_recipe_that_was_not_a_favourite_returns_correct_message(): void
+    {
+        $user = User::factory()->create();
+        $this->actingAs($user, 'sanctum');
+
+        $recipe = Recipe::factory()->create();
+
+        $response = $this->deleteJson("/api/recipes/unfavourite/{$user->id}/{$recipe->id}");
+
+        $response->assertStatus(200)
+            ->assertJson([
+                'message' => 'Recipe was not a favourite',
+            ]);
+    }
+
+    public function test_unfavouriting_non_existent_recipe_returns_404(): void
+    {
+        $user = User::factory()->create();
+        $this->actingAs($user, 'sanctum');
+
+        Recipe::factory()->create();
+
+        $response = $this->deleteJson("/api/recipes/unfavourite/1000");
+
+        $response->assertStatus(404);
+    }
+
+    public function test_unauthenticated_user_cannot_unfavourite_recipe(): void
+    {
+        $user = User::factory()->create(['id' => 1]);
+        Recipe::factory()->create(['id' => 1, 'user_id' => $user->id]);
+
+        $response = $this->deleteJson("/api/recipes/unfavourite/1/1");
+
+        $response->assertStatus(401);
+    }
 }
