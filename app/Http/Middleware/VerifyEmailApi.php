@@ -18,7 +18,7 @@ class VerifyEmailApi
     {
         if (Auth::check() && !Auth::user()->hasVerifiedEmail()) {
             return response()->json([
-                'message' => 'Custom message - You have not verified your email address.',
+                'message' => 'You have not verified your email address.',
             ], 403);
         }
         return $next($request);
