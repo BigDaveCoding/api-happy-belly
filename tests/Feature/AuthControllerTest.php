@@ -263,4 +263,17 @@ class AuthControllerTest extends TestCase
                 $response->where('message', 'Invalid verification link');
             });
     }
+
+    public function test_auth_controller_resend_verification_email_success(): void
+    {
+        $user = User::factory()->create();
+        $this->actingAs($user);
+
+        $response = $this->postJson('/api/email/resend/verification');
+        $response->assertStatus(200)
+            ->assertJson(function (AssertableJson $response) {
+                $response->where('message',
+                'Verification link sent! Please check your inbox.');
+            });
+    }
 }
