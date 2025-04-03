@@ -161,7 +161,6 @@ class RecipeApiController extends Controller
         ], 200);
     }
 
-    // TODO: needs tests.
     public function unfavourite(User $user, Recipe $recipe): JsonResponse
     {
         $exists = $user->favouriteRecipes()->where('recipe_id', $recipe->id)->exists();
