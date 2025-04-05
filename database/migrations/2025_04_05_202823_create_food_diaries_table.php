@@ -13,6 +13,11 @@ return new class extends Migration
     {
         Schema::create('food_diaries', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id');
+            $table->text('entry');
+            $table->string('meal_type');
+            $table->date('entry_date');
+            $table->time('entry_time');
             $table->timestamps();
         });
     }
