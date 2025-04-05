@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -16,8 +17,14 @@ class FoodDiaryFactory extends Factory
      */
     public function definition(): array
     {
+        $mealTypes = ['breakfast', 'lunch', 'dinner', 'dessert'];
+
         return [
-            //
+            'user_id' => User::factory(),
+            'entry' => fake()->sentences(3, true),
+            'meal_type' => $mealTypes[rand(0, count($mealTypes) - 1)],
+            'entry_date' => date('Y-m-d'),
+            'entry_time' => date('H:i:s'),
         ];
     }
 }
