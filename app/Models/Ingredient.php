@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Ingredient extends Model
 {
@@ -32,5 +33,10 @@ class Ingredient extends Model
             'quantity' => $this->pivot->quantity,
             'unit' => $this->pivot->unit,
         ];
+    }
+
+    public function foodDiaries(): BelongsToMany
+    {
+        return $this->belongsToMany(FoodDiary::class, 'food_diary_ingredient', 'ingredient_id', 'food_diary_id');
     }
 }
