@@ -21,6 +21,7 @@ class DatabaseSeeder extends Seeder
             DietaryRestrictionSeeder::class,
             FavouriteRecipesSeeder::class,
             FoodDiarySeeder::class,
+            FoodDiaryIngredientSeeder::class,
         ]);
     }
 }
