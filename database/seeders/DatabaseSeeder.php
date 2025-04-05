@@ -20,6 +20,7 @@ class DatabaseSeeder extends Seeder
             IngredientRecipeSeeder::class,
             DietaryRestrictionSeeder::class,
             FavouriteRecipesSeeder::class,
+            FoodDiarySeeder::class,
         ]);
     }
 }
