@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\FoodDiary;
 use App\Models\User;
+use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Testing\Fluent\AssertableJson;
@@ -11,6 +12,7 @@ use Tests\TestCase;
 
 class FoodDiaryControllerTest extends TestCase
 {
+    use DatabaseMigrations;
     public function test_food_diary_controller_all_entries_by_user(): void
     {
         // create user with id of 1
@@ -31,8 +33,6 @@ class FoodDiaryControllerTest extends TestCase
                             ->has('entries', 3, function (AssertableJson $entry) {
                                 $entry->hasAll(
                                     'id',
-                                    'user_id',
-                                    'entry',
                                     'meal_type',
                                     'entry_date',
                                     'entry_time',

@@ -12,6 +12,8 @@ class FoodDiary extends Model
     /** @use HasFactory<\Database\Factories\FoodDiaryFactory> */
     use HasFactory;
 
+    protected $hidden = ['created_at', 'updated_at'];
+
     public function ingredients(): BelongsToMany
     {
         return $this->belongsToMany(Ingredient::class, 'food_diary_ingredient', 'food_diary_id', 'ingredient_id');
