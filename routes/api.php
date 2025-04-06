@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\FoodDiaryController;
 use App\Http\Controllers\RecipeApiController;
 use App\Http\Middleware\VerifyEmailApi;
 use Illuminate\Http\Request;
@@ -35,3 +36,5 @@ Route::get('/email/verify/{id}/{hash}', [AuthController::class, 'verifyEmail'])
 
 Route::post('/email/resend/verification', [AuthController::class, 'resendVerificationEmail'])
     ->middleware(['auth:sanctum', 'throttle:6,1'])->name('verification.send');
+
+Route::get('/food-diary/{user}', [FoodDiaryController::class, 'user']);
