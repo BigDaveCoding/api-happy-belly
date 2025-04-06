@@ -22,6 +22,7 @@ class DatabaseSeeder extends Seeder
             FavouriteRecipesSeeder::class,
             FoodDiarySeeder::class,
             FoodDiaryIngredientSeeder::class,
+            FoodDiaryRecipeSeeder::class,
         ]);
     }
 }
