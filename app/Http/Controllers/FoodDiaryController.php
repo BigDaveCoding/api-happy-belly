@@ -26,4 +26,14 @@ class FoodDiaryController extends Controller
             ]
         ]);
     }
+
+    public function find(int $id): JsonResponse
+    {
+        $entry = FoodDiary::with('ingredients:id,name', 'recipes:id,name')->findOrFail($id);
+
+        return response()->json([
+            'message' => 'Entry Found',
+            'data' => $entry
+        ]);
+    }
 }

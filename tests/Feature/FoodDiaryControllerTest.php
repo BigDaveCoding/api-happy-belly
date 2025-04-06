@@ -3,6 +3,8 @@
 namespace Tests\Feature;
 
 use App\Models\FoodDiary;
+use App\Models\Ingredient;
+use App\Models\Recipe;
 use App\Models\User;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -38,6 +40,51 @@ class FoodDiaryControllerTest extends TestCase
                                     'entry_time',
                                 );
                             });
+                    });
+            });
+    }
+
+    public function test_food_diary_controller_single_entry_by_user_correct_data_with_recipe_and_ingredient(): void
+    {
+        $user = User::factory()->create(['id' => 1]);
+        $this->actingAs($user);
+
+        $diaryEntry = FoodDiary::factory()->create(['user_id' => $user->id]);
+        $recipe = Recipe::factory()->create();
+        $ingredient = Ingredient::factory()->create();
+
+        // Inject data into pivot tables
+        $diaryEntry->recipes()->attach($recipe);
+        $diaryEntry->ingredients()->attach($ingredient);
+
+        // check databases has all expected entries
+        $this->assertDatabaseHas('food_diaries', [
+            'id' => 1,
+            'user_id' => $user->id,
+        ]);
+        $this->assertDatabaseHas('food_diary_ingredient', [
+            'food_diary_id' => $diaryEntry->id,
+            'ingredient_id' => $ingredient->id,
+        ]);
+        $this->assertDatabaseHas('food_diary_recipe', [
+            'food_diary_id' => $diaryEntry->id,
+            'recipe_id' => $recipe->id,
+        ]);
+
+        $response = $this->getJson('/api/food-diary/entry/1');
+        $response->assertStatus(200)
+            ->assertJson(function (AssertableJson $response) {
+                $response->hasAll('message', 'data')
+                    ->has('data', function (AssertableJson $data) {
+                        $data->hasAll(
+                            'id',
+                            'user_id',
+                            'entry',
+                            'entry_date',
+                            'entry_time',
+                            'ingredients',
+                            'recipes',
+                        );
                     });
             });
     }

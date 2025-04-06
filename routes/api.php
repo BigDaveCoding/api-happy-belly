@@ -38,3 +38,4 @@ Route::post('/email/resend/verification', [AuthController::class, 'resendVerific
     ->middleware(['auth:sanctum', 'throttle:6,1'])->name('verification.send');
 
 Route::get('/food-diary/{user}', [FoodDiaryController::class, 'user']);
+Route::get('/food-diary/entry/{id}', [FoodDiaryController::class, 'find']);

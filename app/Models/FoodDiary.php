@@ -16,7 +16,7 @@ class FoodDiary extends Model
 
     public function ingredients(): BelongsToMany
     {
-        return $this->belongsToMany(Ingredient::class, 'food_diary_ingredient', 'food_diary_id', 'ingredient_id');
+        return $this->belongsToMany(Ingredient::class, 'food_diary_ingredient', 'food_diary_id', 'ingredient_id')->withPivot('quantity', 'unit');
     }
 
     public function recipes(): BelongsToMany
