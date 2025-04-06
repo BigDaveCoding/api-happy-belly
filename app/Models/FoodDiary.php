@@ -16,4 +16,9 @@ class FoodDiary extends Model
     {
         return $this->belongsToMany(Ingredient::class, 'food_diary_ingredient', 'food_diary_id', 'ingredient_id');
     }
+
+    public function recipes(): BelongsToMany
+    {
+        return $this->belongsToMany(Recipe::class, 'food_diary_recipe', 'food_diary_id', 'recipe_id');
+    }
 }

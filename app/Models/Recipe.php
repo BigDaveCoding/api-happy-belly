@@ -34,4 +34,9 @@ class Recipe extends Model
     {
         return $this->BelongsToMany(User::class, 'favourite_recipes', 'recipe_id', 'user_id');
     }
+
+    public function foodDiaries(): BelongsToMany
+    {
+        return $this->belongsToMany(FoodDiary::class, 'food_diary_recipe', 'recipe_id', 'food_diary_id');
+    }
 }
