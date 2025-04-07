@@ -80,11 +80,26 @@ class FoodDiaryControllerTest extends TestCase
                             'id',
                             'user_id',
                             'entry',
+                            'meal_type',
                             'entry_date',
                             'entry_time',
                             'ingredients',
                             'recipes',
-                        );
+                        )
+                            ->has('recipes', 1, function (AssertableJson $recipe) {
+                                $recipe->hasAll(
+                                    'id',
+                                    'name',
+                                    'ingredients'
+                                );
+                            })
+                            ->has('ingredients', 1, function (AssertableJson $ingredients) {
+                                $ingredients->hasAll(
+                                    'id',
+                                    'name',
+                                    'pivot_data'
+                                );
+                            });
                     });
             });
     }
