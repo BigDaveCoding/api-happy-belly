@@ -42,7 +42,7 @@ class FoodDiaryController extends Controller
         if(Auth::id() !== $entry->user_id){
             return response()->json([
                 'message' => 'Unauthorized - These are not your diary entries'
-            ]);
+            ], 401);
         }
 
         $entry->recipes->each(function ($recipe) {
