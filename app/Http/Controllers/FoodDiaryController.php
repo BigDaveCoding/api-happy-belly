@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\RecipeResource;
 use App\Models\FoodDiary;
 use App\Models\User;
 use App\Providers\PaginationServiceProvider;
@@ -29,7 +30,11 @@ class FoodDiaryController extends Controller
 
     public function find(int $id): JsonResponse
     {
-        $entry = FoodDiary::with('ingredients:id,name', 'recipes:id,name')->findOrFail($id);
+        $entry = FoodDiary::with('ingredients', 'recipes:id,name', 'recipes.ingredients:id,name')->findOrFail($id);
+
+        $entry->recipes->each(function ($recipe) {
+            $recipe->makeHidden(['pivot']);
+        });
 
         return response()->json([
             'message' => 'Entry Found',
