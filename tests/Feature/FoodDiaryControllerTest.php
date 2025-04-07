@@ -61,6 +61,25 @@ class FoodDiaryControllerTest extends TestCase
             ]);
     }
 
+    public function test_food_diary_pagination_limit(): void
+    {
+        $user = User::factory()->create();
+        FoodDiary::factory()->count(8)->create(['user_id' => $user->id]);
+
+        $this->actingAs($user);
+
+        $response = $this->getJson("/api/food-diary/{$user->id}");
+
+        $response->assertStatus(200)
+            ->assertJson(function (AssertableJson $response) {
+                $response->hasAll('message', 'data')
+                    ->has('data', function (AssertableJson $data) {
+                        $data->hasAll('entries', 'pagination')
+                            ->has('entries', 5);
+                    });
+            });
+    }
+
     public function test_food_diary_controller_single_entry_by_user_correct_data_with_recipe_and_ingredient(): void
     {
         $user = User::factory()->create(['id' => 1]);
