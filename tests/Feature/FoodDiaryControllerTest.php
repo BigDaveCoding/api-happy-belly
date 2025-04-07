@@ -252,4 +252,13 @@ class FoodDiaryControllerTest extends TestCase
                     });
             });
     }
+
+    public function test_diary_entry_does_not_exist(): void
+    {
+        $user = User::factory()->create();
+        $this->actingAs($user);
+
+        $response = $this->getJson('/api/food-diary/entry/1000');
+        $response->assertStatus(404);
+    }
 }
