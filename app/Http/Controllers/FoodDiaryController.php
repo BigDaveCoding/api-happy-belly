@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\FoodDiary;
+use App\Models\Ingredient;
 use App\Models\User;
 use App\Providers\PaginationServiceProvider;
 use Illuminate\Http\JsonResponse;
@@ -68,6 +69,8 @@ class FoodDiaryController extends Controller
             'diary_ingredient_quantity.*' => 'nullable|integer',
             'diary_ingredient_unit' => 'nullable|array',
             'diary_ingredient_unit.*' => 'nullable|string',
+            'diary_ingredient_allergen' => 'nullable|array',
+            'diary_ingredient_allergen.*' => 'nullable|boolean',
             'diary_recipes' => 'nullable|array',
             'diary_recipes.*' => 'nullable|integer|exists:recipes,id',
         ]);
@@ -81,6 +84,18 @@ class FoodDiaryController extends Controller
         $entry->entry_date = $validatedData['diary_date'];
         $entry->entry_time = $validatedData['diary_time'];
         $entry->save();
+
+        foreach ($validatedData['diary_ingredient_name'] as $index => $ingredient) {
+            $ingredient = Ingredient::firstOrCreate([
+                'name' => $ingredient,
+                'food_group' => 'food_group', // static value
+                'allergen' => $validatedData['diary_ingredient_allergen'][$index],
+            ]);
+            $entry->ingredients()->attach($ingredient, [
+                'quantity' => $validatedData['diary_ingredient_quantity'][$index],
+                'unit' => $validatedData['diary_ingredient_unit'][$index],
+            ]);
+        }
 
         return response()->json([
             'message' => 'Food diary entry created successfully',
