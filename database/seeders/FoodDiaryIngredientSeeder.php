@@ -18,6 +18,8 @@ class FoodDiaryIngredientSeeder extends Seeder
                 DB::table('food_diary_ingredient')->insert([
                     'food_diary_id' => $i + 1,
                     'ingredient_id' => rand(1, 100),
+                    'quantity' => rand(1, 5),
+                    'unit' => fake()->word(),
                 ]);
             }
         }
