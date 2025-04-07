@@ -6,6 +6,7 @@ use App\Models\FoodDiary;
 use App\Models\User;
 use App\Providers\PaginationServiceProvider;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class FoodDiaryController extends Controller
@@ -49,6 +50,40 @@ class FoodDiaryController extends Controller
         return response()->json([
             'message' => 'Entry Found',
             'data' => $entry,
+        ]);
+    }
+
+    public function create(Request $request): JsonResponse
+    {
+        // validate data sent in request
+        $validatedData = $request->validate([
+            'user_id' => 'required|integer|exists:users,id',
+            'entry' => 'required|string|max:5000',
+            'meal_type' => 'required|string',
+            'diary_date' => 'required|date',
+            'diary_time' => 'required|string',
+            'diary_ingredient_name' => 'nullable|array',
+            'diary_ingredient_name.*' => 'nullable|string',
+            'diary_ingredient_quantity' => 'nullable|array',
+            'diary_ingredient_quantity.*' => 'nullable|integer',
+            'diary_ingredient_unit' => 'nullable|array',
+            'diary_ingredient_unit.*' => 'nullable|string',
+            'diary_recipes' => 'nullable|array',
+            'diary_recipes.*' => 'nullable|integer|exists:recipes,id',
+        ]);
+
+        // if data is valid - create new entry
+
+        $entry = new FoodDiary();
+        $entry->user_id = $validatedData['user_id'];
+        $entry->entry = $validatedData['entry'];
+        $entry->meal_type = $validatedData['meal_type'];
+        $entry->entry_date = $validatedData['diary_date'];
+        $entry->entry_time = $validatedData['diary_time'];
+        $entry->save();
+
+        return response()->json([
+            'message' => 'Food diary entry created successfully',
         ]);
     }
 }

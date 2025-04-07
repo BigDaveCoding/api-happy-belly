@@ -46,3 +46,5 @@ Route::controller(FoodDiaryController::class)->group(function () {
         Route::get('/food-diary/entry/{id}', 'find');
     });
 });
+
+Route::post('/food-diary/create', [FoodDiaryController::class, 'create']);
