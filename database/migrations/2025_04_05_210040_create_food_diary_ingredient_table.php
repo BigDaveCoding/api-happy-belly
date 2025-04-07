@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id();
             $table->foreignId('food_diary_id')->constrained()->onDelete('cascade');
             $table->foreignId('ingredient_id')->constrained()->onDelete('cascade');
-            $table->integer('quantity');
-            $table->string('unit');
+            $table->integer('quantity')->nullable();
+            $table->string('unit')->nullable();
             $table->timestamps();
         });
     }
