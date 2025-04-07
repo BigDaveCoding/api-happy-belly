@@ -44,6 +44,23 @@ class FoodDiaryControllerTest extends TestCase
             });
     }
 
+    public function test_user_cannot_access_other_users_diary(): void
+    {
+        $user = User::factory()->create(['id' => 1]);
+        $otherUser = User::factory()->create(['id' => 2]);
+
+        FoodDiary::factory()->count(2)->create(['user_id' => $otherUser->id]);
+
+        $this->actingAs($user);
+
+        $response = $this->getJson("/api/food-diary/{$otherUser->id}");
+
+        $response->assertStatus(401)
+            ->assertJson([
+                'message' => 'Unauthorized - These are not your diary entries',
+            ]);
+    }
+
     public function test_food_diary_controller_single_entry_by_user_correct_data_with_recipe_and_ingredient(): void
     {
         $user = User::factory()->create(['id' => 1]);
