@@ -80,6 +80,27 @@ class FoodDiaryControllerTest extends TestCase
             });
     }
 
+    public function test_food_diary_hides_sensitive_fields(): void
+    {
+        $user = User::factory()->create();
+        FoodDiary::factory()->create([
+            'user_id' => $user->id,
+            'entry' => 'This should not show',
+        ]);
+
+        $this->actingAs($user);
+
+        $response = $this->getJson("/api/food-diary/{$user->id}");
+
+        $response->assertStatus(200)
+            ->assertJsonMissing([
+                'user_id',
+                'entry',
+                'created_at',
+                'updated_at',
+            ]);
+    }
+
     public function test_food_diary_controller_single_entry_by_user_correct_data_with_recipe_and_ingredient(): void
     {
         $user = User::factory()->create(['id' => 1]);
