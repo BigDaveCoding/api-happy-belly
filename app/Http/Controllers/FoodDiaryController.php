@@ -39,6 +39,12 @@ class FoodDiaryController extends Controller
     {
         $entry = FoodDiary::with('ingredients:id,name', 'recipes:id,name', 'recipes.ingredients:id,name')->findOrFail($id);
 
+        if(Auth::id() !== $entry->user_id){
+            return response()->json([
+                'message' => 'Unauthorized - These are not your diary entries'
+            ]);
+        }
+
         $entry->recipes->each(function ($recipe) {
             $recipe->makeHidden(['pivot']);
         });
