@@ -56,8 +56,15 @@ class FoodDiaryControllerTest extends TestCase
         // Inject data into pivot tables
         $diaryEntry->recipes()->attach($recipe);
         $diaryEntry->ingredients()->attach($ingredient);
+        $recipe->ingredients()->attach($ingredient, ['quantity' => 1, 'unit' => 'g']);
 
         // check databases has all expected entries
+        $this->assertDatabaseHas('ingredient_recipe', [
+            'ingredient_id' => $ingredient->id,
+            'recipe_id' => $recipe->id,
+            'quantity' => 1,
+            'unit' => 'g'
+        ]);
         $this->assertDatabaseHas('food_diaries', [
             'id' => 1,
             'user_id' => $user->id,
@@ -91,7 +98,14 @@ class FoodDiaryControllerTest extends TestCase
                                     'id',
                                     'name',
                                     'ingredients'
-                                );
+                                )
+                                    ->has('ingredients', 1, function (AssertableJson $ingredients) {
+                                        $ingredients->hasAll(
+                                            'id',
+                                            'name',
+                                            'pivot_data',
+                                        );
+                                    });
                             })
                             ->has('ingredients', 1, function (AssertableJson $ingredients) {
                                 $ingredients->hasAll(
