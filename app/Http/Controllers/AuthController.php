@@ -68,12 +68,12 @@ class AuthController extends Controller
         $user = User::findOrFail($id);
 
         // Check if the hash matches the user's email
-        if (!hash_equals(sha1($user->email), $hash)) {
+        if (! hash_equals(sha1($user->email), $hash)) {
             return response()->json(['message' => 'Invalid verification link'], 400);
         }
 
         // If the email is not verified, mark it as verified
-        if (!$user->hasVerifiedEmail()) {
+        if (! $user->hasVerifiedEmail()) {
             $user->markEmailAsVerified();
         }
 
@@ -83,6 +83,7 @@ class AuthController extends Controller
     public function resendVerificationEmail(Request $request): JsonResponse
     {
         $request->user()->sendEmailVerificationNotification();
+
         return response()->json([
             'message' => 'Verification link sent! Please check your inbox.',
         ]);

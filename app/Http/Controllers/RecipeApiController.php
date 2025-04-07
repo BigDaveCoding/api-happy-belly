@@ -135,7 +135,7 @@ class RecipeApiController extends Controller
 
     public function favouriteRecipes(User $user): JsonResponse
     {
-        if($user->id != Auth::id()){
+        if ($user->id != Auth::id()) {
             return response()->json([
                 'message' => 'You do not have permission',
             ], 403);

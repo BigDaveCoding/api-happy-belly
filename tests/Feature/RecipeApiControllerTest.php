@@ -857,7 +857,7 @@ class RecipeApiControllerTest extends TestCase
         ]);
 
         // Unfavourite it
-        $response = $this->deleteJson("/api/recipes/unfavourite/1/1");
+        $response = $this->deleteJson('/api/recipes/unfavourite/1/1');
 
         $response->assertStatus(200);
 
@@ -890,7 +890,7 @@ class RecipeApiControllerTest extends TestCase
 
         Recipe::factory()->create();
 
-        $response = $this->deleteJson("/api/recipes/unfavourite/1000");
+        $response = $this->deleteJson('/api/recipes/unfavourite/1000');
 
         $response->assertStatus(404);
     }
@@ -900,7 +900,7 @@ class RecipeApiControllerTest extends TestCase
         $user = User::factory()->create(['id' => 1]);
         Recipe::factory()->create(['id' => 1, 'user_id' => $user->id]);
 
-        $response = $this->deleteJson("/api/recipes/unfavourite/1/1");
+        $response = $this->deleteJson('/api/recipes/unfavourite/1/1');
 
         $response->assertStatus(401);
     }

@@ -7,14 +7,13 @@ use App\Models\Ingredient;
 use App\Models\Recipe;
 use App\Models\User;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Testing\Fluent\AssertableJson;
 use Tests\TestCase;
 
 class FoodDiaryControllerTest extends TestCase
 {
     use DatabaseMigrations;
+
     public function test_food_diary_controller_all_entries_by_user(): void
     {
         // create user with id of 1
@@ -106,7 +105,7 @@ class FoodDiaryControllerTest extends TestCase
         $user = User::factory()->create();
         $this->actingAs($user);
 
-        $response = $this->getJson("/api/food-diary/1000");
+        $response = $this->getJson('/api/food-diary/1000');
         $response->assertStatus(404);
     }
 
@@ -129,7 +128,7 @@ class FoodDiaryControllerTest extends TestCase
             'ingredient_id' => $ingredient->id,
             'recipe_id' => $recipe->id,
             'quantity' => 1,
-            'unit' => 'g'
+            'unit' => 'g',
         ]);
         $this->assertDatabaseHas('food_diaries', [
             'id' => 1,
@@ -197,7 +196,7 @@ class FoodDiaryControllerTest extends TestCase
 
         $response->assertStatus(401)
             ->assertJson([
-                'message' => 'Unauthorized - These are not your diary entries'
+                'message' => 'Unauthorized - These are not your diary entries',
             ]);
     }
 

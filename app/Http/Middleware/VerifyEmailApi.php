@@ -16,11 +16,12 @@ class VerifyEmailApi
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (Auth::check() && !Auth::user()->hasVerifiedEmail()) {
+        if (Auth::check() && ! Auth::user()->hasVerifiedEmail()) {
             return response()->json([
                 'message' => 'You have not verified your email address.',
             ], 403);
         }
+
         return $next($request);
     }
 }

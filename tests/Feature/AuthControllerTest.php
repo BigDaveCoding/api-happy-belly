@@ -217,7 +217,7 @@ class AuthControllerTest extends TestCase
     public function test_auth_controller_verify_email_success(): void
     {
         $this->withoutMiddleware();
-        $userData =[
+        $userData = [
             'register_name' => 'John Doe',
             'register_email' => 'johndoe@gmail.com',
             'register_password' => 'Password1!',
@@ -273,7 +273,7 @@ class AuthControllerTest extends TestCase
         $response->assertStatus(200)
             ->assertJson(function (AssertableJson $response) {
                 $response->where('message',
-                'Verification link sent! Please check your inbox.');
+                    'Verification link sent! Please check your inbox.');
             });
     }
 }
