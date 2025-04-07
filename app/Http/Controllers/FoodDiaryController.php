@@ -59,8 +59,8 @@ class FoodDiaryController extends Controller
         // validate data sent in request
         $validatedData = $request->validate([
             'user_id' => 'required|integer|exists:users,id',
-            'entry' => 'required|string|max:5000',
-            'meal_type' => 'required|string',
+            'diary_entry' => 'required|string|max:5000',
+            'diary_meal_type' => 'required|string',
             'diary_date' => 'required|date',
             'diary_time' => 'required|string',
             'diary_ingredient_name' => 'nullable|array',
@@ -79,8 +79,8 @@ class FoodDiaryController extends Controller
 
         $entry = new FoodDiary();
         $entry->user_id = $validatedData['user_id'];
-        $entry->entry = $validatedData['entry'];
-        $entry->meal_type = $validatedData['meal_type'];
+        $entry->entry = $validatedData['diary_entry'];
+        $entry->meal_type = $validatedData['diary_meal_type'];
         $entry->entry_date = $validatedData['diary_date'];
         $entry->entry_time = $validatedData['diary_time'];
         $entry->save();
@@ -95,6 +95,11 @@ class FoodDiaryController extends Controller
                 'quantity' => $validatedData['diary_ingredient_quantity'][$index],
                 'unit' => $validatedData['diary_ingredient_unit'][$index],
             ]);
+        }
+
+        // attach recipes to pivot table
+        foreach ($validatedData['diary_recipes'] as $recipe) {
+            $entry->recipes()->attach($recipe);
         }
 
         return response()->json([
