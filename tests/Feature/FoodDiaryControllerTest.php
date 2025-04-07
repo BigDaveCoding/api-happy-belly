@@ -101,6 +101,15 @@ class FoodDiaryControllerTest extends TestCase
             ]);
     }
 
+    public function test_food_diary_entries_user_doesnt_exist(): void
+    {
+        $user = User::factory()->create();
+        $this->actingAs($user);
+
+        $response = $this->getJson("/api/food-diary/1000");
+        $response->assertStatus(404);
+    }
+
     public function test_food_diary_controller_single_entry_by_user_correct_data_with_recipe_and_ingredient(): void
     {
         $user = User::factory()->create(['id' => 1]);
