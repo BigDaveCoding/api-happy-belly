@@ -9,11 +9,18 @@ use App\Providers\PaginationServiceProvider;
 use App\Providers\RecipeApiServiceProvider;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class FoodDiaryController extends Controller
 {
     public function user(User $user): JsonResponse
     {
+        if(Auth::id() !== $user->id){
+            return response()->json([
+                'message' => 'Unauthorized - These are not your diary entries'
+            ], 401);
+        }
+
         $entriesData = FoodDiary::where(['user_id' => $user->id])->paginate(5);
         $entriesData->getCollection()->transform(function ($entry) {
             return $entry->setHidden(['user_id','entry','created_at', 'updated_at']);
@@ -30,7 +37,7 @@ class FoodDiaryController extends Controller
 
     public function find(int $id): JsonResponse
     {
-        $entry = FoodDiary::with('ingredients', 'recipes:id,name', 'recipes.ingredients:id,name')->findOrFail($id);
+        $entry = FoodDiary::with('ingredients:id,name', 'recipes:id,name', 'recipes.ingredients:id,name')->findOrFail($id);
 
         $entry->recipes->each(function ($recipe) {
             $recipe->makeHidden(['pivot']);
