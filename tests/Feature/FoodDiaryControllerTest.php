@@ -221,4 +221,35 @@ class FoodDiaryControllerTest extends TestCase
                     });
             });
     }
+
+    public function test_diary_entry_with_no_ingredients_returns_correctly(): void
+    {
+        $user = User::factory()->create();
+        $entry = FoodDiary::factory()->create(['user_id' => $user->id]);
+
+        $recipe = Recipe::factory()->create();
+        $entry->recipes()->attach($recipe);
+
+        $this->actingAs($user);
+
+        $response = $this->getJson("/api/food-diary/entry/{$entry->id}");
+
+        $response->assertStatus(200)
+            ->assertJson(function (AssertableJson $response) {
+                $response->hasAll('message', 'data')
+                    ->has('data', function (AssertableJson $data) {
+                        $data->hasAll(
+                            'id',
+                            'user_id',
+                            'entry',
+                            'meal_type',
+                            'entry_date',
+                            'entry_time',
+                            'ingredients',
+                            'recipes',
+                        )
+                            ->where('ingredients', []);
+                    });
+            });
+    }
 }
