@@ -386,11 +386,11 @@ class FoodDiaryControllerTest extends TestCase
             'diary_meal_type' => ['breakfast'], // should be string, not array
             'diary_date' => 123456, // should be string date format
             'diary_time' => false, // should be time string
-            'diary_ingredient_name' => 'Just one ingredient', // should be array
-            'diary_ingredient_quantity' => 'a lot', // should be array of numbers
-            'diary_ingredient_unit' => 42, // should be array of strings/nulls
-            'diary_ingredient_allergen' => 'none', // should be array of 0/1 values
-            'diary_recipes' => 'recipe one', // should be array of recipe IDs (ints)
+            'diary_ingredient_name' => 'he', // should be array of strings
+            'diary_ingredient_quantity' => 1, // should be array of numbers
+            'diary_ingredient_unit' => 22, // should be array of strings/nulls
+            'diary_ingredient_allergen' => 'string', // should be array of 0/1 values
+            'diary_recipes' => "eee", // should be array of recipe IDs (ints)
         ];
 
         $response = $this->postJson('/api/food-diary/create', $data);
@@ -438,5 +438,28 @@ class FoodDiaryControllerTest extends TestCase
             ->assertJson(function (AssertableJson $response) {
                 $response->where('message', 'Unauthorized - Cannot make an entry for another user');
             });
+    }
+
+    public function test_create_diary_entry_with_mismatched_ingredient_arrays_should_fail(): void
+    {
+        $user = User::factory()->create();
+        $this->actingAs($user);
+
+        $data = [
+            'user_id' => $user->id,
+            'diary_entry' => 'Test mismatch',
+            'diary_meal_type' => 'lunch',
+            'diary_date' => '2025-04-01',
+            'diary_time' => '12:00:00',
+            'diary_ingredient_name' => ['Ingredient A', 'Ingredient B'],
+            'diary_ingredient_quantity' => [1], // mismatched
+            'diary_ingredient_unit' => ['g', 'ml'],
+            'diary_ingredient_allergen' => [0, 1],
+            'diary_recipes' => [],
+        ];
+
+        $response = $this->postJson('/api/food-diary/create', $data);
+
+        $response->assertStatus(422);
     }
 }
