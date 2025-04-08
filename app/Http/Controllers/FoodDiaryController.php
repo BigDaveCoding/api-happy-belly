@@ -6,6 +6,7 @@ use App\Http\Requests\FoodDiaryRequest;
 use App\Models\FoodDiary;
 use App\Models\Ingredient;
 use App\Models\User;
+use App\Providers\FoodDiaryServiceProvider;
 use App\Providers\PaginationServiceProvider;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -57,35 +58,11 @@ class FoodDiaryController extends Controller
 
     public function create(FoodDiaryRequest $request): JsonResponse
     {
-        // validate data sent in request
         $validatedData = $request->validated();
 
-        // if data is valid - create new entry
-
-        $entry = new FoodDiary();
-        $entry->user_id = $validatedData['user_id'];
-        $entry->entry = $validatedData['diary_entry'];
-        $entry->meal_type = $validatedData['diary_meal_type'];
-        $entry->entry_date = $validatedData['diary_date'];
-        $entry->entry_time = $validatedData['diary_time'];
-        $entry->save();
-
-        foreach ($validatedData['diary_ingredient_name'] as $index => $ingredient) {
-            $ingredient = Ingredient::firstOrCreate([
-                'name' => $ingredient,
-                'food_group' => 'food_group', // static value
-                'allergen' => $validatedData['diary_ingredient_allergen'][$index],
-            ]);
-            $entry->ingredients()->attach($ingredient, [
-                'quantity' => $validatedData['diary_ingredient_quantity'][$index],
-                'unit' => $validatedData['diary_ingredient_unit'][$index],
-            ]);
-        }
-
-        // attach recipes to pivot table
-        foreach ($validatedData['diary_recipes'] as $recipe) {
-            $entry->recipes()->attach($recipe);
-        }
+        $entry = FoodDiaryServiceProvider::createFoodDiaryEntry($validatedData);
+        FoodDiaryServiceProvider::createIngredientsAddPivot($validatedData, $entry);
+        FoodDiaryServiceProvider::addRecipePivot($validatedData, $entry);
 
         return response()->json([
             'message' => 'Food diary entry created successfully',
