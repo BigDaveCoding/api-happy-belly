@@ -334,4 +334,83 @@ class FoodDiaryControllerTest extends TestCase
             'recipe_id' => 1,
         ]);
     }
+
+    public function test_diary_entry_create_success_only_required_data(): void
+    {
+        $user = User::factory()->create();
+        $this->actingAs($user);
+
+        Recipe::factory()->create(['id' => 1]);
+
+        $data = [
+            'user_id' => 1,
+            'diary_entry' => 'this is the food diary entry',
+            'diary_meal_type' => 'breakfast',
+            'diary_date' => '2025-04-01',
+            'diary_time' => '16:10:10',
+            'diary_ingredient_name' => [],
+            'diary_ingredient_quantity' => [],
+            'diary_ingredient_unit' => [],
+            'diary_ingredient_allergen' => [],
+            'diary_recipes' => [],
+        ];
+
+        $this->assertDatabaseEmpty('food_diaries');
+
+        $response = $this->postJson('/api/food-diary/create', $data);
+        $response->assertStatus(200)
+            ->assertJson(function (AssertableJson $response) {
+                $response->has('message');
+            });
+
+        $this->assertDatabaseHas('food_diaries', [
+            'user_id' => 1,
+            'entry' => 'this is the food diary entry',
+            'meal_type' => 'breakfast',
+            'entry_date' => '2025-04-01',
+            'entry_time' => '16:10:10',
+        ]);
+
+        $this->assertDatabaseEmpty('food_diary_ingredient');
+        $this->assertDatabaseEmpty('food_diary_recipe');
+    }
+
+    public function test_create_food_diary_entry_validation_working(): void
+    {
+        $user = User::factory()->create();
+        $this->actingAs($user);
+
+        $data = [
+            'user_id' => 'not-a-number', // should be integer
+            'diary_entry' => 12345, // should be string
+            'diary_meal_type' => ['breakfast'], // should be string, not array
+            'diary_date' => 123456, // should be string date format
+            'diary_time' => false, // should be time string
+            'diary_ingredient_name' => 'Just one ingredient', // should be array
+            'diary_ingredient_quantity' => 'a lot', // should be array of numbers
+            'diary_ingredient_unit' => 42, // should be array of strings/nulls
+            'diary_ingredient_allergen' => 'none', // should be array of 0/1 values
+            'diary_recipes' => 'recipe one', // should be array of recipe IDs (ints)
+        ];
+
+        $response = $this->postJson('/api/food-diary/create', $data);
+        $response->assertStatus(422)
+            ->assertJson(function (AssertableJson $response) {
+                $response->hasAll('message', 'errors')
+                    ->has('errors', function (AssertableJson $errors) {
+                        $errors->hasAll(
+                            'user_id',
+                            'diary_entry',
+                            'diary_meal_type',
+                            'diary_date',
+                            'diary_time',
+                            'diary_ingredient_name',
+                            'diary_ingredient_quantity',
+                            'diary_ingredient_unit',
+                            'diary_ingredient_allergen',
+                            'diary_recipes',
+                        );
+                    });
+            });
+    }
 }
