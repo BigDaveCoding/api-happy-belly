@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\FoodDiaryRequest;
 use App\Models\FoodDiary;
 use App\Models\Ingredient;
 use App\Models\User;
@@ -54,26 +55,10 @@ class FoodDiaryController extends Controller
         ]);
     }
 
-    public function create(Request $request): JsonResponse
+    public function create(FoodDiaryRequest $request): JsonResponse
     {
         // validate data sent in request
-        $validatedData = $request->validate([
-            'user_id' => 'required|integer|exists:users,id',
-            'diary_entry' => 'required|string|max:5000',
-            'diary_meal_type' => 'required|string',
-            'diary_date' => 'required|date',
-            'diary_time' => 'required|string',
-            'diary_ingredient_name' => 'nullable|array',
-            'diary_ingredient_name.*' => 'nullable|string',
-            'diary_ingredient_quantity' => 'nullable|array',
-            'diary_ingredient_quantity.*' => 'nullable|integer',
-            'diary_ingredient_unit' => 'nullable|array',
-            'diary_ingredient_unit.*' => 'nullable|string',
-            'diary_ingredient_allergen' => 'nullable|array',
-            'diary_ingredient_allergen.*' => 'nullable|boolean',
-            'diary_recipes' => 'nullable|array',
-            'diary_recipes.*' => 'nullable|integer|exists:recipes,id',
-        ]);
+        $validatedData = $request->validated();
 
         // if data is valid - create new entry
 
