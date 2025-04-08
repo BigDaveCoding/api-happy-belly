@@ -394,24 +394,44 @@ class FoodDiaryControllerTest extends TestCase
         ];
 
         $response = $this->postJson('/api/food-diary/create', $data);
-        $response->assertStatus(422)
-            ->assertJson(function (AssertableJson $response) {
-                $response->hasAll('message', 'errors')
-                    ->has('errors', function (AssertableJson $errors) {
-                        $errors->hasAll(
-                            'user_id',
-                            'diary_entry',
-                            'diary_meal_type',
-                            'diary_date',
-                            'diary_time',
-                            'diary_ingredient_name',
-                            'diary_ingredient_quantity',
-                            'diary_ingredient_unit',
-                            'diary_ingredient_allergen',
-                            'diary_recipes',
-                        );
-                    });
-            });
+        $response->assertInvalid([
+            'user_id',
+            'diary_entry',
+            'diary_meal_type',
+            'diary_date',
+            'diary_time',
+            'diary_ingredient_name',
+            'diary_ingredient_quantity',
+            'diary_ingredient_unit',
+            'diary_ingredient_allergen',
+            'diary_recipes',
+        ]);
+    }
+
+    public function test_array_data_validation_working(): void
+    {
+        $user = User::factory()->create(['id' => 1]);
+        $this->actingAs($user);
+
+        $data = [
+            'user_id' => 1,
+            'diary_entry' => 'this is the food diary entry',
+            'diary_meal_type' => 'breakfast',
+            'diary_date' => '2025-04-01',
+            'diary_time' => '16:10:10',
+            'diary_ingredient_name' => [300], // invalid data inside array
+            'diary_ingredient_quantity' => [true], // invalid data inside array
+            'diary_ingredient_unit' => [false], // invalid data inside array
+            'diary_ingredient_allergen' => ["string"], // invalid data inside array
+            'diary_recipes' => ['ahh!'], // invalid data inside array
+        ];
+
+        $response = $this->postJson('/api/food-diary/create', $data);
+        $response->assertInvalid([
+            'diary_ingredient_name.0',
+            'diary_ingredient_unit.0',
+            'diary_ingredient_allergen.0',
+            'diary_recipes.0',]);
     }
 
     public function test_cannot_create_entry_for_different_user(): void
@@ -460,6 +480,6 @@ class FoodDiaryControllerTest extends TestCase
 
         $response = $this->postJson('/api/food-diary/create', $data);
 
-        $response->assertStatus(422);
+        $response->assertInvalid(['diary_ingredient_arrays']);
     }
 }

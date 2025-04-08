@@ -51,7 +51,7 @@ class FoodDiaryRequest extends FormRequest
                 // If more than one unique length, the arrays are mismatched
                 if (count($uniqueLengths) > 1) {
                     $validator->errors()->add(
-                        'diary_ingredient_name',
+                        'diary_ingredient_arrays',
                         'Ingredient arrays (name, quantity, unit, allergen) must all have the same length.'
                     );
                 }
