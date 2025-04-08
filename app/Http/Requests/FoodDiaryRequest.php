@@ -27,4 +27,32 @@ class FoodDiaryRequest extends FormRequest
             'diary_recipes.*' => 'nullable|integer|exists:recipes,id',
         ];
     }
+
+    public function withValidator($validator)
+    {
+        $validator->after(function ($validator) {
+            $names = $this->input('diary_ingredient_name', []);
+            $quantities = $this->input('diary_ingredient_quantity', []);
+            $units = $this->input('diary_ingredient_unit', []);
+            $allergens = $this->input('diary_ingredient_allergen', []);
+
+            $arrays = [
+                'diary_ingredient_name' => $names,
+                'diary_ingredient_quantity' => $quantities,
+                'diary_ingredient_unit' => $units,
+                'diary_ingredient_allergen' => $allergens,
+            ];
+
+            $lengths = array_map('count', $arrays);
+            $uniqueLengths = array_unique($lengths);
+
+            // If more than one unique length, the arrays are mismatched
+            if (count($uniqueLengths) > 1) {
+                $validator->errors()->add(
+                    'diary_ingredient_name',
+                    'Ingredient arrays (name, quantity, unit, allergen) must all be the same length.'
+                );
+            }
+        });
+    }
 }
