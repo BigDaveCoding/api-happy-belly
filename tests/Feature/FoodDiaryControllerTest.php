@@ -413,4 +413,30 @@ class FoodDiaryControllerTest extends TestCase
                     });
             });
     }
+
+    public function test_cannot_create_entry_for_different_user(): void
+    {
+        $user = User::factory()->create(['id' => 1]);
+        User::factory()->create(['id' => 2]);
+        $this->actingAs($user);
+
+        $data = [
+            'user_id' => 2,
+            'diary_entry' => 'this is the food diary entry',
+            'diary_meal_type' => 'breakfast',
+            'diary_date' => '2025-04-01',
+            'diary_time' => '16:10:10',
+            'diary_ingredient_name' => [],
+            'diary_ingredient_quantity' => [],
+            'diary_ingredient_unit' => [],
+            'diary_ingredient_allergen' => [],
+            'diary_recipes' => [],
+        ];
+
+        $response = $this->postJson('/api/food-diary/create', $data);
+        $response->assertStatus(401)
+            ->assertJson(function (AssertableJson $response) {
+                $response->where('message', 'Unauthorized - Cannot make an entry for another user');
+            });
+    }
 }
