@@ -36,22 +36,25 @@ class FoodDiaryRequest extends FormRequest
             $units = $this->input('diary_ingredient_unit', []);
             $allergens = $this->input('diary_ingredient_allergen', []);
 
-            $arrays = [
-                'diary_ingredient_name' => $names,
-                'diary_ingredient_quantity' => $quantities,
-                'diary_ingredient_unit' => $units,
-                'diary_ingredient_allergen' => $allergens,
-            ];
+            // Ensure these are arrays before counting
+            if (is_array($names) && is_array($quantities) && is_array($units) && is_array($allergens)) {
+                $arrays = [
+                    'diary_ingredient_name' => $names,
+                    'diary_ingredient_quantity' => $quantities,
+                    'diary_ingredient_unit' => $units,
+                    'diary_ingredient_allergen' => $allergens,
+                ];
 
-            $lengths = array_map('count', $arrays);
-            $uniqueLengths = array_unique($lengths);
+                $lengths = array_map('count', $arrays);
+                $uniqueLengths = array_unique($lengths);
 
-            // If more than one unique length, the arrays are mismatched
-            if (count($uniqueLengths) > 1) {
-                $validator->errors()->add(
-                    'diary_ingredient_name',
-                    'Ingredient arrays (name, quantity, unit, allergen) must all be the same length.'
-                );
+                // If more than one unique length, the arrays are mismatched
+                if (count($uniqueLengths) > 1) {
+                    $validator->errors()->add(
+                        'diary_ingredient_name',
+                        'Ingredient arrays (name, quantity, unit, allergen) must all have the same length.'
+                    );
+                }
             }
         });
     }
