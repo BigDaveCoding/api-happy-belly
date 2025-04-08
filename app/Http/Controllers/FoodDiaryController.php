@@ -63,7 +63,7 @@ class FoodDiaryController extends Controller
         if (Auth::id() !== $validatedData['user_id']) {
             return response()->json([
                 'message' => 'Unauthorized - Cannot make an entry for another user',
-            ]);
+            ], 401);
         }
 
         $entry = FoodDiaryServiceProvider::createFoodDiaryEntry($validatedData);
@@ -72,6 +72,6 @@ class FoodDiaryController extends Controller
 
         return response()->json([
             'message' => 'Food diary entry created successfully',
-        ]);
+        ], 200);
     }
 }
