@@ -60,6 +60,12 @@ class FoodDiaryController extends Controller
     {
         $validatedData = $request->validated();
 
+        if (Auth::id() !== $validatedData['user_id']) {
+            return response()->json([
+                'message' => 'Unauthorized - Cannot make an entry for another user',
+            ]);
+        }
+
         $entry = FoodDiaryServiceProvider::createFoodDiaryEntry($validatedData);
         FoodDiaryServiceProvider::createIngredientsAddPivot($validatedData, $entry);
         FoodDiaryServiceProvider::addRecipePivot($validatedData, $entry);
