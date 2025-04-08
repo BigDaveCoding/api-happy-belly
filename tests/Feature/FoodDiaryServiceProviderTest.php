@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\FoodDiary;
+use App\Models\Recipe;
 use App\Providers\FoodDiaryServiceProvider;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -60,6 +61,23 @@ class FoodDiaryServiceProviderTest extends TestCase
                 'name' =>  $name,
                 'food_group' => 'food_group',
                 'allergen' => $data['diary_ingredient_allergen'][$index],
+            ]);
+        }
+    }
+
+    public function test_create_recipes_adds_pivot(): void
+    {
+        $entry = FoodDiary::factory()->create();
+        $data = ['diary_recipes' => [1, 2, 3]];
+
+        Recipe::factory()->count(3)->create();
+
+        FoodDiaryServiceProvider::addRecipePivot($data, $entry);
+
+        foreach ($data['diary_recipes'] as $recipe){
+            $this->assertDatabaseHas('food_diary_recipe', [
+                'food_diary_id' => $entry->id,
+                'recipe_id' => $recipe,
             ]);
         }
     }
