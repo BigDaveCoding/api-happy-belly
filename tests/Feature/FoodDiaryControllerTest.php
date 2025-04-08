@@ -269,4 +269,69 @@ class FoodDiaryControllerTest extends TestCase
         $response = $this->getJson('/api/food-diary/entry/1000');
         $response->assertStatus(404);
     }
+
+    public function test_diary_entry_create_success_with_additional_data(): void
+    {
+        $user = User::factory()->create();
+        $this->actingAs($user);
+
+        Recipe::factory()->create(['id' => 1]);
+
+        $data = [
+            'user_id' => 1,
+            'diary_entry' => 'this is the food diary entry',
+            'diary_meal_type' => 'breakfast',
+            'diary_date' => '2025-04-01',
+            'diary_time' => '16:10:10',
+            'diary_ingredient_name' => [
+                'Ingredient One',
+                'Ingredient Two',
+            ],
+            'diary_ingredient_quantity' => [
+                1,
+                2,
+            ],
+            'diary_ingredient_unit' => [
+                null,
+                'cups',
+            ],
+            'diary_ingredient_allergen' => [
+                0,
+                1,
+            ],
+            'diary_recipes' => [
+                1,
+            ],
+        ];
+
+        $this->assertDatabaseEmpty('food_diaries');
+        $this->assertDatabaseEmpty('food_diary_ingredient');
+        $this->assertDatabaseEmpty('food_diary_recipe');
+
+        $response = $this->postJson('/api/food-diary/create', $data);
+        $response->assertStatus(200)
+            ->assertJson(function (AssertableJson $response) {
+                $response->has('message');
+            });
+
+        $this->assertDatabaseHas('food_diaries', [
+            'user_id' => 1,
+            'entry' => 'this is the food diary entry',
+            'meal_type' => 'breakfast',
+            'entry_date' => '2025-04-01',
+            'entry_time' => '16:10:10',
+        ]);
+
+        $this->assertDatabaseHas('food_diary_ingredient', [
+            'food_diary_id' => 1,
+            'ingredient_id' => 1,
+            'quantity' => 1,
+            'unit' => null
+        ]);
+
+        $this->assertDatabaseHas('food_diary_recipe', [
+            'food_diary_id' => 1,
+            'recipe_id' => 1,
+        ]);
+    }
 }
