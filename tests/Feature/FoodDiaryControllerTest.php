@@ -482,4 +482,65 @@ class FoodDiaryControllerTest extends TestCase
 
         $response->assertInvalid(['diary_ingredient_arrays']);
     }
+
+    public function test_food_diary_entry_can_be_updated(): void
+    {
+        $user = User::factory()->create();
+        $this->actingAs($user);
+
+        $diary = FoodDiary::factory()->create(['user_id' => $user->id]);
+
+        $this->assertDatabaseHas('food_diaries', [
+            'id' => $diary->id,
+            'entry' => $diary->entry,
+            'meal_type' => $diary->meal_type,
+            'entry_date' => $diary->entry_date,
+            'entry_time' => $diary->entry_time,
+        ]);
+
+        $ingredient = Ingredient::factory()->create([
+            'id' => 1,
+            'name' => 'test',
+            'allergen' => 0,
+            'food_group' => 'food_group'
+        ]);
+
+        $recipe = Recipe::factory()->create(['id' => 1]);
+
+        $data = [
+            'user_id' => $user->id,
+            'diary_entry' => 'Updated diary entry',
+            'diary_meal_type' => 'lunch',
+            'diary_date' => date('Y-m-d'),
+            'diary_time' => date('H-i-s'),
+            'diary_ingredient_name' => [$ingredient->name],
+            'diary_ingredient_quantity' => [1],
+            'diary_ingredient_unit' => ['cup'],
+            'diary_ingredient_allergen' => [$ingredient->allergen],
+            'diary_recipes' => [$recipe->id],
+        ];
+
+        $response = $this->patchJson("/api/food-diary/update/$diary->id", $data);
+
+        $response->assertStatus(200);
+
+        $this->assertDatabaseHas('food_diaries', [
+            'id' => $diary->id,
+            'entry' => 'Updated diary entry',
+            'meal_type' => 'lunch',
+            'entry_date' => date('Y-m-d'),
+            'entry_time' => date('H-i-s'),
+        ]);
+
+        $this->assertDatabaseHas('food_diary_ingredient', [
+            'food_diary_id' => $diary->id,
+            'ingredient_id' => $ingredient->id,
+        ]);
+
+        $this->assertDatabaseHas('food_diary_recipe', [
+            'food_diary_id' => $diary->id,
+            'recipe_id' => $recipe->id,
+        ]);
+    }
+
 }
