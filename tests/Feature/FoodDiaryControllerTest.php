@@ -731,4 +731,23 @@ class FoodDiaryControllerTest extends TestCase
                 );
             });
     }
+
+    public function test_user_can_delete_own_diary_entry(): void
+    {
+        $user = User::factory()->create();
+        $this->actingAs($user);
+
+        $diary = FoodDiary::factory()->create(['user_id' => $user->id]);
+
+        $response = $this->deleteJson("/api/food-diary/delete/{$diary->id}");
+
+        $response->assertStatus(200)
+            ->assertJson([
+                'message' => 'Food diary entry deleted successfully',
+            ]);
+
+        $this->assertDatabaseMissing('food_diaries', [
+            'id' => $diary->id,
+        ]);
+    }
 }
