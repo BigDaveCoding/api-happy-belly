@@ -85,16 +85,16 @@ class FoodDiaryController extends Controller
         $validatedData = $request->validated();
 
         // update food diary fields
-        if ($request['diary_entry'] != null){
+        if (isset($validatedData['diary_entry'])) {
             $diaryToUpdate->entry = $validatedData['diary_entry'];
         }
-        if($validatedData['diary_meal_type'] != null) {
+        if(isset($validatedData['diary_meal_type'])) {
             $diaryToUpdate->meal_type = $validatedData['diary_meal_type'];
         }
-        if ($validatedData['diary_date'] != null) {
+        if (isset($validatedData['diary_date'])) {
             $diaryToUpdate->entry_date = $validatedData['diary_date'];
         }
-        if ($validatedData['diary_time'] != null) {
+        if (isset($validatedData['diary_time'])) {
             $diaryToUpdate->entry_time = $validatedData['diary_time'];
         }
 
