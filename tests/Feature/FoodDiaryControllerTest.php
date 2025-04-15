@@ -750,4 +750,25 @@ class FoodDiaryControllerTest extends TestCase
             'id' => $diary->id,
         ]);
     }
+
+    public function test_user_cannot_delete_others_diary_entry(): void
+    {
+        $user = User::factory()->create();
+        $otherUser = User::factory()->create();
+
+        $diary = FoodDiary::factory()->create(['user_id' => $otherUser->id]);
+
+        $this->actingAs($user);
+
+        $response = $this->deleteJson("/api/food-diary/delete/{$diary->id}");
+
+        $response->assertStatus(401)
+            ->assertJson([
+                'message' => 'Unauthorized - Cannot delete entry for another user',
+            ]);
+
+        $this->assertDatabaseHas('food_diaries', [
+            'id' => $diary->id,
+        ]);
+    }
 }
