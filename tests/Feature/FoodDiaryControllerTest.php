@@ -777,7 +777,7 @@ class FoodDiaryControllerTest extends TestCase
         $user = User::factory()->create();
         $this->actingAs($user);
 
-        $response = $this->deleteJson("/api/food-diary/delete/999999");
+        $response = $this->deleteJson('/api/food-diary/delete/999999');
 
         $response->assertStatus(404);
     }
