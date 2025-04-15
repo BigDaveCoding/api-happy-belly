@@ -74,4 +74,47 @@ class FoodDiaryController extends Controller
             'message' => 'Food diary entry created successfully',
         ], 200);
     }
+
+    public function update(Request $request, FoodDiary $entry): JsonResponse
+    {
+        // find entry to edit
+        $diaryToUpdate = FoodDiary::findOrFail($entry->id);
+
+        // validate the data
+        $validatedData = $request->validate([
+            'user_id' => 'required|integer|exists:users,id',
+            'diary_entry' => 'nullable|string|max:5000',
+            'diary_meal_type' => 'nullable|string',
+            'diary_date' => 'nullable|date',
+            'diary_time' => 'nullable|string',
+            'diary_ingredient_name' => 'nullable|array',
+            'diary_ingredient_name.*' => 'nullable|string',
+            'diary_ingredient_quantity' => 'nullable|array',
+            'diary_ingredient_quantity.*' => 'nullable|integer',
+            'diary_ingredient_unit' => 'nullable|array',
+            'diary_ingredient_unit.*' => 'nullable|string',
+            'diary_ingredient_allergen' => 'nullable|array',
+            'diary_ingredient_allergen.*' => 'nullable|boolean',
+            'diary_recipes' => 'nullable|array',
+            'diary_recipes.*' => 'nullable|integer|exists:recipes,id',
+        ]);
+
+        // update food diary fields
+        if ($validatedData['diary_entry']){
+            $diaryToUpdate->entry = $validatedData['diary_entry'];
+        }
+        if($validatedData['diary_meal_type']) {
+            $diaryToUpdate->meal_type = $validatedData['diary_meal_type'];
+        }
+        if ($validatedData['diary_date']) {
+            $diaryToUpdate->date = $validatedData['diary_date'];
+        }
+        if ($validatedData['diary_time']) {
+            $diaryToUpdate->time = $validatedData['diary_time'];
+        }
+
+        return response()->json([
+            'message' => 'Food diary entry updated successfully',
+        ]);
+    }
 }
