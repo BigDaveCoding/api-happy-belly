@@ -10,6 +10,7 @@ class RecipeRequest extends FormRequest
     {
         return [
             'user_id' => 'required|integer|exists:users,id',
+            'recipe_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'recipe_name' => 'required|string|max:255|min:4',
             'recipe_description' => 'required|string|min:10',
             'recipe_cooking_time' => 'required|integer|min:1|max:999',
