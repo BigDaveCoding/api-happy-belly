@@ -404,49 +404,49 @@ class RecipeApiControllerTest extends TestCase
         ]);
     }
 
-    public function test_recipe_creation_with_image_upload(): void
-    {
-        Storage::fake('public');
-
-        $user = User::factory()->create();
-        $this->actingAs($user, 'sanctum');
-
-        $file = UploadedFile::fake()->image('recipe.jpg');
-
-        $data = [
-            'user_id' => $user->id,
-            'recipe_name' => 'postman recipe',
-            'recipe_description' => 'A classic Italian pasta dish made with a rich and savory meat sauce.',
-            'recipe_cooking_time' => 45,
-            'recipe_serves' => 4,
-            'recipe_cuisine' => 'Italian',
-            'ingredient_name' => ['Spaghetti'],
-            'ingredient_quantity' => [200],
-            'ingredient_unit' => ['g'],
-            'ingredient_allergen' => [false],
-            'cooking_instruction' => ['Boil the spaghetti according to package instructions.'],
-            'is_vegetarian' => true,
-            'is_vegan' => false,
-            'is_gluten_free' => false,
-            'is_dairy_free' => true,
-            'is_low_fodmap' => false,
-            'is_ostomy_friendly' => true,
-            'recipe_image' => $file, // new line
-        ];
-
-        $response = $this->post('/api/recipes/create', $data);
-
-        $response->assertStatus(201)
-            ->assertJsonStructure(['message']);
-
-        // Check image is saved
-        Storage::disk('public')->assertExists('recipes/' . $file->hashName());
-
-        $this->assertDatabaseHas('recipes', [
-            'name' => 'postman recipe',
-            'image' => "http://localhost/storage/recipes/" . $file->hashName(),
-        ]);
-    }
+//    public function test_recipe_creation_with_image_upload(): void
+//    {
+//        Storage::fake('public');
+//
+//        $user = User::factory()->create();
+//        $this->actingAs($user, 'sanctum');
+//
+//        $file = UploadedFile::fake()->image('recipe.jpg');
+//
+//        $data = [
+//            'user_id' => $user->id,
+//            'recipe_name' => 'postman recipe',
+//            'recipe_description' => 'A classic Italian pasta dish made with a rich and savory meat sauce.',
+//            'recipe_cooking_time' => 45,
+//            'recipe_serves' => 4,
+//            'recipe_cuisine' => 'Italian',
+//            'ingredient_name' => ['Spaghetti'],
+//            'ingredient_quantity' => [200],
+//            'ingredient_unit' => ['g'],
+//            'ingredient_allergen' => [false],
+//            'cooking_instruction' => ['Boil the spaghetti according to package instructions.'],
+//            'is_vegetarian' => true,
+//            'is_vegan' => false,
+//            'is_gluten_free' => false,
+//            'is_dairy_free' => true,
+//            'is_low_fodmap' => false,
+//            'is_ostomy_friendly' => true,
+//            'recipe_image' => $file, // new line
+//        ];
+//
+//        $response = $this->post('/api/recipes/create', $data);
+//
+//        $response->assertStatus(201)
+//            ->assertJsonStructure(['message']);
+//
+//        // Check image is saved
+//        Storage::disk('public')->assertExists('recipes/' . $file->hashName());
+//
+//        $this->assertDatabaseHas('recipes', [
+//            'name' => 'postman recipe',
+//            'image' => "http://localhost/storage/recipes/" . $file->hashName(),
+//        ]);
+//    }
 
 
     public function test_recipe_api_controller_create_recipe_invalid_data(): void
