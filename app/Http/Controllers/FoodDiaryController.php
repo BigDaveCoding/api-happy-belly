@@ -71,7 +71,7 @@ class FoodDiaryController extends Controller
 
         return response()->json([
             'message' => 'Food diary entry created successfully',
-        ], 200);
+        ], 201);
     }
 
     public function update(FoodDiaryUpdateRequest $request, FoodDiary $entry): JsonResponse
@@ -116,6 +116,21 @@ class FoodDiaryController extends Controller
 
         return response()->json([
             'message' => 'Food diary entry updated successfully',
-        ]);
+        ], 200);
+    }
+
+    public function delete(FoodDiary $entry): JsonResponse
+    {
+        if (Auth::id() != $entry->user_id) {
+            return response()->json([
+                'message' => 'Unauthorized - Cannot delete entry for another user',
+            ], 401);
+        }
+
+        $entry->delete();
+
+        return response()->json([
+            'message' => 'Food diary entry deleted successfully',
+        ], 200);
     }
 }

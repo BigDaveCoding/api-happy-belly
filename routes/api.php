@@ -46,5 +46,6 @@ Route::controller(FoodDiaryController::class)->group(function () {
         Route::get('/food-diary/entry/{id}', 'find');
         Route::post('/food-diary/create', 'create');
         Route::patch('/food-diary/update/{entry}', 'update');
+        Route::delete('/food-diary/delete/{entry}', 'delete');
     });
 });
