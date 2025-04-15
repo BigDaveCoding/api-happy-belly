@@ -43,7 +43,7 @@ class FoodDiaryUpdateRequest extends FormRequest
                     count($allergens),
                 ];
                 $uniqueLengths = array_unique($array_lengths);
-                if (count($uniqueLengths) !== 0) {
+                if (count($uniqueLengths) > 1) {
                     $validator->errors()->add(
                         'diary_ingredient_arrays',
                         'Ingredient arrays (name, quantity, unit, allergen) must all have the same length.'
