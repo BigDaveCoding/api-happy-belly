@@ -771,4 +771,14 @@ class FoodDiaryControllerTest extends TestCase
             'id' => $diary->id,
         ]);
     }
+
+    public function test_deleting_nonexistent_diary_entry_returns_404(): void
+    {
+        $user = User::factory()->create();
+        $this->actingAs($user);
+
+        $response = $this->deleteJson("/api/food-diary/delete/999999");
+
+        $response->assertStatus(404);
+    }
 }
