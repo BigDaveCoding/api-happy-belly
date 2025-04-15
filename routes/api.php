@@ -48,3 +48,4 @@ Route::controller(FoodDiaryController::class)->group(function () {
     });
 });
 
+Route::patch('/food-diary/update/{entry}', [FoodDiaryController::class, 'update']);
