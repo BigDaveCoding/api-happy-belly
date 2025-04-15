@@ -543,4 +543,34 @@ class FoodDiaryControllerTest extends TestCase
         ]);
     }
 
+    public function test_diary_partial_update(): void
+    {
+        $user = User::factory()->create();
+        $this->actingAs($user);
+
+        $diary = FoodDiary::factory()->create([
+            'user_id' => $user->id,
+            'entry' => 'Original entry'
+        ]);
+
+        $data = [
+            'user_id' => $user->id,
+            'diary_entry' => 'Partially updated entry',
+            'diary_ingredient_name' => [],
+            'diary_ingredient_quantity' => [],
+            'diary_ingredient_unit' => [],
+            'diary_ingredient_allergen' => [],
+            'diary_recipes' => [],
+        ];
+
+        $response = $this->patchJson("/api/food-diary/update/{$diary->id}", $data);
+
+        $response->assertStatus(200);
+
+        $this->assertDatabaseHas('food_diaries', [
+            'id' => $diary->id,
+            'entry' => 'Partially updated entry',
+        ]);
+    }
+
 }
