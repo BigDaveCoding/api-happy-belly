@@ -573,4 +573,77 @@ class FoodDiaryControllerTest extends TestCase
         ]);
     }
 
+    public function test_diary_update_validation_working(): void
+    {
+        $user = User::factory()->create();
+        $this->actingAs($user);
+
+        $diary = FoodDiary::factory()->create(['user_id' => $user->id]);
+
+        $invalidData = [
+            'user_id' => 'not-a-number',
+            'diary_entry' => 1004829474,
+            'diary_meal_type' => true,
+            'diary_date' => 'not-a-date',
+            'diary_time' => false,
+            'diary_ingredient_name' => 'not an array',
+            'diary_ingredient_quantity' => 'not an array',
+            'diary_ingredient_unit' => 'not an array',
+            'diary_ingredient_allergen' => 'not an array',
+            'diary_recipes' => 'not-an-array',
+        ];
+
+        $response = $this->patchJson("/api/food-diary/update/{$diary->id}", $invalidData);
+
+        $response->assertInvalid([
+            'user_id',
+            'diary_entry',
+            'diary_meal_type',
+            'diary_date',
+            'diary_time',
+            'diary_ingredient_name',
+            'diary_ingredient_quantity',
+            'diary_ingredient_unit',
+            'diary_ingredient_allergen',
+            'diary_recipes',
+        ]);
+    }
+
+    public function test_diary_update_array_lengths_validation_working(): void
+    {
+        $user = User::factory()->create();
+        $this->actingAs($user);
+
+        $diary = FoodDiary::factory()->create(['user_id' => $user->id]);
+
+        $data = [
+            'user_id' => $user->id,
+            'diary_ingredient_name' => ['Carrot', 'Broccoli'],
+            'diary_ingredient_quantity' => [1], // mismatched length
+            'diary_ingredient_unit' => ['cup', 'g'],
+            'diary_ingredient_allergen' => [0, 0],
+        ];
+
+        $response = $this->patchJson("/api/food-diary/update/{$diary->id}", $data);
+
+        $response->assertInvalid([
+            'diary_ingredient_arrays',
+        ]);
+    }
+
+    public function test_diary_update_ingredients_recipes_detached_properly(): void
+    {
+
+    }
+
+    public function test_diary_update_entry_doesnt_exists(): void
+    {
+
+    }
+
+    public function test_diary_update_cannot_update_other_users_entries(): void
+    {
+
+    }
+
 }
