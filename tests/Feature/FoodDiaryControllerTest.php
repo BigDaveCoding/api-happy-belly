@@ -309,7 +309,7 @@ class FoodDiaryControllerTest extends TestCase
         $this->assertDatabaseEmpty('food_diary_recipe');
 
         $response = $this->postJson('/api/food-diary/create', $data);
-        $response->assertStatus(200)
+        $response->assertStatus(201)
             ->assertJson(function (AssertableJson $response) {
                 $response->has('message');
             });
@@ -358,7 +358,7 @@ class FoodDiaryControllerTest extends TestCase
         $this->assertDatabaseEmpty('food_diaries');
 
         $response = $this->postJson('/api/food-diary/create', $data);
-        $response->assertStatus(200)
+        $response->assertStatus(201)
             ->assertJson(function (AssertableJson $response) {
                 $response->has('message');
             });
