@@ -59,13 +59,13 @@ class RecipeApiServiceProvider
         }
     }
 
-    public static function createRecipe(array $recipeData, int $userId): Recipe
+    public static function createRecipe(array $recipeData, int $userId, string $imageUrl): Recipe
     {
 
         $recipe = new Recipe;
         $recipe->name = $recipeData['recipe_name'];
         $recipe->description = $recipeData['recipe_description'];
-        $recipe->image = 'https://placehold.co/600x400'; // static value
+        $recipe->image = $imageUrl;
         $recipe->cooking_time = $recipeData['recipe_cooking_time'];
         $recipe->serves = $recipeData['recipe_serves'];
         $recipe->cuisine = $recipeData['recipe_cuisine'];
