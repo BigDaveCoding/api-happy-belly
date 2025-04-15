@@ -633,11 +633,74 @@ class FoodDiaryControllerTest extends TestCase
 
     public function test_diary_update_ingredients_recipes_detached_properly(): void
     {
+        $user = User::factory()->create();
+        $this->actingAs($user);
 
+        // create diary, recipe and ingredient
+        $diary = FoodDiary::factory()->create(['user_id' => $user->id]);
+        $recipe = Recipe::factory()->create();
+        $ingredient = Ingredient::factory()->create();
+
+        // attach ingredient and recipe to diary
+        $diary->ingredients()->attach($ingredient, ['quantity' => 1, 'unit' => 'cup']);
+        $diary->recipes()->attach($recipe);
+
+        // check database has correct data before being detached or changed
+        $this->assertDatabaseHas('food_diary_ingredient', [
+            'food_diary_id' => $diary->id,
+            'ingredient_id' => $ingredient->id,
+            'quantity' => 1,
+            'unit' => 'cup',
+        ]);
+        $this->assertDatabaseHas('food_diary_recipe', [
+            'food_diary_id' => $diary->id,
+            'recipe_id' => $recipe->id,
+        ]);
+
+        $data = [
+            'user_id' => $user->id,
+            'diary_ingredient_name' => ['Carrot', 'Broccoli'],
+            'diary_ingredient_quantity' => [1, null],
+            'diary_ingredient_unit' => ['cup', null],
+            'diary_ingredient_allergen' => [0, 0],
+            'diary_recipes' => [],
+        ];
+
+        $response = $this->patchJson("/api/food-diary/update/{$diary->id}", $data);
+        $response->assertStatus(200);
+
+        $this->assertDatabaseMissing('food_diary_ingredient', [
+            'food_diary_id' => $diary->id,
+            'ingredient_id' => $ingredient->id,
+            'quantity' => 1,
+            'unit' => 'cup',
+        ]);
+        $this->assertDatabaseHas('food_diary_ingredient', [
+            'food_diary_id' => $diary->id,
+            'ingredient_id' => 2,
+            'quantity' => 1,
+            'unit' => 'cup',
+        ]);
+        $this->assertDatabaseHas('food_diary_ingredient', [
+            'food_diary_id' => $diary->id,
+            'ingredient_id' => 3,
+            'quantity' => null,
+            'unit' => null,
+        ]);
+        $this->assertDatabaseMissing('food_diary_recipe', [
+            'food_diary_id' => $diary->id,
+            'recipe_id' => $recipe->id,
+        ]);
     }
 
     public function test_diary_update_entry_doesnt_exists(): void
     {
+        $user = User::factory()->create();
+        $this->actingAs($user);
+
+        $response = $this->patchJson("/api/food-diary/update/1");
+
+        $response->assertStatus(404);
 
     }
 
