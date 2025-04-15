@@ -37,7 +37,7 @@ class RecipeApiServiceProvider
         foreach ($ingredientNames as $index => $ingredientName) {
 
             $ingredient = Ingredient::firstOrCreate(['name' => $ingredientName,
-                'food_group' => 'food_group', // static value
+                'food_group' => null, // static value
                 'allergen' => $ingredientAllergen[$index]]);
 
             $recipe->ingredients()->attach($ingredient, [

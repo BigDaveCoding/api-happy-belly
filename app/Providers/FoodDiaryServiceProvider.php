@@ -26,7 +26,7 @@ class FoodDiaryServiceProvider extends ServiceProvider
         foreach ($validatedData['diary_ingredient_name'] as $index => $ingredient) {
             $ingredient = Ingredient::firstOrCreate([
                 'name' => $ingredient,
-                'food_group' => 'food_group', // static value
+                'food_group' => null, // static value
                 'allergen' => $validatedData['diary_ingredient_allergen'][$index],
             ]);
             $entry->ingredients()->attach($ingredient, [
