@@ -5,12 +5,10 @@ namespace App\Http\Controllers;
 use App\Http\Requests\FoodDiaryRequest;
 use App\Http\Requests\FoodDiaryUpdateRequest;
 use App\Models\FoodDiary;
-use App\Models\Ingredient;
 use App\Models\User;
 use App\Providers\FoodDiaryServiceProvider;
 use App\Providers\PaginationServiceProvider;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class FoodDiaryController extends Controller
@@ -94,7 +92,7 @@ class FoodDiaryController extends Controller
         if (isset($validatedData['diary_entry'])) {
             $diaryToUpdate->entry = $validatedData['diary_entry'];
         }
-        if(isset($validatedData['diary_meal_type'])) {
+        if (isset($validatedData['diary_meal_type'])) {
             $diaryToUpdate->meal_type = $validatedData['diary_meal_type'];
         }
         if (isset($validatedData['diary_date'])) {

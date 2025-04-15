@@ -6,8 +6,6 @@ use App\Models\FoodDiary;
 use App\Models\Recipe;
 use App\Providers\FoodDiaryServiceProvider;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
 class FoodDiaryServiceProviderTest extends TestCase
@@ -47,7 +45,7 @@ class FoodDiaryServiceProviderTest extends TestCase
 
         FoodDiaryServiceProvider::createIngredientsAddPivot($data, $entry);
 
-        foreach ($data['diary_ingredient_name'] as $index => $name){
+        foreach ($data['diary_ingredient_name'] as $index => $name) {
             $this->assertDatabaseHas('food_diary_ingredient', [
                 'food_diary_id' => $entry->id,
                 'ingredient_id' => $index + 1,
@@ -56,9 +54,9 @@ class FoodDiaryServiceProviderTest extends TestCase
             ]);
         }
 
-        foreach ($data['diary_ingredient_name'] as $index => $name){
+        foreach ($data['diary_ingredient_name'] as $index => $name) {
             $this->assertDatabaseHas('ingredients', [
-                'name' =>  $name,
+                'name' => $name,
                 'food_group' => 'food_group',
                 'allergen' => $data['diary_ingredient_allergen'][$index],
             ]);
@@ -74,7 +72,7 @@ class FoodDiaryServiceProviderTest extends TestCase
 
         FoodDiaryServiceProvider::addRecipePivot($data, $entry);
 
-        foreach ($data['diary_recipes'] as $recipe){
+        foreach ($data['diary_recipes'] as $recipe) {
             $this->assertDatabaseHas('food_diary_recipe', [
                 'food_diary_id' => $entry->id,
                 'recipe_id' => $recipe,

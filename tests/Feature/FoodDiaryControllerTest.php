@@ -326,7 +326,7 @@ class FoodDiaryControllerTest extends TestCase
             'food_diary_id' => 1,
             'ingredient_id' => 1,
             'quantity' => 1,
-            'unit' => null
+            'unit' => null,
         ]);
 
         $this->assertDatabaseHas('food_diary_recipe', [
@@ -390,7 +390,7 @@ class FoodDiaryControllerTest extends TestCase
             'diary_ingredient_quantity' => 1, // should be array of numbers
             'diary_ingredient_unit' => 22, // should be array of strings/nulls
             'diary_ingredient_allergen' => 'string', // should be array of 0/1 values
-            'diary_recipes' => "eee", // should be array of recipe IDs (ints)
+            'diary_recipes' => 'eee', // should be array of recipe IDs (ints)
         ];
 
         $response = $this->postJson('/api/food-diary/create', $data);
@@ -422,7 +422,7 @@ class FoodDiaryControllerTest extends TestCase
             'diary_ingredient_name' => [300], // invalid data inside array
             'diary_ingredient_quantity' => [true], // invalid data inside array
             'diary_ingredient_unit' => [false], // invalid data inside array
-            'diary_ingredient_allergen' => ["string"], // invalid data inside array
+            'diary_ingredient_allergen' => ['string'], // invalid data inside array
             'diary_recipes' => ['ahh!'], // invalid data inside array
         ];
 
@@ -431,7 +431,7 @@ class FoodDiaryControllerTest extends TestCase
             'diary_ingredient_name.0',
             'diary_ingredient_unit.0',
             'diary_ingredient_allergen.0',
-            'diary_recipes.0',]);
+            'diary_recipes.0', ]);
     }
 
     public function test_cannot_create_entry_for_different_user(): void
@@ -502,7 +502,7 @@ class FoodDiaryControllerTest extends TestCase
             'id' => 1,
             'name' => 'test',
             'allergen' => 0,
-            'food_group' => 'food_group'
+            'food_group' => 'food_group',
         ]);
 
         $recipe = Recipe::factory()->create(['id' => 1]);
@@ -550,7 +550,7 @@ class FoodDiaryControllerTest extends TestCase
 
         $diary = FoodDiary::factory()->create([
             'user_id' => $user->id,
-            'entry' => 'Original entry'
+            'entry' => 'Original entry',
         ]);
 
         $data = [
@@ -698,7 +698,7 @@ class FoodDiaryControllerTest extends TestCase
         $user = User::factory()->create();
         $this->actingAs($user);
 
-        $response = $this->patchJson("/api/food-diary/update/1");
+        $response = $this->patchJson('/api/food-diary/update/1');
 
         $response->assertStatus(404);
 
@@ -722,7 +722,7 @@ class FoodDiaryControllerTest extends TestCase
             'diary_recipes' => [],
         ];
 
-        $response = $this->patchJson("/api/food-diary/update/1", $data);
+        $response = $this->patchJson('/api/food-diary/update/1', $data);
         $response->assertStatus(401)
             ->assertJson(function (AssertableJson $response) {
                 $response->where(
@@ -731,5 +731,4 @@ class FoodDiaryControllerTest extends TestCase
                 );
             });
     }
-
 }

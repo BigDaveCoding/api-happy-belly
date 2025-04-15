@@ -6,7 +6,6 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class FoodDiaryRequest extends FormRequest
 {
-
     public function rules(): array
     {
         return [
