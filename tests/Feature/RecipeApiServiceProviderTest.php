@@ -35,7 +35,7 @@ class RecipeApiServiceProviderTest extends TestCase
             'serves' => 2,
             'cuisine' => 'french',
             'user_id' => $user->id,
-            'image' => 'image'
+            'image' => 'image',
         ]);
     }
 
