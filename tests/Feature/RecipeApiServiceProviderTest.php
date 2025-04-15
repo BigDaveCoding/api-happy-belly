@@ -25,7 +25,7 @@ class RecipeApiServiceProviderTest extends TestCase
             'recipe_cuisine' => 'french',
         ];
 
-        $response = RecipeApiServiceProvider::createRecipe($recipeData, $user->id);
+        $response = RecipeApiServiceProvider::createRecipe($recipeData, $user->id, 'image');
 
         $this->assertInstanceOf(Recipe::class, $response);
         $this->assertDatabaseHas('recipes', [
@@ -35,6 +35,7 @@ class RecipeApiServiceProviderTest extends TestCase
             'serves' => 2,
             'cuisine' => 'french',
             'user_id' => $user->id,
+            'image' => 'image'
         ]);
     }
 
@@ -48,7 +49,7 @@ class RecipeApiServiceProviderTest extends TestCase
             'recipe_cuisine' => 'french',
         ];
         $this->expectException(QueryException::class);
-        $response = RecipeApiServiceProvider::createRecipe($recipeData, 1);
+        $response = RecipeApiServiceProvider::createRecipe($recipeData, 1, '');
     }
 
     public function test_add_ingredients_successful(): void
