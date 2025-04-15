@@ -44,7 +44,7 @@ Route::controller(FoodDiaryController::class)->group(function () {
     Route::middleware(['auth:sanctum', VerifyEmailApi::class])->group(function () {
         Route::get('/food-diary/{user}', 'user');
         Route::get('/food-diary/entry/{id}', 'find');
+        Route::post('/food-diary/create', 'create');
     });
 });
 
-Route::post('/food-diary/create', [FoodDiaryController::class, 'create']);
