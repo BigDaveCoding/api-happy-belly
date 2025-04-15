@@ -100,18 +100,26 @@ class FoodDiaryController extends Controller
         ]);
 
         // update food diary fields
-        if ($validatedData['diary_entry']){
+        if ($request['diary_entry'] != null){
             $diaryToUpdate->entry = $validatedData['diary_entry'];
         }
-        if($validatedData['diary_meal_type']) {
+        if($validatedData['diary_meal_type'] != null) {
             $diaryToUpdate->meal_type = $validatedData['diary_meal_type'];
         }
-        if ($validatedData['diary_date']) {
-            $diaryToUpdate->date = $validatedData['diary_date'];
+        if ($validatedData['diary_date'] != null) {
+            $diaryToUpdate->entry_date = $validatedData['diary_date'];
         }
-        if ($validatedData['diary_time']) {
-            $diaryToUpdate->time = $validatedData['diary_time'];
+        if ($validatedData['diary_time'] != null) {
+            $diaryToUpdate->entry_time = $validatedData['diary_time'];
         }
+
+        $diaryToUpdate->ingredients()->detach();
+        FoodDiaryServiceProvider::createIngredientsAddPivot($validatedData, $diaryToUpdate);
+
+        $diaryToUpdate->recipes()->detach();
+        FoodDiaryServiceProvider::addRecipePivot($validatedData, $diaryToUpdate);
+
+        $diaryToUpdate->save();
 
         return response()->json([
             'message' => 'Food diary entry updated successfully',
