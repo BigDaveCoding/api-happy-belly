@@ -9,11 +9,11 @@ class FoodDiaryUpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'user_id' => 'required|integer|exists:users,id',
-            'diary_entry' => 'nullable|string|max:5000',
-            'diary_meal_type' => 'nullable|string',
-            'diary_date' => 'nullable|date',
-            'diary_time' => 'nullable|string',
+            'user_id' => 'sometimes|required|integer|exists:users,id',
+            'diary_entry' => 'sometimes|nullable|string|max:5000',
+            'diary_meal_type' => 'sometimes|nullable|string',
+            'diary_date' => 'sometimes|nullable|date',
+            'diary_time' => 'sometimes|nullable|string',
             'diary_ingredient_name' => 'nullable|array',
             'diary_ingredient_name.*' => 'nullable|string',
             'diary_ingredient_quantity' => 'nullable|array',
