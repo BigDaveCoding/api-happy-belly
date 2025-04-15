@@ -81,6 +81,12 @@ class FoodDiaryController extends Controller
         // find entry to edit
         $diaryToUpdate = FoodDiary::findOrFail($entry->id);
 
+        if (Auth::id() !== $diaryToUpdate->user_id) {
+            return response()->json([
+                'message' => 'Unauthorized - Cannot update entry for another user',
+            ], 401);
+        }
+
         // validate the data
         $validatedData = $request->validated();
 
