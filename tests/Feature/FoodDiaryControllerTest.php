@@ -706,7 +706,30 @@ class FoodDiaryControllerTest extends TestCase
 
     public function test_diary_update_cannot_update_other_users_entries(): void
     {
+        $user = User::factory()->create();
+        $this->actingAs($user);
 
+        $userTwo = User::factory()->create();
+
+        FoodDiary::factory()->create(['user_id' => $userTwo->id]);
+
+        $data = [
+            'user_id' => $user->id,
+            'diary_ingredient_name' => [],
+            'diary_ingredient_quantity' => [],
+            'diary_ingredient_unit' => [],
+            'diary_ingredient_allergen' => [],
+            'diary_recipes' => [],
+        ];
+
+        $response = $this->patchJson("/api/food-diary/update/1", $data);
+        $response->assertStatus(401)
+            ->assertJson(function (AssertableJson $response) {
+                $response->where(
+                    'message',
+                    'Unauthorized - Cannot update entry for another user'
+                );
+            });
     }
 
 }
