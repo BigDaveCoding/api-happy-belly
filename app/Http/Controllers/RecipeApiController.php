@@ -70,7 +70,14 @@ class RecipeApiController extends Controller
 
         $user_id = $validatedData['user_id'];
 
-        $recipe = RecipeApiServiceProvider::createRecipe($validatedData, $user_id);
+        if ($request->hasFile('recipe_image')) {
+            $imagePath = $request->file('recipe_image')->store('recipes', 'public'); // stored in storage/app/public/recipes
+            $imageUrl = asset("storage/$imagePath");
+        } else {
+            $imageUrl = 'https://placehold.co/600x400'; // fallback
+        }
+
+        $recipe = RecipeApiServiceProvider::createRecipe($validatedData, $user_id, $imageUrl);
 
         RecipeApiServiceProvider::addIngredients($validatedData, $recipe);
 
