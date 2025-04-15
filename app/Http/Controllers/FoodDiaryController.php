@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\FoodDiaryRequest;
+use App\Http\Requests\FoodDiaryUpdateRequest;
 use App\Models\FoodDiary;
 use App\Models\Ingredient;
 use App\Models\User;
@@ -75,29 +76,13 @@ class FoodDiaryController extends Controller
         ], 200);
     }
 
-    public function update(Request $request, FoodDiary $entry): JsonResponse
+    public function update(FoodDiaryUpdateRequest $request, FoodDiary $entry): JsonResponse
     {
         // find entry to edit
         $diaryToUpdate = FoodDiary::findOrFail($entry->id);
 
         // validate the data
-        $validatedData = $request->validate([
-            'user_id' => 'required|integer|exists:users,id',
-            'diary_entry' => 'nullable|string|max:5000',
-            'diary_meal_type' => 'nullable|string',
-            'diary_date' => 'nullable|date',
-            'diary_time' => 'nullable|string',
-            'diary_ingredient_name' => 'nullable|array',
-            'diary_ingredient_name.*' => 'nullable|string',
-            'diary_ingredient_quantity' => 'nullable|array',
-            'diary_ingredient_quantity.*' => 'nullable|integer',
-            'diary_ingredient_unit' => 'nullable|array',
-            'diary_ingredient_unit.*' => 'nullable|string',
-            'diary_ingredient_allergen' => 'nullable|array',
-            'diary_ingredient_allergen.*' => 'nullable|boolean',
-            'diary_recipes' => 'nullable|array',
-            'diary_recipes.*' => 'nullable|integer|exists:recipes,id',
-        ]);
+        $validatedData = $request->validated();
 
         // update food diary fields
         if ($request['diary_entry'] != null){
@@ -113,10 +98,14 @@ class FoodDiaryController extends Controller
             $diaryToUpdate->entry_time = $validatedData['diary_time'];
         }
 
+        // detach ingredients
         $diaryToUpdate->ingredients()->detach();
+        // add ingredients
         FoodDiaryServiceProvider::createIngredientsAddPivot($validatedData, $diaryToUpdate);
 
+        // detach recipes
         $diaryToUpdate->recipes()->detach();
+        // add recipes
         FoodDiaryServiceProvider::addRecipePivot($validatedData, $diaryToUpdate);
 
         $diaryToUpdate->save();
