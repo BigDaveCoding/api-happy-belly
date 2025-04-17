@@ -13,8 +13,17 @@ return new class extends Migration
     {
         Schema::create('bowel_wellness_tracker_medication', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('bowel_wellness_tracker_id')->constrained()->onDelete('cascade');
-            $table->foreignId('medication_id')->constrained()->onDelete('cascade');
+            $table->unsignedBigInteger('bowel_wellness_tracker_id');
+            $table->unsignedBigInteger('medication_id');
+
+            $table->foreign('bowel_wellness_tracker_id', 'bwt_med_bwt_id_foreign')
+                ->references('id')->on('bowel_wellness_trackers')
+                ->onDelete('cascade');
+
+            $table->foreign('medication_id')
+                ->references('id')->on('medications')
+                ->onDelete('cascade');
+
             $table->boolean('prescribed')->nullable();
             $table->time('taken_at')->nullable();
             $table->timestamps();
