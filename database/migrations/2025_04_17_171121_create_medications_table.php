@@ -18,7 +18,6 @@ return new class extends Migration
             $table->string('form')->nullable()->comment('e.g. tablet, liquid etc.');
             $table->string('route')->nullable()->comment('e.g. oral, IV');
             $table->string('notes')->nullable();
-            $table->
             $table->timestamps();
         });
     }
