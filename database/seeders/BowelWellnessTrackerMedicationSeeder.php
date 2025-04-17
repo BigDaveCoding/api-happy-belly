@@ -15,7 +15,7 @@ class BowelWellnessTrackerMedicationSeeder extends Seeder
     {
         for ($i = 0; $i < 10; $i++) {
             DB::table('bowel_wellness_tracker_medication')->insert([
-                'bowel_wellness_tracker_id' => $i,
+                'bowel_wellness_tracker_id' => $i + 1,
                 'medication_id' => rand(1, 50),
                 'prescribed' => fake()->boolean,
                 'taken_at' => date('H:i:s'),
