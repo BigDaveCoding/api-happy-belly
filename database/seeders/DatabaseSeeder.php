@@ -23,6 +23,7 @@ class DatabaseSeeder extends Seeder
             FoodDiarySeeder::class,
             FoodDiaryIngredientSeeder::class,
             FoodDiaryRecipeSeeder::class,
+            BowelWellnessTrackerSeeder::class,
         ]);
     }
 }
