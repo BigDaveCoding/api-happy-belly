@@ -10,7 +10,7 @@ class PaginationServiceProvider
     {
         return [
             'current_page' => $data->currentPage(),
-            'total_recipes' => $data->total(),
+            'total_on_page' => $data->total(),
             'next_page_url' => $data->nextPageUrl(),
             'previous_page_url' => $data->previousPageUrl(),
             'all_page_urls' => $data->getUrlRange(1, $data->lastPage()),
