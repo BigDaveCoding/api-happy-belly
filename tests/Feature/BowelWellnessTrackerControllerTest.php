@@ -45,7 +45,8 @@ class BowelWellnessTrackerControllerTest extends TestCase
                         ->has('pagination', function (AssertableJson $pagination) {
                             $pagination->hasAll([
                                'current_page',
-                               'total_on_page',
+                               'results_per_page',
+                               'total_results',
                                'next_page_url',
                                'previous_page_url',
                                'all_page_urls',
