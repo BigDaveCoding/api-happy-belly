@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\BowelWellnessTrackerController;
 use App\Http\Controllers\FoodDiaryController;
 use App\Http\Controllers\RecipeApiController;
 use App\Http\Middleware\VerifyEmailApi;
@@ -49,3 +50,5 @@ Route::controller(FoodDiaryController::class)->group(function () {
         Route::delete('/food-diary/delete/{entry}', 'delete');
     });
 });
+
+Route::get('/bowel-wellness-tracker/{user}', [BowelWellnessTrackerController::class, 'user']);
