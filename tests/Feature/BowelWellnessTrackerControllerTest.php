@@ -67,4 +67,18 @@ class BowelWellnessTrackerControllerTest extends TestCase
                     });
             });
     }
+
+    public function test_BowelWellnessTracker_user_cannot_access_another_users_entries(): void
+    {
+        $user = User::factory()->create();
+        $otherUser = User::factory()->create();
+        $this->actingAs($user);
+
+        $response = $this->getJson("/api/bowel-wellness-tracker/{$otherUser->id}");
+
+        $response->assertStatus(401)
+            ->assertJson([
+                'message' => 'Unauthorized - can only access your own entries',
+            ]);
+    }
 }
