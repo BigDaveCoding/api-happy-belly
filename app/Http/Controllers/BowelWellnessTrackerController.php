@@ -10,10 +10,22 @@ use Illuminate\Http\Request;
 
 class BowelWellnessTrackerController extends Controller
 {
-    public function user(User $user): JsonResponse
+    public function user(User $user, Request $request): JsonResponse
     {
 
-        $entries = BowelWellnessTracker::where(['user_id' => $user->id])->paginate(5);
+        $request->validate([
+            'pagination' => 'nullable|integer|min:1|max:50'
+        ]);
+
+        $entries = BowelWellnessTracker::query()->where(['user_id' => $user->id]);
+
+        if($request->has('pagination')) {
+            $entries = $entries->paginate($request->pagination);
+        } else {
+            $entries = $entries->paginate(5);
+        }
+
+//        $entries = BowelWellnessTracker::where(['user_id' => $user->id])->paginate(5);
         $pagination = PaginationServiceProvider::pagination($entries);
 
         $entry_data = $entries->getCollection()->transform(function ($entry) {
@@ -31,7 +43,6 @@ class BowelWellnessTrackerController extends Controller
 
     public function entry(BowelWellnessTracker $entry): JsonResponse
     {
-
         return response()->json([
             'message' => 'User single entry found successfully',
             'data' => $entry
