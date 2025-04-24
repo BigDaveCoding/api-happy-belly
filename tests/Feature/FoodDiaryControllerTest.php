@@ -502,7 +502,7 @@ class FoodDiaryControllerTest extends TestCase
             'id' => 1,
             'name' => 'test',
             'allergen' => 0,
-            'food_group' => 'food_group',
+            'food_group' => null,
         ]);
 
         $recipe = Recipe::factory()->create(['id' => 1]);
