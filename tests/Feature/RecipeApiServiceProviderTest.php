@@ -75,9 +75,9 @@ class RecipeApiServiceProviderTest extends TestCase
 
         RecipeApiServiceProvider::addIngredients($ingredientData, $recipe);
 
-        $this->assertDatabaseHas('ingredients', ['name' => 'ingredient', 'food_group' => 'food_group', 'allergen' => 0]);
-        $this->assertDatabaseHas('ingredients', ['name' => 'peas', 'food_group' => 'food_group', 'allergen' => 1]);
-        $this->assertDatabaseHas('ingredients', ['name' => 'null', 'food_group' => 'food_group', 'allergen' => 0]);
+        $this->assertDatabaseHas('ingredients', ['name' => 'ingredient', 'food_group' => null, 'allergen' => 0]);
+        $this->assertDatabaseHas('ingredients', ['name' => 'peas', 'food_group' => null, 'allergen' => 1]);
+        $this->assertDatabaseHas('ingredients', ['name' => 'null', 'food_group' => null, 'allergen' => 0]);
         $this->assertDatabaseHas('ingredient_recipe', ['recipe_id' => 1, 'ingredient_id' => 1, 'quantity' => 1, 'unit' => 'grams']);
         $this->assertDatabaseHas('ingredient_recipe', ['recipe_id' => 1, 'ingredient_id' => 2, 'quantity' => 2, 'unit' => 'cups']);
         $this->assertDatabaseHas('ingredient_recipe', ['recipe_id' => 1, 'ingredient_id' => 3, 'quantity' => 2, 'unit' => null]);

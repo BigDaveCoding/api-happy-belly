@@ -376,7 +376,7 @@ class RecipeApiControllerTest extends TestCase
         $this->assertDatabaseHas('ingredients', [
             'id' => 1,
             'name' => 'Spaghetti',
-            'food_group' => 'food_group',
+            'food_group' => null,
             'allergen' => 0,
         ]);
         $this->assertDatabaseHas('cooking_instructions', [
@@ -549,7 +549,7 @@ class RecipeApiControllerTest extends TestCase
         $this->assertDatabaseHas('ingredients', [
             'id' => 1,
             'name' => 'beef wellington balls',
-            'food_group' => 'food_group',
+            'food_group' => null,
             'allergen' => 0,
         ]);
         $this->assertDatabaseHas('cooking_instructions', [
