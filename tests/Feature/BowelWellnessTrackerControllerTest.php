@@ -81,4 +81,17 @@ class BowelWellnessTrackerControllerTest extends TestCase
                 'message' => 'Unauthorized - can only access your own entries',
             ]);
     }
+
+    public function test_BowelWellnessTracker_user_can_define_custom_pagination(): void
+    {
+        $user = User::factory()->create();
+        $this->actingAs($user);
+
+        BowelWellnessTracker::factory()->count(20)->create(['user_id' => $user->id]);
+
+        $response = $this->getJson("/api/bowel-wellness-tracker/{$user->id}?pagination=10");
+
+        $response->assertStatus(200)
+            ->assertJsonCount(10, 'data.entries');
+    }
 }
