@@ -57,7 +57,7 @@ class FoodDiaryServiceProviderTest extends TestCase
         foreach ($data['diary_ingredient_name'] as $index => $name) {
             $this->assertDatabaseHas('ingredients', [
                 'name' => $name,
-                'food_group' => 'food_group',
+                'food_group' => null,
                 'allergen' => $data['diary_ingredient_allergen'][$index],
             ]);
         }
