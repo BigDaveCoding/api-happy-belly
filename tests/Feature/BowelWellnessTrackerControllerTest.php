@@ -105,4 +105,27 @@ class BowelWellnessTrackerControllerTest extends TestCase
         $response->assertInvalid('pagination');
     }
 
+    public function test_BowelWellnessTracker_user_returns_empty_entries_when_none_exist(): void
+    {
+        $user = User::factory()->create();
+        $this->actingAs($user);
+
+        $response = $this->getJson("/api/bowel-wellness-tracker/{$user->id}");
+
+        $response->assertStatus(200)
+            ->assertJson(function (AssertableJson $response) {
+                $response->hasAll([
+                    'message',
+                    'data',
+                ])
+                ->has('data', function (AssertableJson $data) {
+                    $data->hasAll([
+                        'entries',
+                        'pagination',
+                    ])
+                    ->where('entries', []);
+                });
+            });
+    }
+
 }
