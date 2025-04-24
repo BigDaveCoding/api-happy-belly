@@ -7,11 +7,18 @@ use App\Models\User;
 use App\Providers\PaginationServiceProvider;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class BowelWellnessTrackerController extends Controller
 {
     public function user(User $user, Request $request): JsonResponse
     {
+
+        if (Auth::id() !== $user->id) {
+            return response()->json([
+                'message' => 'Unauthorized - can only access your own entries'
+            ], 401);
+        }
 
         $request->validate([
             'pagination' => 'nullable|integer|min:1|max:50'
@@ -25,7 +32,6 @@ class BowelWellnessTrackerController extends Controller
             $entries = $entries->paginate(5);
         }
 
-//        $entries = BowelWellnessTracker::where(['user_id' => $user->id])->paginate(5);
         $pagination = PaginationServiceProvider::pagination($entries);
 
         $entry_data = $entries->getCollection()->transform(function ($entry) {
