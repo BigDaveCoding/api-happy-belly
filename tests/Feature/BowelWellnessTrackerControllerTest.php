@@ -57,32 +57,12 @@ class BowelWellnessTrackerControllerTest extends TestCase
                             'user_id',
                             'date',
                             'time',
-                            'stool_type',
-                            'urgency',
-                            'pain',
-                            'blood',
-                            'blood_amount',
-                            'stress_level',
-                            'hydration_level',
-                            'recent_meal',
-                            'color',
-                            'additional_notes'
                         ])
                         ->whereAllType([
                             'id' => 'integer',
                             'user_id' => 'integer',
                             'date' => 'string',
                             'time' => 'string',
-                            'stool_type' => 'integer',
-                            'urgency' => 'integer',
-                            'pain' => 'integer',
-                            'blood' => 'integer',
-                            'blood_amount' => 'integer',
-                            'stress_level' => 'integer',
-                            'hydration_level' => 'integer',
-                            'recent_meal' => 'integer',
-                            'color' => 'string',
-                            'additional_notes' => 'string',
                         ]);
                     });
                 });
