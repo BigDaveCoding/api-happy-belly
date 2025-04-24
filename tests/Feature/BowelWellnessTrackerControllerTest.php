@@ -94,4 +94,15 @@ class BowelWellnessTrackerControllerTest extends TestCase
         $response->assertStatus(200)
             ->assertJsonCount(10, 'data.entries');
     }
+
+    public function test_BowelWellnessTracker_user_returns_validation_error_on_invalid_pagination(): void
+    {
+        $user = User::factory()->create();
+        $this->actingAs($user);
+
+        $response = $this->getJson("/api/bowel-wellness-tracker/{$user->id}?pagination=100"); // invalid max = 50
+
+        $response->assertInvalid('pagination');
+    }
+
 }
