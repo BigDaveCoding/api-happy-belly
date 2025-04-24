@@ -13,6 +13,8 @@ class BowelWellnessTracker extends Model
     /** @use HasFactory<\Database\Factories\BowelWellnessTrackerFactory> */
     use HasFactory;
 
+    protected $hidden = ['created_at', 'updated_at'];
+
     public function medications(): BelongsToMany
     {
         return $this->BelongsToMany(Medication::class)->withPivot('prescribed', 'taken_at');
