@@ -16,17 +16,17 @@ class BowelWellnessTrackerController extends Controller
 
         if (Auth::id() !== $user->id) {
             return response()->json([
-                'message' => 'Unauthorized - can only access your own entries'
+                'message' => 'Unauthorized - can only access your own entries',
             ], 401);
         }
 
         $request->validate([
-            'pagination' => 'nullable|integer|min:1|max:50'
+            'pagination' => 'nullable|integer|min:1|max:50',
         ]);
 
         $entries = BowelWellnessTracker::query()->where(['user_id' => $user->id]);
 
-        if($request->has('pagination')) {
+        if ($request->has('pagination')) {
             $entries = $entries->paginate($request->pagination);
         } else {
             $entries = $entries->paginate(5);
@@ -43,7 +43,7 @@ class BowelWellnessTrackerController extends Controller
             'data' => [
                 'entries' => $entry_data,
                 'pagination' => $pagination,
-            ]
+            ],
         ]);
     }
 
@@ -51,7 +51,7 @@ class BowelWellnessTrackerController extends Controller
     {
         return response()->json([
             'message' => 'User single entry found successfully',
-            'data' => $entry
+            'data' => $entry,
         ]);
     }
 }

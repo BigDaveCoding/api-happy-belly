@@ -57,5 +57,5 @@ Route::controller(BowelWellnessTrackerController::class)->group(function () {
     });
 });
 
-//Route::get('/bowel-wellness-tracker/{user}', [BowelWellnessTrackerController::class, 'user']);
+// Route::get('/bowel-wellness-tracker/{user}', [BowelWellnessTrackerController::class, 'user']);
 Route::get('/bowel-wellness-tracker/entry/{entry}', [BowelWellnessTrackerController::class, 'entry']);
