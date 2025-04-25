@@ -171,4 +171,14 @@ class BowelWellnessTrackerControllerTest extends TestCase
         $response->assertStatus(404);
     }
 
+    public function test_BowelWellnessTracker_cannot_see_other_users_entries(): void
+    {
+        $user = User::factory()->create();
+        $otherUser = User::factory()->create();
+        $this->actingAs($user);
+        BowelWellnessTracker::factory()->create(['id' => 1, 'user_id' => $otherUser->id]);
+        $response = $this->getJson("/api/bowel-wellness-tracker/{$otherUser->id}");
+        $response->assertStatus(401);
+    }
+
 }
