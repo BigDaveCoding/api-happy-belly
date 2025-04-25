@@ -163,4 +163,12 @@ class BowelWellnessTrackerControllerTest extends TestCase
             });
     }
 
+    public function test_BowelWellnessTracker_single_entry_doesnt_exist(): void
+    {
+        $user = User::factory()->create();
+        $this->actingAs($user);
+        $response = $this->getJson("/api/bowel-wellness-tracker/entry/1");
+        $response->assertStatus(404);
+    }
+
 }
