@@ -65,7 +65,7 @@ class BowelWellnessTrackerController extends Controller
         if (Auth::id() !== $entry->user_id) {
             return response()->json([
                 'message' => 'Unauthorized - can only access your own entries',
-            ]);
+            ], 401);
         }
 
         return response()->json([
