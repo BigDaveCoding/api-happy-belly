@@ -68,7 +68,7 @@ class BowelWellnessTrackerControllerTest extends TestCase
             });
     }
 
-    public function test_BowelWellnessTracker_user_cannot_access_another_users_entries(): void
+    public function test_bowel_wellness_tracker_user_cannot_access_another_users_entries(): void
     {
         $user = User::factory()->create();
         $otherUser = User::factory()->create();
@@ -82,7 +82,7 @@ class BowelWellnessTrackerControllerTest extends TestCase
             ]);
     }
 
-    public function test_BowelWellnessTracker_user_can_define_custom_pagination(): void
+    public function test_bowel_wellness_tracker_user_can_define_custom_pagination(): void
     {
         $user = User::factory()->create();
         $this->actingAs($user);
@@ -95,7 +95,7 @@ class BowelWellnessTrackerControllerTest extends TestCase
             ->assertJsonCount(10, 'data.entries');
     }
 
-    public function test_BowelWellnessTracker_user_returns_validation_error_on_invalid_pagination(): void
+    public function test_bowel_wellness_tracker_user_returns_validation_error_on_invalid_pagination(): void
     {
         $user = User::factory()->create();
         $this->actingAs($user);
@@ -105,7 +105,7 @@ class BowelWellnessTrackerControllerTest extends TestCase
         $response->assertInvalid('pagination');
     }
 
-    public function test_BowelWellnessTracker_user_returns_empty_entries_when_none_exist(): void
+    public function test_bowel_wellness_tracker_user_returns_empty_entries_when_none_exist(): void
     {
         $user = User::factory()->create();
         $this->actingAs($user);
@@ -118,60 +118,60 @@ class BowelWellnessTrackerControllerTest extends TestCase
                     'message',
                     'data',
                 ])
-                ->has('data', function (AssertableJson $data) {
-                    $data->hasAll([
-                        'entries',
-                        'pagination',
-                    ])
-                    ->where('entries', []);
-                });
+                    ->has('data', function (AssertableJson $data) {
+                        $data->hasAll([
+                            'entries',
+                            'pagination',
+                        ])
+                            ->where('entries', []);
+                    });
             });
     }
 
-    public function test_BowelWellnessTracker_single_entry_correct_data_response(): void
+    public function test_bowel_wellness_tracker_single_entry_correct_data_response(): void
     {
         $user = User::factory()->create();
         $this->actingAs($user);
 
         BowelWellnessTracker::factory()->create(['id' => 1, 'user_id' => $user->id]);
 
-        $response = $this->getJson("/api/bowel-wellness-tracker/entry/1");
+        $response = $this->getJson('/api/bowel-wellness-tracker/entry/1');
         $response->assertStatus(200)
             ->assertJson(function (AssertableJson $response) {
                 $response->hasAll([
                     'message',
                     'data',
                 ])
-                ->has('data', function (AssertableJson $data) {
-                    $data->hasAll([
-                        'id',
-                        'user_id',
-                        'date',
-                        'time',
-                        'stool_type',
-                        'urgency',
-                        'pain',
-                        'blood',
-                        'blood_amount',
-                        'stress_level',
-                        'hydration_level',
-                        'recent_meal',
-                        'color',
-                        'additional_notes',
-                    ]);
-                });
+                    ->has('data', function (AssertableJson $data) {
+                        $data->hasAll([
+                            'id',
+                            'user_id',
+                            'date',
+                            'time',
+                            'stool_type',
+                            'urgency',
+                            'pain',
+                            'blood',
+                            'blood_amount',
+                            'stress_level',
+                            'hydration_level',
+                            'recent_meal',
+                            'color',
+                            'additional_notes',
+                        ]);
+                    });
             });
     }
 
-    public function test_BowelWellnessTracker_single_entry_doesnt_exist(): void
+    public function test_bowel_wellness_tracker_single_entry_doesnt_exist(): void
     {
         $user = User::factory()->create();
         $this->actingAs($user);
-        $response = $this->getJson("/api/bowel-wellness-tracker/entry/1");
+        $response = $this->getJson('/api/bowel-wellness-tracker/entry/1');
         $response->assertStatus(404);
     }
 
-    public function test_BowelWellnessTracker_cannot_see_other_users_entries(): void
+    public function test_bowel_wellness_tracker_cannot_see_other_users_entries(): void
     {
         $user = User::factory()->create();
         $otherUser = User::factory()->create();
@@ -180,5 +180,4 @@ class BowelWellnessTrackerControllerTest extends TestCase
         $response = $this->getJson("/api/bowel-wellness-tracker/{$otherUser->id}");
         $response->assertStatus(401);
     }
-
 }

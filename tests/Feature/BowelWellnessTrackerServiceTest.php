@@ -6,8 +6,6 @@ use App\Http\Requests\BowelWellnessTrackerCreateRequest;
 use App\Models\User;
 use App\Providers\BowelWellnessTrackerService;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
 class BowelWellnessTrackerServiceTest extends TestCase
@@ -35,7 +33,7 @@ class BowelWellnessTrackerServiceTest extends TestCase
         ];
 
         // Create a fake FormRequest instance with validated data
-        $request = new BowelWellnessTrackerCreateRequest();
+        $request = new BowelWellnessTrackerCreateRequest;
         $request->merge($requestData);
 
         $entry = BowelWellnessTrackerService::createEntry($request);
@@ -62,7 +60,7 @@ class BowelWellnessTrackerServiceTest extends TestCase
             'stool_type' => 3,
         ];
 
-        $request = new BowelWellnessTrackerCreateRequest();
+        $request = new BowelWellnessTrackerCreateRequest;
         $request->merge($requestData);
 
         $entry = BowelWellnessTrackerService::createEntry($request);
@@ -95,7 +93,7 @@ class BowelWellnessTrackerServiceTest extends TestCase
             'additional_notes' => 'Severe discomfort',
         ];
 
-        $request = new BowelWellnessTrackerCreateRequest();
+        $request = new BowelWellnessTrackerCreateRequest;
         $request->merge($requestData);
 
         $entry = BowelWellnessTrackerService::createEntry($request);
@@ -107,6 +105,4 @@ class BowelWellnessTrackerServiceTest extends TestCase
             'blood' => true,
         ]);
     }
-
-
 }

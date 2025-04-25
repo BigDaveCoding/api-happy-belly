@@ -16,7 +16,7 @@ class Medication extends Model
         'strength',
         'form',
         'route',
-        'notes'
+        'notes',
     ];
 
     public function bowelWellnessTrackers(): BelongsToMany

@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\BowelWellnessTrackerCreateRequest;
 use App\Models\BowelWellnessTracker;
-use App\Models\Medication;
 use App\Models\User;
 use App\Providers\BowelWellnessTrackerService;
 use App\Providers\PaginationServiceProvider;

@@ -9,15 +9,15 @@ use Illuminate\Support\ServiceProvider;
 
 class BowelWellnessTrackerService extends ServiceProvider
 {
-    static public function createEntry(BowelWellnessTrackerCreateRequest $request): BowelWellnessTracker
+    public static function createEntry(BowelWellnessTrackerCreateRequest $request): BowelWellnessTracker
     {
-        $entry = new BowelWellnessTracker();
+        $entry = new BowelWellnessTracker;
 
         $entry->user_id = $request['user_id'];
         $entry->date = $request['date'];
         $entry->time = $request['time'];
         $entry->stool_type = $request['stool_type'];
-        $entry->urgency  = $request['urgency'];
+        $entry->urgency = $request['urgency'];
         $entry->pain = $request['pain'];
         $entry->blood = $request['blood'];
         $entry->blood_amount = $request['blood_amount'];
@@ -32,7 +32,7 @@ class BowelWellnessTrackerService extends ServiceProvider
         return $entry;
     }
 
-    static public function medicationPivotData(BowelWellnessTrackerCreateRequest $request, BowelWellnessTracker $entry)
+    public static function medicationPivotData(BowelWellnessTrackerCreateRequest $request, BowelWellnessTracker $entry)
     {
         if (isset($request['medication_name'])) {
             foreach ($request['medication_name'] as $index => $medication) {

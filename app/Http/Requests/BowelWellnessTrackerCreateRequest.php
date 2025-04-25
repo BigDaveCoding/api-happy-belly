@@ -42,21 +42,21 @@ class BowelWellnessTrackerCreateRequest extends FormRequest
     public function withValidator($validator)
     {
         $validator->after(function ($validator) {
-           $names = $this->input('medication_name');
-           $strengths = $this->input('medication_strength');
-           $forms = $this->input('medication_form');
-           $routes = $this->input('medication_route');
+            $names = $this->input('medication_name');
+            $strengths = $this->input('medication_strength');
+            $forms = $this->input('medication_form');
+            $routes = $this->input('medication_route');
 
-           if (is_array($names) && is_array($strengths) && is_array($forms) && is_array($routes)) {
-               $array_counts = [count($names), count($strengths), count($forms), count($routes)];
-               $unique_lengths = array_unique($array_counts);
-               if(count($unique_lengths) > 1){
-                   $validator->errors()->add(
-                       'bowel wellness tracker arrays',
-                       'if medication provided - name, strength, form & route arrays must be of same length (can include null values)'
-                   );
-               }
-           }
+            if (is_array($names) && is_array($strengths) && is_array($forms) && is_array($routes)) {
+                $array_counts = [count($names), count($strengths), count($forms), count($routes)];
+                $unique_lengths = array_unique($array_counts);
+                if (count($unique_lengths) > 1) {
+                    $validator->errors()->add(
+                        'bowel wellness tracker arrays',
+                        'if medication provided - name, strength, form & route arrays must be of same length (can include null values)'
+                    );
+                }
+            }
         });
     }
 }
