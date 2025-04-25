@@ -293,4 +293,55 @@ class BowelWellnessTrackerControllerTest extends TestCase
         $response->assertInvalid(['bowel wellness tracker arrays']);
     }
 
+    public function test_invalid_data_returns_validation_errors()
+    {
+        $user = User::factory()->create();
+        $this->actingAs($user);
+
+        $data = [
+            'user_id' => 999, // no user 999
+            'date' => '25-04-2025',  // invalid format
+            'time' => '11pm',        // invalid format
+            'stool_type' => 10, // out of range
+            'urgency' => false, // meant to be an integer
+            'pain' => ["bdbd"], // meant to be an integer between 1/10
+            'blood' => "yes", // should be boolean
+            'blood_amount' => "nope", // should be integer
+            'hydration_level' => "string", // should be integer
+            'color' => 5, // should be string
+            'additional_notes' => true, // should be string
+
+            'medication_name' => [4], // should be a string
+            'medication_strength' => [0], // should be a string
+            'medication_form' => [false], // should be a string
+            'medication_route' => [1], // should be a string
+            'medication_notes' => [1], // should be a string
+            'medication_prescribed' => ["nope"], // should be a boolean
+            'medication_taken_at' => [4], // should be a string in correct format
+        ];
+
+        $response = $this->postJson('/api/bowel-wellness-tracker/create', $data);
+
+        $response->assertInvalid([
+            'user_id',
+            'date',
+            'time',
+            'stool_type',
+            'urgency',
+            'pain',
+            'blood',
+            'blood_amount',
+            'hydration_level',
+            'color',
+            'additional_notes',
+            'medication_name.0',
+            'medication_strength.0',
+            'medication_form.0',
+            'medication_route.0',
+            'medication_notes.0',
+            'medication_prescribed.0',
+            'medication_taken_at.0',
+        ]);
+    }
+
 }
