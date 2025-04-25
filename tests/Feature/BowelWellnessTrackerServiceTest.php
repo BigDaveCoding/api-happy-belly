@@ -51,4 +51,28 @@ class BowelWellnessTrackerServiceTest extends TestCase
         $this->assertEquals('14:30', $entry->time);
     }
 
+    public function test_create_entry_with_only_required_fields()
+    {
+        $user = User::factory()->create();
+
+        $requestData = [
+            'user_id' => $user->id,
+            'date' => '2025-04-25',
+            'time' => '08:00',
+            'stool_type' => 3,
+        ];
+
+        $request = new BowelWellnessTrackerCreateRequest();
+        $request->merge($requestData);
+
+        $entry = BowelWellnessTrackerService::createEntry($request);
+
+        $this->assertDatabaseHas('bowel_wellness_trackers', [
+            'id' => $entry->id,
+            'user_id' => $user->id,
+            'stool_type' => 3,
+            'urgency' => null,
+        ]);
+    }
+
 }
