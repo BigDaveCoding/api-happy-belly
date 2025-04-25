@@ -171,5 +171,25 @@ class BowelWellnessTrackerServiceTest extends TestCase
         $this->assertDatabaseCount('bowel_wellness_tracker_medication', 0);
     }
 
+    public function test_nullable_medication_fields_are_handled()
+    {
+        $user = User::factory()->create();
+        $tracker = BowelWellnessTracker::factory()->create(['user_id' => $user->id]);
+
+        $request = new BowelWellnessTrackerCreateRequest([
+            'medication_name' => ['Paracetamol'],
+            'medication_strength' => [null],
+            'medication_form' => [null],
+            'medication_route' => [null],
+            'medication_notes' => [null],
+            'medication_prescribed' => [null],
+            'medication_taken_at' => [null],
+        ]);
+
+        BowelWellnessTrackerService::medicationPivotData($request, $tracker);
+
+        $this->assertDatabaseHas('medications', ['name' => 'Paracetamol']);
+    }
+
 
 }
