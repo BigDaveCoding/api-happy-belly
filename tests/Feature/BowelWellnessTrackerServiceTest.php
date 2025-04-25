@@ -159,5 +159,17 @@ class BowelWellnessTrackerServiceTest extends TestCase
         $this->assertDatabaseCount('bowel_wellness_tracker_medication', 2);
     }
 
+    public function test_no_medications_attached_if_none_provided()
+    {
+        $user = User::factory()->create();
+        $tracker = BowelWellnessTracker::factory()->create(['user_id' => $user->id]);
+
+        $request = new BowelWellnessTrackerCreateRequest([]); // No meds
+
+        BowelWellnessTrackerService::medicationPivotData($request, $tracker);
+
+        $this->assertDatabaseCount('bowel_wellness_tracker_medication', 0);
+    }
+
 
 }
