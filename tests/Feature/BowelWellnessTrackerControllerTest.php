@@ -257,5 +257,17 @@ class BowelWellnessTrackerControllerTest extends TestCase
         ]);
     }
 
+    public function test_create_entry_validation_error()
+    {
+        $user = User::factory()->create();
+        $this->actingAs($user);
 
+        $data = [
+            // missing required: user_id, date, time, stool_type
+        ];
+
+        $response = $this->postJson('/api/bowel-wellness-tracker/create', $data);
+
+        $response->assertInvalid(['user_id', 'date', 'time', 'stool_type']);
+    }
 }
