@@ -17,9 +17,9 @@ return new class extends Migration
             $table->date('date');
             $table->time('time');
             $table->tinyInteger('stool_type')->unsigned();
-            $table->tinyInteger('urgency')->unsigned();
-            $table->tinyInteger('pain')->unsigned();
-            $table->boolean('blood');
+            $table->tinyInteger('urgency')->unsigned()->nullable();
+            $table->tinyInteger('pain')->unsigned()->nullable();
+            $table->boolean('blood')->nullable();
             $table->integer('blood_amount')->nullable();
             $table->tinyInteger('stress_level')->nullable();
             $table->tinyInteger('hydration_level')->nullable();
