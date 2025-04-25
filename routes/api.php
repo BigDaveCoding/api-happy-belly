@@ -55,7 +55,8 @@ Route::controller(BowelWellnessTrackerController::class)->group(function () {
     Route::middleware(['auth:sanctum', VerifyEmailApi::class])->group(function () {
         Route::get('/bowel-wellness-tracker/{user}', 'user');
         Route::get('/bowel-wellness-tracker/entry/{entry}', 'entry');
+        Route::post('/bowel-wellness-tracker/create', 'create');
     });
 });
 
-Route::post('/bowel-wellness-tracker/create', [BowelWellnessTrackerController::class, 'create']);
+//Route::post('/bowel-wellness-tracker/create', [BowelWellnessTrackerController::class, 'create']);
