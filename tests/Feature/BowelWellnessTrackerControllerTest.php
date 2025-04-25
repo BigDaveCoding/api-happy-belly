@@ -128,4 +128,39 @@ class BowelWellnessTrackerControllerTest extends TestCase
             });
     }
 
+    public function test_BowelWellnessTracker_single_entry_correct_data_response(): void
+    {
+        $user = User::factory()->create();
+        $this->actingAs($user);
+
+        BowelWellnessTracker::factory()->create(['id' => 1, 'user_id' => $user->id]);
+
+        $response = $this->getJson("/api/bowel-wellness-tracker/entry/1");
+        $response->assertStatus(200)
+            ->assertJson(function (AssertableJson $response) {
+                $response->hasAll([
+                    'message',
+                    'data',
+                ])
+                ->has('data', function (AssertableJson $data) {
+                    $data->hasAll([
+                        'id',
+                        'user_id',
+                        'date',
+                        'time',
+                        'stool_type',
+                        'urgency',
+                        'pain',
+                        'blood',
+                        'blood_amount',
+                        'stress_level',
+                        'hydration_level',
+                        'recent_meal',
+                        'color',
+                        'additional_notes',
+                    ]);
+                });
+            });
+    }
+
 }
