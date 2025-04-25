@@ -35,7 +35,20 @@ class BowelWellnessTrackerController extends Controller
         $pagination = PaginationServiceProvider::pagination($entries);
 
         $entry_data = $entries->getCollection()->transform(function ($entry) {
-            return $entry->setHidden(['stool_type', 'urgency', 'pain', 'blood', 'blood_amount', 'stress_level', 'hydration_level', 'recent_meal', 'color', 'additional_notes', 'created_at', 'updated_at']);
+            return $entry->setHidden([
+                'stool_type',
+                'urgency',
+                'pain',
+                'blood',
+                'blood_amount',
+                'stress_level',
+                'hydration_level',
+                'recent_meal',
+                'color',
+                'additional_notes',
+                'created_at',
+                'updated_at',
+            ]);
         });
 
         return response()->json([
