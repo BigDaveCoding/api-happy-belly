@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Http\Requests\BowelWellnessTrackerCreateRequest;
+use App\Models\BowelWellnessTracker;
 use App\Models\User;
 use App\Providers\BowelWellnessTrackerService;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
@@ -105,4 +106,37 @@ class BowelWellnessTrackerServiceTest extends TestCase
             'blood' => true,
         ]);
     }
+
+    public function test_medication_is_attached_to_tracker_correctly()
+    {
+        $this->withoutExceptionHandling();
+        $this->artisan('migrate');
+
+        $user = User::factory()->create();
+        $tracker = BowelWellnessTracker::factory()->create(['user_id' => $user->id]);
+
+        $request = new BowelWellnessTrackerCreateRequest([
+            'medication_name' => ['Paracetamol'],
+            'medication_strength' => ['500mg'],
+            'medication_form' => ['tablet'],
+            'medication_route' => ['oral'],
+            'medication_notes' => ['For headache'],
+            'medication_prescribed' => [true],
+            'medication_taken_at' => ['08:00'],
+        ]);
+
+        BowelWellnessTrackerService::medicationPivotData($request, $tracker);
+
+        $this->assertDatabaseHas('medications', [
+            'name' => 'Paracetamol',
+            'strength' => '500mg',
+        ]);
+
+        $this->assertDatabaseHas('bowel_wellness_tracker_medication', [
+            'bowel_wellness_tracker_id' => $tracker->id,
+            'prescribed' => true,
+            'taken_at' => '08:00',
+        ]);
+    }
+
 }
