@@ -50,7 +50,7 @@ class BowelWellnessTrackerCreateRequest extends FormRequest
            if (is_array($names) && is_array($strengths) && is_array($forms) && is_array($routes)) {
                $array_counts = [count($names), count($strengths), count($forms), count($routes)];
                $unique_lengths = array_unique($array_counts);
-               if($unique_lengths > 1){
+               if(count($unique_lengths) > 1){
                    $validator->errors()->add(
                        'bowel wellness tracker arrays',
                        'if medication provided - name, strength, form & route arrays must be of same length (can include null values)'
