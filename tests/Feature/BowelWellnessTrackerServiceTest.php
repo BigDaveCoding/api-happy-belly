@@ -75,4 +75,38 @@ class BowelWellnessTrackerServiceTest extends TestCase
         ]);
     }
 
+    public function test_create_entry_with_edge_values()
+    {
+        $user = User::factory()->create();
+
+        $requestData = [
+            'user_id' => $user->id,
+            'date' => '2025-04-25',
+            'time' => '06:45',
+            'stool_type' => 7,
+            'urgency' => 10,
+            'pain' => 10,
+            'blood' => true,
+            'blood_amount' => 10000,
+            'stress_level' => 1,
+            'hydration_level' => 1,
+            'recent_meal' => false,
+            'color' => 'dark brown',
+            'additional_notes' => 'Severe discomfort',
+        ];
+
+        $request = new BowelWellnessTrackerCreateRequest();
+        $request->merge($requestData);
+
+        $entry = BowelWellnessTrackerService::createEntry($request);
+
+        $this->assertDatabaseHas('bowel_wellness_trackers', [
+            'id' => $entry->id,
+            'pain' => 10,
+            'hydration_level' => 1,
+            'blood' => true,
+        ]);
+    }
+
+
 }
