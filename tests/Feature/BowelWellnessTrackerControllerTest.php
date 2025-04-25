@@ -180,4 +180,56 @@ class BowelWellnessTrackerControllerTest extends TestCase
         $response = $this->getJson("/api/bowel-wellness-tracker/{$otherUser->id}");
         $response->assertStatus(401);
     }
+
+    public function test_create_entry_with_medication_successfully()
+    {
+        $user = User::factory()->create();
+        $this->actingAs($user);
+
+        $data = [
+            'user_id' => $user->id,
+            'date' => now()->toDateString(),
+            'time' => '12:30',
+            'stool_type' => 4,
+            'urgency' => 3,
+            'pain' => 2,
+            'blood' => false,
+            'hydration_level' => 7,
+            'color' => 'medium brown',
+            'additional_notes' => 'Mild cramps',
+
+            'medication_name' => ['Paracetamol'],
+            'medication_strength' => ['500mg'],
+            'medication_form' => ['tablet'],
+            'medication_route' => ['oral'],
+            'medication_notes' => ['headache'],
+            'medication_prescribed' => [true],
+            'medication_taken_at' => ['08:00'],
+        ];
+
+        $response = $this->postJson('/api/bowel-wellness-tracker/create', $data);
+
+        $response->assertStatus(200)
+            ->assertJson([
+                'message' => 'Bowel Wellness Tracker entry created successfully',
+            ]);
+
+        $this->assertDatabaseHas('bowel_wellness_trackers', [
+            'user_id' => $user->id,
+            'stool_type' => 4,
+        ]);
+
+        $this->assertDatabaseHas('medications', [
+            'name' => 'Paracetamol',
+            'strength' => '500mg',
+        ]);
+
+        $this->assertDatabaseHas('bowel_wellness_tracker_medication', [
+            'bowel_wellness_tracker_id' => 1,
+            'medication_id' => 1,
+            'prescribed' => true,
+            'taken_at' => "08:00",
+        ]);
+    }
+
 }
