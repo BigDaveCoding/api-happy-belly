@@ -57,3 +57,5 @@ Route::controller(BowelWellnessTrackerController::class)->group(function () {
         Route::get('/bowel-wellness-tracker/entry/{entry}', 'entry');
     });
 });
+
+Route::post('/bowel-wellness-tracker/create', [BowelWellnessTrackerController::class, 'create']);
