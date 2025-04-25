@@ -232,4 +232,30 @@ class BowelWellnessTrackerControllerTest extends TestCase
         ]);
     }
 
+    public function test_create_entry_without_medication()
+    {
+        $user = User::factory()->create();
+        $this->actingAs($user);
+
+        $data = [
+            'user_id' => $user->id,
+            'date' => now()->toDateString(),
+            'time' => '13:45',
+            'stool_type' => 3,
+        ];
+
+        $response = $this->postJson('/api/bowel-wellness-tracker/create', $data);
+
+        $response->assertStatus(200)
+            ->assertJson([
+                'message' => 'Bowel Wellness Tracker entry created successfully',
+            ]);
+
+        $this->assertDatabaseHas('bowel_wellness_trackers', [
+            'user_id' => $user->id,
+            'stool_type' => 3,
+        ]);
+    }
+
+
 }
