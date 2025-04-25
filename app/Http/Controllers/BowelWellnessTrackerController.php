@@ -78,6 +78,11 @@ class BowelWellnessTrackerController extends Controller
 
     public function create(BowelWellnessTrackerCreateRequest $request): JsonResponse
     {
+        if(Auth::id() !== $request['user_id']) {
+            return response()->json([
+                'message' => 'Unauthorized - can only create entries for yourself',
+            ], 401);
+        }
         $entry = BowelWellnessTrackerService::createEntry($request);
         BowelWellnessTrackerService::medicationPivotData($request, $entry);
 
