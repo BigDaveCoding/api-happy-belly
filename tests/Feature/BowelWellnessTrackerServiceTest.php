@@ -139,4 +139,25 @@ class BowelWellnessTrackerServiceTest extends TestCase
         ]);
     }
 
+    public function test_multiple_medications_can_be_attached()
+    {
+        $user = User::factory()->create();
+        $tracker = BowelWellnessTracker::factory()->create(['user_id' => $user->id]);
+
+        $request = new BowelWellnessTrackerCreateRequest([
+            'medication_name' => ['Paracetamol', 'Ibuprofen'],
+            'medication_strength' => ['500mg', '200mg'],
+            'medication_form' => ['tablet', 'capsule'],
+            'medication_route' => ['oral', 'oral'],
+            'medication_notes' => ['Headache', 'Pain relief'],
+            'medication_prescribed' => [true, false],
+            'medication_taken_at' => ['08:00', '12:00'],
+        ]);
+
+        BowelWellnessTrackerService::medicationPivotData($request, $tracker);
+
+        $this->assertDatabaseCount('bowel_wellness_tracker_medication', 2);
+    }
+
+
 }
