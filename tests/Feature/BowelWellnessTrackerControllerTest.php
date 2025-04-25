@@ -270,4 +270,27 @@ class BowelWellnessTrackerControllerTest extends TestCase
 
         $response->assertInvalid(['user_id', 'date', 'time', 'stool_type']);
     }
+
+    public function test_create_entry_fails_on_unequal_medication_arrays()
+    {
+        $user = User::factory()->create();
+        $this->actingAs($user);
+
+        $data = [
+            'user_id' => $user->id,
+            'date' => now()->toDateString(),
+            'time' => '10:00',
+            'stool_type' => 5,
+
+            'medication_name' => ['Ibuprofen'],
+            'medication_strength' => ['200mg', 'extra'], // Mismatched count
+            'medication_form' => ['tablet'],
+            'medication_route' => ['oral'],
+        ];
+
+        $response = $this->postJson('/api/bowel-wellness-tracker/create', $data);
+
+        $response->assertInvalid(['bowel wellness tracker arrays']);
+    }
+
 }
