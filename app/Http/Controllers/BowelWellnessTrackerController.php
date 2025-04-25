@@ -88,6 +88,13 @@ class BowelWellnessTrackerController extends Controller
 
         return response()->json([
             'message' => 'Bowel Wellness Tracker entry created successfully',
+        ], 201);
+    }
+
+    public function update(): JsonResponse
+    {
+        return response()->json([
+            'message' => 'Bowel Wellness Tracker entry updated successfully',
         ]);
     }
 }

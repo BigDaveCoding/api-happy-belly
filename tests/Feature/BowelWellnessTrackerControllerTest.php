@@ -209,7 +209,7 @@ class BowelWellnessTrackerControllerTest extends TestCase
 
         $response = $this->postJson('/api/bowel-wellness-tracker/create', $data);
 
-        $response->assertStatus(200)
+        $response->assertStatus(201)
             ->assertJson([
                 'message' => 'Bowel Wellness Tracker entry created successfully',
             ]);
@@ -246,7 +246,7 @@ class BowelWellnessTrackerControllerTest extends TestCase
 
         $response = $this->postJson('/api/bowel-wellness-tracker/create', $data);
 
-        $response->assertStatus(200)
+        $response->assertStatus(201)
             ->assertJson([
                 'message' => 'Bowel Wellness Tracker entry created successfully',
             ]);
