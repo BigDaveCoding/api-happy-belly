@@ -62,6 +62,12 @@ class BowelWellnessTrackerController extends Controller
 
     public function entry(BowelWellnessTracker $entry): JsonResponse
     {
+        if (Auth::id() !== $entry->user_id) {
+            return response()->json([
+                'message' => 'Unauthorized - can only access your own entries',
+            ]);
+        }
+
         return response()->json([
             'message' => 'User single entry found successfully',
             'data' => $entry,

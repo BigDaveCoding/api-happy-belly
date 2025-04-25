@@ -54,8 +54,6 @@ Route::controller(FoodDiaryController::class)->group(function () {
 Route::controller(BowelWellnessTrackerController::class)->group(function () {
     Route::middleware(['auth:sanctum', VerifyEmailApi::class])->group(function () {
         Route::get('/bowel-wellness-tracker/{user}', 'user');
+        Route::get('/bowel-wellness-tracker/entry/{entry}', 'entry');
     });
 });
-
-// Route::get('/bowel-wellness-tracker/{user}', [BowelWellnessTrackerController::class, 'user']);
-Route::get('/bowel-wellness-tracker/entry/{entry}', [BowelWellnessTrackerController::class, 'entry']);
