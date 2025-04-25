@@ -344,4 +344,22 @@ class BowelWellnessTrackerControllerTest extends TestCase
         ]);
     }
 
+    public function test_create_entry_unauthorized(): void
+    {
+        $user = User::factory()->create(['id' => 1]);
+        User::factory()->create(['id' => 2]);
+        $this->actingAs($user);
+        $data = [
+            'user_id' => 2,
+            'date' => now()->toDateString(),
+            'time' => '13:45',
+            'stool_type' => 3,
+        ];
+        $response = $this->postJson('/api/bowel-wellness-tracker/create', $data);
+        $response->assertStatus(401)
+            ->assertJson(function (AssertableJson $response) {
+                $response->where('message', 'Unauthorized - can only create entries for yourself');
+            });
+    }
+
 }
