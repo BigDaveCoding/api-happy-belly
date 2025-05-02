@@ -213,6 +213,29 @@ class BowelWellnessTrackerServiceTest extends TestCase
         ]);
     }
 
+    public function test_updates_multiple_fields()
+    {
+        $user = User::factory()->create();
+        $entry = BowelWellnessTracker::factory()->create([
+            'user_id' => $user->id,
+            'urgency' => 2,
+            'pain' => 3,
+        ]);
 
+        $data = [
+            'urgency' => 8,
+            'pain' => 5,
+        ];
 
+        $request = new BowelWellnessTrackerUpdateRequest($data);
+
+        BowelWellnessTrackerService::updateBowelWellnessTrackerEntry($request, $entry);
+        $entry->save();
+
+        $this->assertDatabaseHas('bowel_wellness_trackers', [
+            'id' => $entry->id,
+            'urgency' => 8,
+            'pain' => 5,
+        ]);
+    }
 }
