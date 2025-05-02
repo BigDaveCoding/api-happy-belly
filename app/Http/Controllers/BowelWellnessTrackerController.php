@@ -98,7 +98,7 @@ class BowelWellnessTrackerController extends Controller
         if (Auth::id() !== $update->user_id) {
             return response()->json([
                 'message' => 'Unauthorized - can only update entries for yourself',
-            ]);
+            ], 401);
         }
         $entry = BowelWellnessTracker::findOrFail($update->id);
         BowelWellnessTrackerService::updateBowelWellnessTrackerEntry($request, $entry);
