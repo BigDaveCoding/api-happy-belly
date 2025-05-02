@@ -407,5 +407,19 @@ class BowelWellnessTrackerControllerTest extends TestCase
         $response->assertStatus(404);
     }
 
+    public function test_missing_user_id_fails_validation()
+    {
+        $user = User::factory()->create();
+        $this->actingAs($user);
+        $entry = BowelWellnessTracker::factory()->create(['user_id' => $user->id]);
+
+        // Missing user_id
+        $response = $this->patchJson("/api/bowel-wellness-tracker/update/{$entry->id}", [
+            'stool_type' => 5,
+            'urgency' => 4,
+        ]);
+
+        $response->assertInvalid(['user_id']);
+    }
 
 }
