@@ -111,8 +111,14 @@ class BowelWellnessTrackerController extends Controller
 
     public function updateMedicationPivot(BowelWellnessTracker $updateMedication, BowelWellnessTrackerUpdateMedicationPivotRequest $request): JsonResponse
     {
-
         $updatedEntry = BowelWellnessTracker::findOrFail($updateMedication->id);
+
+        if(Auth::id() !== $updatedEntry->user_id) {
+            return response()->json([
+                'message' => 'Unauthorized - can only update entries for yourself',
+            ], 401);
+        }
+
         $updatedEntry->medications()->detach();
 
         foreach($request['medication_id'] as $index => $medication_id){
