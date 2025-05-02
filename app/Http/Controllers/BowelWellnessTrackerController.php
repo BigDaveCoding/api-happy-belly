@@ -155,4 +155,32 @@ class BowelWellnessTrackerController extends Controller
             'message' => 'Bowel Wellness Tracker entry updated successfully',
         ]);
     }
+
+    public function updateMedicationPivot(BowelWellnessTracker $updateMedication, Request $request): JsonResponse
+    {
+
+        $updatedEntry = BowelWellnessTracker::findOrFail($updateMedication->id);
+
+        $request->validate([
+            'medication_id' => 'required|array',
+            'medication_id.*' => 'integer|exists:medications,id',
+            'medication_prescribed' => 'sometimes|array',
+            'medication_prescribed.*' => 'nullable|boolean|',
+            'medication_taken_at' => 'sometimes|array',
+            'medication_taken_at.*' => 'nullable|string',
+        ]);
+
+        $updatedEntry->medications()->detach();
+
+        foreach($request['medication_id'] as $index => $medication_id){
+            $updatedEntry->medications()->attach($medication_id, [
+                'prescribed' => $request['medication_prescribed'][$index],
+                'taken_at' => $request['medication_taken_at'][$index],
+            ]);
+        }
+
+        return response()->json([
+            'message' => 'Medication pivot updated successfully'
+        ]);
+    }
 }
