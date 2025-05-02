@@ -289,5 +289,46 @@ class BowelWellnessTrackerServiceTest extends TestCase
         ]);
     }
 
+    public function test_urgency_above_max_fails_validation()
+    {
+        $user = User::factory()->create();
+        $entry = BowelWellnessTracker::factory()->create(['user_id' => $user->id]);
+
+        $response = $this->actingAs($user)->patchJson("/api/bowel-wellness-tracker/update/{$entry->id}", [
+            'user_id' => $user->id,
+            'urgency' => 15, // invalid
+        ]);
+
+        $response->assertInvalid(['urgency']);
+    }
+
+    public function test_string_in_integer_field_fails_validation()
+    {
+        $user = User::factory()->create();
+        $entry = BowelWellnessTracker::factory()->create(['user_id' => $user->id]);
+
+        $response = $this->actingAs($user)->patchJson("/api/bowel-wellness-tracker/update/{$entry->id}", [
+            'user_id' => $user->id,
+            'pain' => 'very high', // invalid
+        ]);
+
+        $response->assertInvalid(['pain']);
+    }
+
+    public function test_additional_notes_exceeds_max_length()
+    {
+        $user = User::factory()->create();
+        $entry = BowelWellnessTracker::factory()->create(['user_id' => $user->id]);
+
+        $longString = str_repeat('a', 70000); // exceeds 65535
+
+        $response = $this->actingAs($user)->patchJson("/api/bowel-wellness-tracker/update/{$entry->id}", [
+            'user_id' => $user->id,
+            'additional_notes' => $longString,
+        ]);
+
+        $response->assertInvalid(['additional_notes']);
+    }
+
 
 }
