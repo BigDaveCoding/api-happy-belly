@@ -57,7 +57,7 @@ Route::controller(BowelWellnessTrackerController::class)->group(function () {
         Route::get('/bowel-wellness-tracker/entry/{entry}', 'entry');
         Route::post('/bowel-wellness-tracker/create', 'create');
         Route::patch('/bowel-wellness-tracker/update/{update}', 'update');
-        Route::patch('/bowel-wellness-tracker/updateMedication/{updateMedication}', 'updateMedication');
+        Route::patch('/bowel-wellness-tracker/updateMedication/{updateMedication}', 'updateMedicationPivot');
     });
 });
 
