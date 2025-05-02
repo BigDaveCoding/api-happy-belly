@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Http\Requests\BowelWellnessTrackerCreateRequest;
+use App\Http\Requests\BowelWellnessTrackerUpdateRequest;
 use App\Models\BowelWellnessTracker;
 use App\Models\User;
 use App\Providers\BowelWellnessTrackerService;
@@ -190,6 +191,28 @@ class BowelWellnessTrackerServiceTest extends TestCase
 
         $this->assertDatabaseHas('medications', ['name' => 'Paracetamol']);
     }
+
+    public function test_updates_single_field_success()
+    {
+        $user = User::factory()->create();
+        $this->actingAs($user);
+        $entry = BowelWellnessTracker::factory()->create(['user_id' => $user->id, 'stool_type' => 3]);
+
+        $data = [
+            'stool_type' => 5,
+        ];
+
+        $request = new BowelWellnessTrackerUpdateRequest($data);
+
+        BowelWellnessTrackerService::updateBowelWellnessTrackerEntry($request, $entry);
+        $entry->save();
+
+        $this->assertDatabaseHas('bowel_wellness_trackers', [
+            'id' => $entry->id,
+            'stool_type' => 5,
+        ]);
+    }
+
 
 
 }
