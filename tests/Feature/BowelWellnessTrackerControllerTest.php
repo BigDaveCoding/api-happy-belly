@@ -393,5 +393,19 @@ class BowelWellnessTrackerControllerTest extends TestCase
         ]);
     }
 
+    public function test_update_bowel_wellness_tracker_not_found()
+    {
+        $user = User::factory()->create();
+        $this->actingAs($user);
+
+        // Simulate non-existing ID
+        $response = $this->patchJson("/api/bowel-wellness-tracker/update/9999", [
+            'user_id' => $user->id,
+            'stool_type' => 5,
+        ]);
+
+        $response->assertStatus(404);
+    }
+
 
 }
