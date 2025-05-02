@@ -438,4 +438,41 @@ class BowelWellnessTrackerControllerTest extends TestCase
         $response->assertStatus(401);
     }
 
+    public function test_update_validation(): void
+    {
+        $user = User::factory()->create();
+        $this->actingAs($user);
+
+        $entry = BowelWellnessTracker::factory()->create(['user_id' => $user->id]);
+
+        $data = [
+            'user_id' => 'string',
+            'stool_type' => 'string',
+            'urgency' => false,
+            'pain' => 'string',
+            'blood' => [],
+            'blood_amount' => [],
+            'stress_level' => 'string',
+            'hydration_level' => 'string',
+            'recent_meal' => 'string',
+            'color' => 2,
+            'additional_notes' => []
+        ];
+
+        $response = $this->patchJson("/api/bowel-wellness-tracker/update/$entry->id", $data);
+        $response->assertInvalid([
+            'user_id',
+            'stool_type',
+            'urgency',
+            'pain',
+            'blood',
+            'blood_amount',
+            'stress_level',
+            'hydration_level',
+            'recent_meal',
+            'color',
+            'additional_notes',
+        ]);
+    }
+
 }
