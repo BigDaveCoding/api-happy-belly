@@ -422,4 +422,20 @@ class BowelWellnessTrackerControllerTest extends TestCase
         $response->assertInvalid(['user_id']);
     }
 
+    public function test_unauthorized_update(): void
+    {
+        $user = User::factory()->create();
+        $otherUser = User::factory()->create();
+        $this->actingAs($user);
+        $entry = BowelWellnessTracker::factory()->create(['user_id' => $otherUser->id]);
+
+        $data = [
+            'user_id' => $otherUser->id,
+        ];
+
+        $response = $this->patchJson("/api/bowel-wellness-tracker/update/{$entry->id}", $data);
+
+        $response->assertStatus(401);
+    }
+
 }
