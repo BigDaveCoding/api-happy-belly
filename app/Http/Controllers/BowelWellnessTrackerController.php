@@ -91,8 +91,11 @@ class BowelWellnessTrackerController extends Controller
         ], 201);
     }
 
-    public function update(BowelWellnessTracker $entry, Request $request): JsonResponse
+    public function update(BowelWellnessTracker $update, Request $request): JsonResponse
     {
+
+        $entry = BowelWellnessTracker::findOrFail($update->id);
+
         $request->validate([
             'user_id' => 'required|integer|exists:users,id',
             'date' => 'sometimes|date_format:Y-m-d',
@@ -145,6 +148,8 @@ class BowelWellnessTrackerController extends Controller
         if(isset($request['additional_notes'])){
             $entry->additional_notes = $request['additional_notes'];
         }
+
+        $entry->save();
 
         return response()->json([
             'message' => 'Bowel Wellness Tracker entry updated successfully',
