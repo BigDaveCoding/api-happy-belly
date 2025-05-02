@@ -265,4 +265,29 @@ class BowelWellnessTrackerServiceTest extends TestCase
         ]);
     }
 
+    public function test_no_fields_updated()
+    {
+        $user = User::factory()->create();
+        $entry = BowelWellnessTracker::factory()->create([
+            'user_id' => $user->id,
+            'stool_type' => 2,
+            'urgency' => 4,
+        ]);
+
+        $original = $entry->replicate();
+
+        $data = []; // empty request
+        $request = new BowelWellnessTrackerUpdateRequest($data);
+
+        BowelWellnessTrackerService::updateBowelWellnessTrackerEntry($request, $entry);
+        $entry->save();
+
+        $this->assertDatabaseHas('bowel_wellness_trackers', [
+            'id' => $entry->id,
+            'stool_type' => $original->stool_type,
+            'urgency' => $original->urgency,
+        ]);
+    }
+
+
 }
