@@ -238,4 +238,31 @@ class BowelWellnessTrackerServiceTest extends TestCase
             'pain' => 5,
         ]);
     }
+
+    public function test_updates_boolean_and_string_fields()
+    {
+        $user = User::factory()->create();
+        $entry = BowelWellnessTracker::factory()->create([
+            'user_id' => $user->id,
+            'blood' => false,
+            'color' => 'dark brown',
+        ]);
+
+        $data = [
+            'blood' => true,
+            'color' => 'light brown',
+        ];
+
+        $request = new BowelWellnessTrackerUpdateRequest($data);
+
+        BowelWellnessTrackerService::updateBowelWellnessTrackerEntry($request, $entry);
+        $entry->save();
+
+        $this->assertDatabaseHas('bowel_wellness_trackers', [
+            'id' => $entry->id,
+            'blood' => true,
+            'color' => 'light brown',
+        ]);
+    }
+
 }
