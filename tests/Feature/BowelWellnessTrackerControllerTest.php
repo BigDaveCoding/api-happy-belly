@@ -362,4 +362,36 @@ class BowelWellnessTrackerControllerTest extends TestCase
             });
     }
 
+    public function test_successful_update_bowel_wellness_tracker()
+    {
+        $user = User::factory()->create();
+        $this->actingAs($user);
+        $entry = BowelWellnessTracker::factory()->create(['user_id' => $user->id]);
+
+        $data = [
+            'user_id' => $user->id,
+            'stool_type' => 5,
+            'urgency' => 7,
+            'pain' => 3,
+            'blood' => false,
+            'blood_amount' => null,
+            'stress_level' => 6,
+            'hydration_level' => 8,
+            'recent_meal' => true,
+            'color' => 'dark brown',
+            'additional_notes' => 'Symptoms improved after medication.'
+        ];
+
+        $response = $this->patchJson("/api/bowel-wellness-tracker/update/{$entry->id}", $data);
+
+        $response->assertStatus(200);
+        $response->assertJson(['message' => 'Bowel Wellness Tracker entry updated successfully']);
+        $this->assertDatabaseHas('bowel_wellness_trackers', [
+            'id' => $entry->id,
+            'stool_type' => 5,
+            'urgency' => 7,
+        ]);
+    }
+
+
 }
